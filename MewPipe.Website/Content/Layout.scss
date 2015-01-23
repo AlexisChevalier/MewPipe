@@ -1,0 +1,187 @@
+﻿@font-face {
+	font-family: 'Noteworthy';
+	src: url('/fonts/noteworthy.eot');
+	src: local('☺'), url('/fonts/noteworthy.woff') format('woff'), url('/fonts/noteworthy.ttf') format('truetype'), url('/fonts/noteworthy.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700);
+
+$bgDefault      : transparent;
+$bgHighlight    : transparent;
+$bgDefaultAffix      : white;
+$bgHighlightAffix    : rgb(226, 226, 226);
+$colDefault     : rgb(225,23,44);
+$colHighlight   : rgb(165, 13, 29);
+.navbar-default {
+    z-index: 9999;
+    border-radius: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+	background-color: $bgDefaultAffix;
+	border-color: $bgHighlightAffix;
+    .navbar-brand {
+        display: block;
+        font-family: 'Noteworthy', cursive;
+            
+        text-align: center;
+        span {
+            font-size: 24px;
+            &.black {
+                color: black;
+            }
+            &.red {
+                color: rgb(225,23,44);
+            }
+        }
+    }
+    .search {
+        display: block;
+        .form-group {
+            margin: 0;
+            margin-top: 8px;
+            position: relative;
+            i.glyphicon {
+                font-size: 20px;
+                position: absolute;
+                left: 10px;
+                top: 7px;
+            }
+            input {
+                padding-left: 35px;
+                text-align: left;
+            }
+        } 
+    }
+   
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+	.navbar-brand {
+		color: $colDefault;
+		&:hover, &:focus { 
+			color: $colHighlight;
+		}
+	}
+	.navbar-text {
+		color: $colDefault; 
+
+	}
+	.navbar-nav {
+        margin: 0;
+		> li {
+			> a {
+                padding-top: 15px;
+                padding-bottom: 15px;
+				color: $colDefault;
+				&:hover,  &:focus {
+					color: $colHighlight;
+				}
+			}
+		}
+		> .active {
+			> a, > a:hover, > a:focus {
+				color: $colHighlight;
+				background-color: $bgHighlight;
+			}
+		}
+		> .open {
+			> a, > a:hover, > a:focus {
+				color: $colHighlight;
+				background-color: $bgHighlight;
+			}
+		}
+	}
+	.navbar-toggle {
+		border-color: $bgHighlight;
+		&:hover, &:focus {
+			background-color: $bgHighlight;
+		}
+		.icon-bar {
+			background-color: $colDefault;
+		}
+	}
+	.navbar-collapse,
+	.navbar-form {
+		border-color: $colDefault;
+	}
+	.navbar-link {
+		color: $colDefault;
+		&:hover {
+			color: $colHighlight; 
+		}
+	}
+    .navbar-collapse.collapse {
+        display: block!important;
+    }
+
+    .navbar-nav>li, .navbar-nav {
+        float: left !important;
+    }
+
+    .navbar-right {
+        float: right!important;
+    }
+}
+
+@media (min-width: 768px) {
+    .navbar-right {
+        margin: 0;
+    }
+}
+@media (max-width: 767px) {
+	.navbar-default .navbar-nav .open .dropdown-menu {
+		> li > a {
+			color: $colDefault;
+			&:hover, &:focus {
+				color: $colHighlight;
+			}
+		}
+		> .active {
+			> a, > a:hover, > a:focus {
+				color: $colHighlight;
+				background-color: $bgHighlight; 
+			}
+		}
+	}
+}
+
+body {
+    background: #f1f1f1;
+}
+
+footer {
+    margin-top: 50px;
+    background-color: #3e3e3e;
+    color: white;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    #footer-links {
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            li {
+                margin: 5px;
+                display: inline;
+                a {
+                    color: white;
+                }
+            }
+        }
+        #footer-links-primary {
+            a {
+                font-weight: bold;
+            }
+        }
+        #footer-links-secondary {
+            margin-top: 10px;
+
+        }
+    }
+
+    hr {
+        border-top: 1px solid #616161;
+    }
+}

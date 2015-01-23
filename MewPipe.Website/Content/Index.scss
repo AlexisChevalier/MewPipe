@@ -1,0 +1,250 @@
+﻿$bgDefault      : transparent;
+$bgHighlight    : transparent;
+$bgDefaultAffix      : white;
+$bgHighlightAffix    : rgb(226, 226, 226);
+$colDefault     : rgb(225,23,44);
+$colHighlight   : rgb(165, 13, 29);
+.navbar-home {
+    z-index: 9999;
+    border-radius: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    &.affix {
+        position: fixed;
+	    background-color: $bgDefaultAffix;
+	    border-color: $bgHighlightAffix;
+        .navbar-brand {
+            display: block;
+            font-family: 'Noteworthy', cursive;
+            
+            text-align: center;
+            span {
+                &.black {
+                    color: black;
+                }
+                &.red {
+                    color: rgb(225,23,44);
+                }
+            }
+        }
+        .search {
+            display: block;
+            .form-group {
+                margin: 0;
+                margin-top: 8px;
+                position: relative;
+                i.glyphicon {
+                    font-size: 20px;
+                    position: absolute;
+                    left: 10px;
+                    top: 7px;
+                }
+                input {
+                    padding-left: 35px;
+                    text-align: left;
+                }
+            } 
+        }
+    }
+    &.affix-top {
+	    background-color: $bgDefault;
+	    border-color: $bgHighlight;
+        background: transparent;
+        background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, rgba(0,0,0,0.3)), color-stop(100%, transparent));
+        background: -webkit-linear-gradient(rgba(0,0,0,0.3), transparent);
+        background: -moz-linear-gradient(rgba(0,0,0,0.3), transparent);
+        background: -o-linear-gradient(rgba(0,0,0,0.3), transparent);
+        background: linear-gradient(rgba(0,0,0,0.3),transparent);
+        border: none;
+        .navbar-brand {
+            display: none;
+        }
+        .search {
+            display: none;
+        }
+        .navbar-nav {
+		    > li {
+			    > a {
+				    color: black;
+				    &:hover,  &:focus {
+					    color: #2f2f2f;
+				    }
+			    }
+		    }
+		}
+    }
+   
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+	.navbar-brand {
+		color: $colDefault;
+		&:hover, &:focus { 
+			color: $colHighlight;
+		}
+	}
+	.navbar-text {
+		color: $colDefault; 
+
+	}
+	.navbar-nav {
+        margin: 0;
+		> li {
+			> a {
+                padding-top: 15px;
+                padding-bottom: 15px;
+				color: $colDefault;
+				&:hover,  &:focus {
+					color: $colHighlight;
+				}
+			}
+		}
+		> .active {
+			> a, > a:hover, > a:focus {
+				color: $colHighlight;
+				background-color: $bgHighlight;
+			}
+		}
+		> .open {
+			> a, > a:hover, > a:focus {
+				color: $colHighlight;
+				background-color: $bgHighlight;
+			}
+		}
+	}
+	.navbar-toggle {
+		border-color: $bgHighlight;
+		&:hover, &:focus {
+			background-color: $bgHighlight;
+		}
+		.icon-bar {
+			background-color: $colDefault;
+		}
+	}
+	.navbar-collapse,
+	.navbar-form {
+		border-color: $colDefault;
+	}
+	.navbar-link {
+		color: $colDefault;
+		&:hover {
+			color: $colHighlight; 
+		}
+	}
+    .navbar-collapse.collapse {
+        display: block!important;
+    }
+
+    .navbar-nav>li, .navbar-nav {
+        float: left !important;
+    }
+
+    .navbar-right {
+        float: right!important;
+    }
+}
+
+@media (min-width: 768px) {
+    .navbar-right {
+        margin: 0;
+    }
+}
+@media (max-width: 767px) {
+	.navbar-default .navbar-nav .open .dropdown-menu {
+		> li > a {
+			color: $colDefault;
+			&:hover, &:focus {
+				color: $colHighlight;
+			}
+		}
+		> .active {
+			> a, > a:hover, > a:focus {
+				color: $colHighlight;
+				background-color: $bgHighlight; 
+			}
+		}
+	}
+}
+
+
+#index {
+    .bigIntro {
+        
+        background: -webkit-linear-gradient(90deg, #FF4E50 10%, #F9D423 90%); /* Chrome 10+, Saf5.1+ */
+        background:    -moz-linear-gradient(90deg, #FF4E50 10%, #F9D423 90%); /* FF3.6+ */
+        background:     -ms-linear-gradient(90deg, #FF4E50 10%, #F9D423 90%); /* IE10 */
+        background:      -o-linear-gradient(90deg, #FF4E50 10%, #F9D423 90%); /* Opera 11.10+ */
+        background:         linear-gradient(90deg, #FF4E50 10%, #F9D423 90%); /* W3C */
+        
+        padding-top: 50px;
+        padding-bottom: 50px;
+
+        .headRow {
+            h1 {
+                font-family: 'Noteworthy', cursive;
+                font-size: 5em;
+                text-align: center;
+                span {
+                    &.black {
+                        color: white;
+                    }
+                    &.red {
+                        color: rgb(225,23,44);
+                    }
+                }
+            }
+        }
+        .searchRow {
+            margin-top: 40px;
+            .form-group {
+                i.glyphicon {
+                    font-size: 20px;
+                    position: absolute;
+                    left: 25px;
+                    top: 10px;
+                }
+                input {
+                    padding-left: 40px;
+                    height: 40px;
+                    text-align: center;
+                    font-size: 20px;
+                }
+            }   
+        }
+
+    }
+    .content {
+        margin-top: 20px;
+        h2 {
+            &.cursive {
+                font-family: 'Noteworthy', cursive;
+                margin: 40px 0;
+                font-size: 35px;
+            }
+        }
+
+        .videoThumb {
+            padding: 10px;
+            max-width: 300px;
+            margin: auto;
+            img {
+                max-width: 100%;
+            }
+            h3 {
+                margin-top: 10px;
+                margin-bottom: 10px;
+                a {
+                    font-size: 20px;
+                    color: rgb(225, 23, 44);
+                }
+            }
+            p {
+                margin: 0;
+            }
+            &:hover {
+                background-color: beige;
+            }
+        }
+    }
+}
