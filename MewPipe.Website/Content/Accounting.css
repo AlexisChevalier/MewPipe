@@ -1,0 +1,71 @@
+﻿.accounting {
+  background-color: white; }
+  .accounting .centerForm {
+    border-radius: 3px 3px 0 0;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 0; }
+    .accounting .centerForm.twoCols .smallSeparator {
+      display: none; }
+    .accounting .centerForm.twoCols .col {
+      padding: 0px 35px;
+      margin-bottom: 35px; }
+      .accounting .centerForm.twoCols .col h4 {
+        margin-bottom: 20px;
+        font-weight: bold; }
+      .accounting .centerForm.twoCols .col.external p, .accounting .centerForm.twoCols .col.external button {
+        margin-bottom: 15px; }
+      .accounting .centerForm.twoCols .col.account {
+        border-right: 1px solid #bbb; }
+        .accounting .centerForm.twoCols .col.account .form-body {
+          margin-bottom: 20px; }
+          .accounting .centerForm.twoCols .col.account .form-body input {
+            font-size: 14px;
+            height: auto;
+            padding: 11px 18px;
+            position: relative; }
+          .accounting .centerForm.twoCols .col.account .form-body #Email {
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+            margin-bottom: -1px; }
+            .accounting .centerForm.twoCols .col.account .form-body #Email:focus {
+              z-index: 2; }
+          .accounting .centerForm.twoCols .col.account .form-body #Password {
+            border-top-right-radius: 0;
+            border-top-left-radius: 0; }
+        .accounting .centerForm.twoCols .col.account button {
+          margin-bottom: 20px; }
+    @media (max-width: 991px) {
+      .accounting .centerForm.twoCols .smallSeparator {
+        display: block; }
+
+      .accounting .centerForm.twoCols .col.account {
+        border-right: 0; }
+ }
+    .accounting .centerForm .formHeader {
+      background: #f6f6f6;
+      border: 1px solid #e1e1e1;
+      margin: -1px;
+      -webkit-border-radius: 3px 3px 0px 0px;
+      -moz-border-radius: 3px 3px 0px 0px;
+      border-radius: 3px 3px 0px 0px;
+      -webkit-box-shadow: inset 0 1px 0 #fff;
+      -moz-box-shadow: inset 0 1px 0 #fff;
+      box-shadow: inset 0 1px 0 #fff;
+      background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f1f1f1), color-stop(1, #f6f6f6));
+      background: -ms-linear-gradient(bottom, #f1f1f1, #f6f6f6);
+      background: -moz-linear-gradient(center bottom, #f1f1f1 0%, #f6f6f6 100%);
+      background: -o-linear-gradient(#f6f6f6, #f1f1f1);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6',endColorstr='#f1f1f1',GradientType=0);
+      margin-bottom: 35px;
+      padding: 15px 35px; }
+      .accounting .centerForm .formHeader h3 {
+        margin: 0; }
+
+/*# sourceMappingURL=Accounting.css.map */

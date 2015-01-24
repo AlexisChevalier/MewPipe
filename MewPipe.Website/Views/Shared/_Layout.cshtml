@@ -4,11 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/styles")
 
 </head>
-<body>
+<body class="@ViewBag.BodyClass">
     <div class="navbar navbar-default">
         <div class="container">
             <ul class="nav navbar-nav">
@@ -23,14 +22,19 @@
             </div>
         </div>
     </div>
+    @Html.Partial("_FlashMessage")
     <div class="container body-content">
         @RenderBody()
     </div>
 
     @Html.Partial("_Footer")
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/scripts")
     @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+        $(function() {
+            FlashMessages.attach($("#flash-messages"));
+        });
+    </script>
 </body>
 </html>

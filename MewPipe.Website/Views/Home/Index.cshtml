@@ -9,8 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/styles")
 </head>
 <body>
     <div class="navbar navbar-home navbar-default navbar-fixed-top">
@@ -59,6 +58,7 @@
                 </div>
             </div>
         </div>
+        @Html.Partial("_FlashMessage")
         <div class="content container" id="homeContainer">
             <div class="row">
                 <h2 class="text-center cursive">World trends</h2>
@@ -187,13 +187,15 @@
 
     @Html.Partial("_Footer")
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/scripts")
     <script type="text/javascript">
-        $('.navbar').affix({
-            offset: {
-                top: $('#homeContainer').offset().top - 70
-            }
+        $(function () {
+            $('.navbar').affix({
+                offset: {
+                    top: $('#homeContainer').offset().top - 70
+                }
+            });
+            FlashMessages.attach($("#flash-messages"));
         });
     </script>
 </body>
