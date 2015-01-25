@@ -1,8 +1,9 @@
 ﻿@{
-    ViewBag.Title = "Login Failure";
+    ViewBag.Title = "External Service Login Failure";
 }
 
-<hgroup>
-    <h2>@ViewBag.Title.</h2>
-    <h3 class="text-danger">Unsuccessful login with service.</h3>
-</hgroup>
+<div class="systemError">
+    <h2>@ViewBag.Title</h2>
+    <h3>We were unable to log you in with this external service. We are sorry for the inconvenience.</h3>
+    @Html.ActionLink("Return to the login page", "Login", null, new { @class = "btn btn-success raised" })
+</div>

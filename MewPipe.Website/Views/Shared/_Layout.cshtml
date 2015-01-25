@@ -8,23 +8,25 @@
 
 </head>
 <body class="@ViewBag.BodyClass">
-    <div class="navbar navbar-default">
-        <div class="container">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="../" class="navbar-brand">
-                        <span class="black">Mew</span><span class="red">Pipe</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="navbar-right">
-                @Html.Partial("_LoginPartial")
+    <div class="fullHeight">
+        <div class="navbar navbar-default">
+            <div class="container">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="../" class="navbar-brand">
+                            <span class="black">Mew</span><span class="red">Pipe</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="navbar-right">
+                    @Html.Partial("_LoginPartial")
+                </div>
             </div>
         </div>
-    </div>
-    @Html.Partial("_FlashMessage")
-    <div class="container body-content">
-        @RenderBody()
+        @Html.Partial("_FlashMessage")
+        <div class="container body-content">
+            @RenderBody()
+        </div>
     </div>
 
     @Html.Partial("_Footer")
@@ -32,7 +34,7 @@
     @Scripts.Render("~/scripts")
     @RenderSection("scripts", required: false)
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             FlashMessages.attach($("#flash-messages"));
         });
     </script>

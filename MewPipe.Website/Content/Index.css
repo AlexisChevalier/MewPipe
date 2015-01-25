@@ -48,9 +48,9 @@
     .navbar-home.affix-top .search {
       display: none; }
     .navbar-home.affix-top .navbar-nav > li > a {
-      color: black; }
+      color: white; }
       .navbar-home.affix-top .navbar-nav > li > a:hover, .navbar-home.affix-top .navbar-nav > li > a:focus {
-        color: #2f2f2f; }
+        color: #c2c2c2; }
   .navbar-home .navbar-brand {
     color: #e1172c; }
     .navbar-home .navbar-brand:hover, .navbar-home .navbar-brand:focus {

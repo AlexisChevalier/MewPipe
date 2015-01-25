@@ -1,5 +1,5 @@
-﻿@using MewPipe.Website.Models
-@model LoginViewModel
+﻿@using MewPipe.Website.ViewModels
+@model MewPipe.Website.ViewModels.LoginViewModel
 @{
     ViewBag.Title = "Log in";
     ViewBag.BodyClass = "accounting";
@@ -20,15 +20,15 @@
                         <h4 class="header">Using your account</h4>
                         @Html.ValidationSummary(true, "", new {@class = "text-danger"})
                         <div class="form-body">
-                            @Html.TextBoxFor(m => m.Email, new {@class = "form-control input-lg", @placeholder = "Email adress"})
-                            @Html.PasswordFor(m => m.Password, new {@class = "form-control input-lg", @placeholder = "Password"})
+                            @Html.TextBoxFor(m => m.Email, new {@class = "form-control input-lg topBorder", @placeholder = "Email adress"})
+                            @Html.PasswordFor(m => m.Password, new {@class = "form-control input-lg bottomBo", @placeholder = "Password"})
 
                             <div class="checkbox">
                                 @Html.CheckBoxFor(m => m.RememberMe)
                                 @Html.LabelFor(m => m.RememberMe)
                             </div>
                         </div>
-                        <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+                        <button class="btn btn-primary raised btn-block " type="submit">Sign in</button>
                         <p class="text-center">
                             @Html.ActionLink("Forgot your password ?", "ForgotPassword")
                         </p>

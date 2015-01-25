@@ -4,6 +4,8 @@
     ViewBag.Title = "Error";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
-
+<div class="systemError">
+    <h2>@ViewBag.Title</h2>
+    <h3>An unexpected error occurred while processing your request. We are sorry for the inconvenience.</h3>
+    @Html.ActionLink("Return to the home page", "Index", "Home", null, new { @class = "btn btn-success raised" })
+</div>

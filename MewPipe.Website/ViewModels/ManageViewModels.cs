@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 
-namespace MewPipe.Website.Models
+namespace MewPipe.Website.ViewModels
 {
     public class IndexViewModel
     {

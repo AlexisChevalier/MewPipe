@@ -1,4 +1,4 @@
-﻿@model MewPipe.Website.Models.ExternalLoginListViewModel
+﻿@model MewPipe.Website.ViewModels.ExternalLoginListViewModel
 @using Microsoft.Owin.Security
 
 @{
@@ -9,7 +9,7 @@
             <p>
                 @foreach (var p in loginProviders)
                 {
-                    <button type="submit" class="btn btn-block btn-social btn-@p.AuthenticationType.ToLower()" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">
+                    <button type="submit" class="btn-block btn-social btn-@p.AuthenticationType.ToLower()" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">
                         <i class="fa fa-@p.AuthenticationType.ToLower()"></i> Sign in with @p.AuthenticationType
                     </button>
                 }

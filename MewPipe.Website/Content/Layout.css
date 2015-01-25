@@ -6,6 +6,16 @@
   font-weight: normal;
   font-style: normal; }
 
+html, body {
+  height: 100%; }
+
+.fullHeight {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -190px;
+  padding-bottom: 190px; }
+
 .navbar-default {
   z-index: 9999;
   border-radius: 0;
@@ -99,6 +109,7 @@ body {
   background: #f1f1f1; }
 
 footer {
+  height: 190px;
   margin-top: 50px;
   background-color: #3e3e3e;
   color: white;

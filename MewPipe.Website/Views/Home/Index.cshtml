@@ -12,179 +12,180 @@
     @Styles.Render("~/styles")
 </head>
 <body>
-    <div class="navbar navbar-home navbar-default navbar-fixed-top">
-        <div class="container">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="../" class="navbar-brand">
-                        <span class="black">Mew</span><span class="red">Pipe</span>
-                    </a>
-                </li>
-                <li>
-                    <form class="search">
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="bigSearch" placeholder="Search a video...">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </div>
-                    </form>
-                </li>
-            </ul>
-            <div class="navbar-right">
-                @Html.Partial("_LoginPartial")
-            </div>
-        </div>
-    </div>
-    <div id="index">
-        <div class="bigIntro">
+    <div class="fullHeight">
+        <div class="navbar navbar-home navbar-default navbar-fixed-top">
             <div class="container">
-                <div class="row">
-                    <div class="col-md-12 headRow">
-                        <h1>
-                            <a href="../">
-                                <span class="black">Mew</span><span class="red">Pipe</span>
-                            </a>
-                        </h1>
-                    </div>
-                </div>
-                <div class="row searchRow">
-                    <div class="col-sm-6 col-sm-offset-3">
-                        <form>
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="../" class="navbar-brand">
+                            <span class="black">Mew</span><span class="red">Pipe</span>
+                        </a>
+                    </li>
+                    <li>
+                        <form class="search">
                             <div class="form-group">
                                 <input type="text" class="form-control" id="bigSearch" placeholder="Search a video...">
                                 <i class="glyphicon glyphicon-search"></i>
                             </div>
                         </form>
-                    </div>
+                    </li>
+                </ul>
+                <div class="navbar-right">
+                    @Html.Partial("_LoginPartial")
                 </div>
             </div>
         </div>
-        @Html.Partial("_FlashMessage")
-        <div class="content container" id="homeContainer">
-            <div class="row">
-                <h2 class="text-center cursive">World trends</h2>
-            </div>
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="videoThumb">
-                        <a href="#">
-                            <img src="http://placehold.it/300x200" alt="...">
-                        </a>
-                        <div class="caption">
-                            <h3>
-                                <a href="#">My awesome video</a>
-                            </h3>
-                            <p>By <a href="#">MewPipe</a></p>
-                            <p>2104 views | One month ago</p>
+        <div id="index">
+            <div class="bigIntro">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 headRow">
+                            <h1>
+                                <a href="../">
+                                    <span class="black">Mew</span><span class="red">Pipe</span>
+                                </a>
+                            </h1>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="videoThumb">
-                        <a href="#">
-                            <img src="http://placehold.it/300x200" alt="...">
-                        </a>
-                        <div class="caption">
-                            <h3>
-                                <a href="#">My awesome video</a>
-                            </h3>
-                            <p>By <a href="#">MewPipe</a></p>
-                            <p>2104 views | One month ago</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="videoThumb">
-                        <a href="#">
-                            <img src="http://placehold.it/300x200" alt="...">
-                        </a>
-                        <div class="caption">
-                            <h3>
-                                <a href="#">My awesome video</a>
-                            </h3>
-                            <p>By <a href="#">MewPipe</a></p>
-                            <p>2104 views | One month ago</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="videoThumb">
-                        <a href="#">
-                            <img src="http://placehold.it/300x200" alt="...">
-                        </a>
-                        <div class="caption">
-                            <h3>
-                                <a href="#">My awesome video</a>
-                            </h3>
-                            <p>By <a href="#">MewPipe</a></p>
-                            <p>2104 views | One month ago</p>
+                    <div class="row searchRow">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <form>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="bigSearch" placeholder="Search a video...">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <h2 class="text-center cursive">This might interest you</h2>
-            </div>
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="videoThumb">
-                        <a href="#">
-                            <img src="http://placehold.it/300x200" alt="...">
-                        </a>
-                        <div class="caption">
-                            <h3>
-                                <a href="#">My awesome video</a>
-                            </h3>
-                            <p>By <a href="#">MewPipe</a></p>
-                            <p>2104 views | One month ago</p>
+            @Html.Partial("_FlashMessage")
+            <div class="content container" id="homeContainer">
+                <div class="row">
+                    <h2 class="text-center cursive">World trends</h2>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="videoThumb">
+                            <a href="#">
+                                <img src="http://placehold.it/300x200" alt="...">
+                            </a>
+                            <div class="caption">
+                                <h3>
+                                    <a href="#">My awesome video</a>
+                                </h3>
+                                <p>By <a href="#">MewPipe</a></p>
+                                <p>2104 views | One month ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="videoThumb">
+                            <a href="#">
+                                <img src="http://placehold.it/300x200" alt="...">
+                            </a>
+                            <div class="caption">
+                                <h3>
+                                    <a href="#">My awesome video</a>
+                                </h3>
+                                <p>By <a href="#">MewPipe</a></p>
+                                <p>2104 views | One month ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="videoThumb">
+                            <a href="#">
+                                <img src="http://placehold.it/300x200" alt="...">
+                            </a>
+                            <div class="caption">
+                                <h3>
+                                    <a href="#">My awesome video</a>
+                                </h3>
+                                <p>By <a href="#">MewPipe</a></p>
+                                <p>2104 views | One month ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="videoThumb">
+                            <a href="#">
+                                <img src="http://placehold.it/300x200" alt="...">
+                            </a>
+                            <div class="caption">
+                                <h3>
+                                    <a href="#">My awesome video</a>
+                                </h3>
+                                <p>By <a href="#">MewPipe</a></p>
+                                <p>2104 views | One month ago</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-3">
-                    <div class="videoThumb">
-                        <a href="#">
-                            <img src="http://placehold.it/300x200" alt="...">
-                        </a>
-                        <div class="caption">
-                            <h3>
-                                <a href="#">My awesome video</a>
-                            </h3>
-                            <p>By <a href="#">MewPipe</a></p>
-                            <p>2104 views | One month ago</p>
+                <div class="row">
+                    <h2 class="text-center cursive">This might interest you</h2>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="videoThumb">
+                            <a href="#">
+                                <img src="http://placehold.it/300x200" alt="...">
+                            </a>
+                            <div class="caption">
+                                <h3>
+                                    <a href="#">My awesome video</a>
+                                </h3>
+                                <p>By <a href="#">MewPipe</a></p>
+                                <p>2104 views | One month ago</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="videoThumb">
-                        <a href="#">
-                            <img src="http://placehold.it/300x200" alt="...">
-                        </a>
-                        <div class="caption">
-                            <h3>
-                                <a href="#">My awesome video</a>
-                            </h3>
-                            <p>By <a href="#">MewPipe</a></p>
-                            <p>2104 views | One month ago</p>
+                    <div class="col-sm-3">
+                        <div class="videoThumb">
+                            <a href="#">
+                                <img src="http://placehold.it/300x200" alt="...">
+                            </a>
+                            <div class="caption">
+                                <h3>
+                                    <a href="#">My awesome video</a>
+                                </h3>
+                                <p>By <a href="#">MewPipe</a></p>
+                                <p>2104 views | One month ago</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="videoThumb">
-                        <a href="#">
-                            <img src="http://placehold.it/300x200" alt="...">
-                        </a>
-                        <div class="caption">
-                            <h3>
-                                <a href="#">My awesome video</a>
-                            </h3>
-                            <p>By <a href="#">MewPipe</a></p>
-                            <p>2104 views | One month ago</p>
+                    <div class="col-sm-3">
+                        <div class="videoThumb">
+                            <a href="#">
+                                <img src="http://placehold.it/300x200" alt="...">
+                            </a>
+                            <div class="caption">
+                                <h3>
+                                    <a href="#">My awesome video</a>
+                                </h3>
+                                <p>By <a href="#">MewPipe</a></p>
+                                <p>2104 views | One month ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="videoThumb">
+                            <a href="#">
+                                <img src="http://placehold.it/300x200" alt="...">
+                            </a>
+                            <div class="caption">
+                                <h3>
+                                    <a href="#">My awesome video</a>
+                                </h3>
+                                <p>By <a href="#">MewPipe</a></p>
+                                <p>2104 views | One month ago</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     @Html.Partial("_Footer")
 
     @Scripts.Render("~/scripts")

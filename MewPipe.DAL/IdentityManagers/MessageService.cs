@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
+using SendGrid;
 
 namespace MewPipe.DAL.IdentityManagers
 {
@@ -12,10 +16,25 @@ namespace MewPipe.DAL.IdentityManagers
 
         public class EmailService : IIdentityMessageService
         {
-            public Task SendAsync(IdentityMessage message)
+            public async Task SendAsync(IdentityMessage message)
             {
-                // Plug in your email service here to send an email.
-                return Task.FromResult(0);
+                var myMessage = new SendGridMessage
+                {
+                    From = new MailAddress("no-reply@mewpipe.com", "MewPipe Staff")
+                };
+
+                myMessage.AddTo(message.Destination);
+
+                myMessage.Subject = message.Subject;
+
+                myMessage.Html = message.Body;
+                myMessage.Text = "Test";
+
+                var credentials = new NetworkCredential(ConfigurationManager.AppSettings["MailerUsername"], ConfigurationManager.AppSettings["MailerPassword"]);
+
+                var transportWeb = new Web(credentials);
+
+                await transportWeb.DeliverAsync(myMessage);
             }
         }
 

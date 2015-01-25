@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using MewPipe.DAL.IdentityManagers;
+using MewPipe.Website.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using MewPipe.Website.Models;
 
 namespace MewPipe.Website.Controllers
 {
