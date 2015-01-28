@@ -1,6 +1,5 @@
 ﻿using System;
 using MewPipe.DAL;
-using MewPipe.DAL.IdentityManagers;
 using MewPipe.DAL.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;

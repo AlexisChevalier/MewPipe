@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using MewPipe.DAL.Models.Oauth;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -11,6 +12,8 @@ namespace MewPipe.DAL.Models
 {
     public class User : IdentityUser
     {
+        public virtual ICollection<OauthUserTrust> OauthUserTrusts { get; set; }
+
         /**
          * defaultAuthenticationType should be of type DefaultAuthenticationTypes.*
          */

@@ -63,9 +63,6 @@
     <Reference Include="SendGrid.SmtpApi">
       <HintPath>..\packages\SendGrid.SmtpApi.1.2.1\lib\net40\SendGrid.SmtpApi.dll</HintPath>
     </Reference>
-    <Reference Include="SendGridMail">
-      <HintPath>..\packages\Sendgrid.5.1.0\lib\SendGridMail.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -80,9 +77,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IdentityManagers\IdentityConfig.cs" />
-    <Compile Include="IdentityManagers\MessageService.cs" />
     <Compile Include="MewPipeDbContext.cs" />
+    <Compile Include="Migrations\201501262358326_Init.cs" />
+    <Compile Include="Migrations\201501262358326_Init.Designer.cs">
+      <DependentUpon>201501262358326_Init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201501272332217_UpdatedOAuth.cs" />
+    <Compile Include="Migrations\201501272332217_UpdatedOAuth.Designer.cs">
+      <DependentUpon>201501272332217_UpdatedOAuth.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Oauth\OauthAccessToken.cs" />
+    <Compile Include="Models\Oauth\OauthAuthorizationCode.cs" />
+    <Compile Include="Models\Oauth\OauthClient.cs" />
+    <Compile Include="Models\Oauth\OauthRefreshToken.cs" />
+    <Compile Include="Models\Oauth\OauthUserTrust.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -95,7 +104,14 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201501262358326_Init.resx">
+      <DependentUpon>201501262358326_Init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201501272332217_UpdatedOAuth.resx">
+      <DependentUpon>201501272332217_UpdatedOAuth.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

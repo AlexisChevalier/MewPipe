@@ -1,0 +1,34 @@
+﻿@model MewPipe.Website.ViewModels.DialogViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>View</title>
+</head>
+<body>
+    @using (Html.BeginForm()) 
+    {
+        @Html.AntiForgeryToken()
+        
+        <div class="form-horizontal">
+            <h4>DialogViewModel</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ClientId)
+            @Html.HiddenFor(model => model.Scope)
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" name="Decision" value="Allow" class="btn btn-default" />
+                    <input type="submit" name="Decision" value="Deny" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>
