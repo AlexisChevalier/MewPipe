@@ -7,13 +7,13 @@ namespace MewPipe.DAL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.1-30610")]
-    public sealed partial class Init : IMigrationMetadata
+    public sealed partial class OauthUpdated : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Init));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(OauthUpdated));
         
         string IMigrationMetadata.Id
         {
-            get { return "201501262358326_Init"; }
+            get { return "201501292254451_OauthUpdated"; }
         }
         
         string IMigrationMetadata.Source

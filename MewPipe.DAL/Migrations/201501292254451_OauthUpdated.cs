@@ -3,19 +3,18 @@ namespace MewPipe.DAL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Init : DbMigration
+    public partial class OauthUpdated : DbMigration
     {
         public override void Up()
         {
             CreateTable(
-                "dbo.OauthAuthorizationCodes",
+                "dbo.OauthAccessTokens",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Validity = c.DateTime(nullable: false),
-                        Code = c.String(),
-                        State = c.String(),
-                        Scope = c.String(),
+                        Type = c.String(),
+                        ExpirationTime = c.DateTime(nullable: false),
+                        Token = c.String(),
                         OauthClient_Id = c.Int(),
                         User_Id = c.String(maxLength: 128),
                     })
@@ -112,6 +111,38 @@ namespace MewPipe.DAL.Migrations
                 .Index(t => t.RoleId);
             
             CreateTable(
+                "dbo.OauthAuthorizationCodes",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ExpirationTime = c.DateTime(nullable: false),
+                        Code = c.String(),
+                        State = c.String(),
+                        Scope = c.String(),
+                        RedirectUri = c.String(),
+                        OauthClient_Id = c.Int(),
+                        User_Id = c.String(maxLength: 128),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.OauthClients", t => t.OauthClient_Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.User_Id)
+                .Index(t => t.OauthClient_Id)
+                .Index(t => t.User_Id);
+            
+            CreateTable(
+                "dbo.OauthRefreshTokens",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ExpirationTime = c.DateTime(nullable: false),
+                        Token = c.String(),
+                        AccessToken_Id = c.Int(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.OauthAccessTokens", t => t.AccessToken_Id)
+                .Index(t => t.AccessToken_Id);
+            
+            CreateTable(
                 "dbo.AspNetRoles",
                 c => new
                     {
@@ -126,14 +157,20 @@ namespace MewPipe.DAL.Migrations
         public override void Down()
         {
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
+            DropForeignKey("dbo.OauthRefreshTokens", "AccessToken_Id", "dbo.OauthAccessTokens");
             DropForeignKey("dbo.OauthAuthorizationCodes", "User_Id", "dbo.AspNetUsers");
+            DropForeignKey("dbo.OauthAuthorizationCodes", "OauthClient_Id", "dbo.OauthClients");
+            DropForeignKey("dbo.OauthAccessTokens", "User_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.OauthUserTrusts", "User_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.OauthUserTrusts", "OauthClient_Id", "dbo.OauthClients");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.OauthAuthorizationCodes", "OauthClient_Id", "dbo.OauthClients");
+            DropForeignKey("dbo.OauthAccessTokens", "OauthClient_Id", "dbo.OauthClients");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
+            DropIndex("dbo.OauthRefreshTokens", new[] { "AccessToken_Id" });
+            DropIndex("dbo.OauthAuthorizationCodes", new[] { "User_Id" });
+            DropIndex("dbo.OauthAuthorizationCodes", new[] { "OauthClient_Id" });
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.OauthUserTrusts", new[] { "User_Id" });
@@ -141,16 +178,18 @@ namespace MewPipe.DAL.Migrations
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
-            DropIndex("dbo.OauthAuthorizationCodes", new[] { "User_Id" });
-            DropIndex("dbo.OauthAuthorizationCodes", new[] { "OauthClient_Id" });
+            DropIndex("dbo.OauthAccessTokens", new[] { "User_Id" });
+            DropIndex("dbo.OauthAccessTokens", new[] { "OauthClient_Id" });
             DropTable("dbo.AspNetRoles");
+            DropTable("dbo.OauthRefreshTokens");
+            DropTable("dbo.OauthAuthorizationCodes");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.OauthUserTrusts");
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
             DropTable("dbo.OauthClients");
-            DropTable("dbo.OauthAuthorizationCodes");
+            DropTable("dbo.OauthAccessTokens");
         }
     }
 }

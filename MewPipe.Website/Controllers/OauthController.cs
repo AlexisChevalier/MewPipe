@@ -10,6 +10,7 @@ using MewPipe.DAL.Repositories;
 using MewPipe.Website.Oauth;
 using MewPipe.Website.ViewModels;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 
 namespace MewPipe.Website.Controllers
 {
@@ -17,6 +18,9 @@ namespace MewPipe.Website.Controllers
     {
         private readonly UnitOfWork _unitOfWork = new UnitOfWork();
 
+        /**
+         * Authorize Endpoint
+         */
         [Route("oauth/authorize", Name = "OauthAuthorize")]
         [Authorize]
         [OauthPreserveQueryString]
@@ -37,11 +41,13 @@ namespace MewPipe.Website.Controllers
 
             if (user == null)
             {
+                //TODO: Handle Error
                 throw new AuthenticationException();
             }
 
             if (client == null)
             {
+                //TODO: Handle Error
                 return HandleOauthError(OauthErrors.InvalidParameter, "invalid client_id");
             }
 
@@ -65,8 +71,16 @@ namespace MewPipe.Website.Controllers
              */
             if (viewModel.response_type.Equals("code"))
             {
-                var authorizationCode = new OauthAuthorizationCode(user, client, viewModel.state, viewModel.scope,
-                    TokenGenerator.GenerateRandomString(8), viewModel.redirect_uri);
+                var authorizationCode = new OauthAuthorizationCode
+                {
+                    User = user,
+                    OauthClient = client,
+                    State = viewModel.state,
+                    Scope = viewModel.scope,
+                    RedirectUri = viewModel.redirect_uri,
+                    ExpirationTime = DateTime.UtcNow.AddMinutes(10),
+                    Code = TokenGenerator.GenerateRandomString(8)
+                };
 
                 _unitOfWork.OauthAuthorizationCodeRepository.Insert(authorizationCode);
                 _unitOfWork.Save();
@@ -81,6 +95,9 @@ namespace MewPipe.Website.Controllers
             return HandleOauthError(OauthErrors.InvalidResponseType);
         }
 
+        /**
+         * Dialog view
+         */
         [Route("oauth/dialog", Name = "OauthDialog")]
         [Authorize]
         [OauthPreserveQueryString]
@@ -119,6 +136,9 @@ namespace MewPipe.Website.Controllers
             });
         }
 
+        /**
+         * Dialog POST
+         */
         [Route("oauth/dialog", Name = "OauthDialogPost")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -170,23 +190,20 @@ namespace MewPipe.Website.Controllers
             }));
         }
 
+        /**
+         * Access Token issuance Endpoint
+         */
         [Route("oauth/token", Name = "OauthAccessToken")]
         [TokenMethodSelectorAtrribute(GrantType = "authorization_code")]
         [HttpPost]
-        public ActionResult AccessToken(AccessTokenRequestViewModel viewModel)
+        public JsonResult AccessToken(AccessTokenRequestViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
                 //TODO: Handle Error
-                return HandleOauthError(OauthErrors.InvalidParameter, string.Join("; ", ModelState.Values
+                return HandleJsonOauthError(OauthErrors.InvalidParameter, string.Join("; ", ModelState.Values
                                         .SelectMany(x => x.Errors)
                                         .Select(x => x.ErrorMessage)));
-            }
-
-            if (!viewModel.grant_type.Equals("authorization_code"))
-            {
-                //TODO: Handle Error
-                return HandleOauthError(OauthErrors.InvalidParameter, "grant_type invalid");
             }
 
             var client = _unitOfWork.OauthClientRepository.GetOne(oc => oc.ClientId == viewModel.client_id && oc.ClientSecret == viewModel.client_secret);
@@ -195,12 +212,14 @@ namespace MewPipe.Website.Controllers
 
             if (user == null)
             {
+                //TODO: Handle Error
                 throw new AuthenticationException();
             }
 
             if (client == null)
             {
-                return HandleOauthError(OauthErrors.InvalidParameter, "invalid client_id or secret_id");
+                //TODO: Handle Error
+                return HandleJsonOauthError(OauthErrors.InvalidParameter, "invalid client_id or secret_id");
             }
 
             var authorizationCode =
@@ -210,40 +229,81 @@ namespace MewPipe.Website.Controllers
 
             if (authorizationCode == null)
             {
-                return HandleOauthError(OauthErrors.InvalidParameter, "code invalid");
+
+                //TODO: Handle Error
+                return HandleJsonOauthError(OauthErrors.InvalidParameter, "code invalid");
             }
 
-            if (authorizationCode.Validity < DateTime.UtcNow)
+            if (authorizationCode.ExpirationTime < DateTime.UtcNow)
             {
+
+                //TODO: Handle Error
                 _unitOfWork.OauthAuthorizationCodeRepository.Delete(authorizationCode);
                 _unitOfWork.Save();
-                return HandleOauthError(OauthErrors.InvalidParameter, "code expired");
+                return HandleJsonOauthError(OauthErrors.InvalidParameter, "code expired");
             }
 
             if (authorizationCode.RedirectUri != viewModel.redirect_uri)
             {
-                return HandleOauthError(OauthErrors.InvalidParameter, "redirect_uri invalid");
+
+                //TODO: Handle Error
+                return HandleJsonOauthError(OauthErrors.InvalidParameter, "redirect_uri invalid");
             }
 
             if (authorizationCode.Scope != viewModel.scope)
             {
-                return HandleOauthError(OauthErrors.InvalidParameter, "scope invalid");
+
+                //TODO: Handle Error
+                return HandleJsonOauthError(OauthErrors.InvalidParameter, "scope invalid");
             }
 
             if (authorizationCode.State != viewModel.state)
             {
-                return HandleOauthError(OauthErrors.InvalidParameter, "state invalid");
+
+                //TODO: Handle Error
+                return HandleJsonOauthError(OauthErrors.InvalidParameter, "state invalid");
             }
 
-
-
             _unitOfWork.OauthAuthorizationCodeRepository.Delete(authorizationCode);
+
+            var accessToken = new OauthAccessToken
+            {
+                ExpirationTime = DateTime.UtcNow.AddHours(1),
+                Token = TokenGenerator.GenerateRandomString(32),
+                Type = "bearer",
+                OauthClient = client,
+                User = user
+            };
+
+            _unitOfWork.OauthAccessTokenRepository.Insert(accessToken);
+
+            var refreshToken = new OauthRefreshToken
+            {
+                AccessToken = accessToken,
+                ExpirationTime = DateTime.UtcNow.AddDays(14),
+                Token = TokenGenerator.GenerateRandomString(64)
+            };
+
+            _unitOfWork.OauthRefreshTokenRepository.Insert(refreshToken);
+
             _unitOfWork.Save();
 
-            return null;
+            var result = new AccessTokenResponseViewModel
+            {
+                access_token = accessToken.Token,
+                expires_in = 3600,
+                scope = viewModel.scope,
+                refresh_token = refreshToken.Token,
+                token_type = accessToken.Type
+
+            };
+
+            return Json(result);
         }
 
-
+        /**
+         * Access Token refreh Endpoint
+         */
         [Route("oauth/token", Name = "OauthRefrestToken")]
         [TokenMethodSelectorAtrribute(GrantType = "refresh_token")]
         [HttpPost]
@@ -256,10 +316,46 @@ namespace MewPipe.Website.Controllers
                                         .SelectMany(x => x.Errors)
                                         .Select(x => x.ErrorMessage)));
             }
+
+            var refreshToken = _unitOfWork.OauthRefreshTokenRepository.GetOne(rt => rt.Token == viewModel.refresh_token);
+            var userId = User.Identity.GetUserId();
+            var user = _unitOfWork.UserRepository.GetOne(u => u.Id == userId);
+
+            if (user == null)
+            {
+                //TODO: Handle Error
+                throw new AuthenticationException();
+            }
+
+            if (refreshToken == null)
+            {
+                //TODO: Handle Error
+                return HandleJsonOauthError(OauthErrors.InvalidParameter, "invalid refresh_token");
+            }
+
+            var oldAccessToken = refreshToken.AccessToken;
+
+            //Todo: Decide if we store the refresh token in the access token or in a separated class
+
+            /*var authorizationCode =
+                _unitOfWork.OauthAuthorizationCodeRepository.GetOne(
+                    ac =>
+                        ac.OauthClient.Id == client.Id && ac.User.Id == user.Id && ac.Code == viewModel.code);
+
+            if (authorizationCode == null)
+            {
+
+                //TODO: Handle Error
+                return HandleJsonOauthError(OauthErrors.InvalidParameter, "code invalid");
+            }*/
+
             //Verify RefreshToken
 
             //Return Access Token
-            return null;
+            var result = new AccessTokenResponseViewModel();
+
+            //TODO: Handle Error
+            return Json(result);
         }
 
         #region Helpers
@@ -270,6 +366,13 @@ namespace MewPipe.Website.Controllers
             ViewBag.Error = error;
             Response.StatusCode = error.HttpCode;
             return View("OauthError");
+        }
+
+        private JsonResult HandleJsonOauthError(OauthError error, string details = null)
+        {
+            error.Details = details;
+            Response.StatusCode = error.HttpCode;
+            return Json(error);
         }
 
         private string ToQueryString(NameValueCollection nvc)

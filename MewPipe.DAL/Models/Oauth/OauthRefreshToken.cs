@@ -10,8 +10,7 @@ namespace MewPipe.DAL.Models.Oauth
     public class OauthRefreshToken
     {
         public int Id { get; set; }
-        public string Type { get; set; }
-        public DateTime ExpirationTime { get; set; } // 1 hour, maybe ?
+        public DateTime ExpirationTime { get; set; } // two weeks
         public string Token { get; set; }
         public virtual OauthAccessToken AccessToken { get; set; }
     }

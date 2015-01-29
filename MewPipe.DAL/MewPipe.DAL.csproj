@@ -78,13 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MewPipeDbContext.cs" />
-    <Compile Include="Migrations\201501262358326_Init.cs" />
-    <Compile Include="Migrations\201501262358326_Init.Designer.cs">
-      <DependentUpon>201501262358326_Init.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201501272332217_UpdatedOAuth.cs" />
-    <Compile Include="Migrations\201501272332217_UpdatedOAuth.Designer.cs">
-      <DependentUpon>201501272332217_UpdatedOAuth.cs</DependentUpon>
+    <Compile Include="Migrations\201501292254451_OauthUpdated.cs" />
+    <Compile Include="Migrations\201501292254451_OauthUpdated.Designer.cs">
+      <DependentUpon>201501292254451_OauthUpdated.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Oauth\OauthAccessToken.cs" />
@@ -107,14 +103,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201501262358326_Init.resx">
-      <DependentUpon>201501262358326_Init.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201501272332217_UpdatedOAuth.resx">
-      <DependentUpon>201501272332217_UpdatedOAuth.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201501292254451_OauthUpdated.resx">
+      <DependentUpon>201501292254451_OauthUpdated.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

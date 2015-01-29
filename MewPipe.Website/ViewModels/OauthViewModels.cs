@@ -61,7 +61,11 @@ namespace MewPipe.Website.ViewModels
 
     public class AccessTokenResponseViewModel
     {
-        
+        public string access_token { get; set; }
+        public string token_type { get; set; }
+        public int expires_in { get; set; }
+        public string refresh_token { get; set; }
+        public string scope { get; set; }
     }
 
     public class RefreshTokenRequestViewModel
@@ -69,10 +73,5 @@ namespace MewPipe.Website.ViewModels
         public string grant_type { get; set; }
         public string refresh_token { get; set; }
         public string scope { get; set; }
-    }
-
-    public class RefreshTokenResponseViewModel
-    {
-
     }
 }
