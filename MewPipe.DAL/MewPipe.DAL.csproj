@@ -33,6 +33,9 @@
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework.Extended">
+      <HintPath>..\packages\EntityFramework.Extended.6.1.0.133\lib\net45\EntityFramework.Extended.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
@@ -82,6 +85,14 @@
     <Compile Include="Migrations\201501292254451_OauthUpdated.Designer.cs">
       <DependentUpon>201501292254451_OauthUpdated.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201501302235520_AddedScopeToAccessToken.cs" />
+    <Compile Include="Migrations\201501302235520_AddedScopeToAccessToken.Designer.cs">
+      <DependentUpon>201501302235520_AddedScopeToAccessToken.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201502120001050_UpdatedOauth.cs" />
+    <Compile Include="Migrations\201502120001050_UpdatedOauth.Designer.cs">
+      <DependentUpon>201502120001050_UpdatedOauth.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Oauth\OauthAccessToken.cs" />
     <Compile Include="Models\Oauth\OauthAuthorizationCode.cs" />
@@ -105,6 +116,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201501292254451_OauthUpdated.resx">
       <DependentUpon>201501292254451_OauthUpdated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201501302235520_AddedScopeToAccessToken.resx">
+      <DependentUpon>201501302235520_AddedScopeToAccessToken.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502120001050_UpdatedOauth.resx">
+      <DependentUpon>201502120001050_UpdatedOauth.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

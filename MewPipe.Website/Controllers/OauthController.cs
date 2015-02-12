@@ -51,6 +51,12 @@ namespace MewPipe.Website.Controllers
                 return HandleOauthError(OauthErrors.InvalidParameter, "invalid client_id");
             }
 
+            if (client.RedirectUri != viewModel.redirect_uri)
+            {
+                //TODO: Handle Error
+                return HandleOauthError(OauthErrors.InvalidParameter, "invalid redirect_rui");
+            }
+
             var trust = _unitOfWork.OauthUserTrustRepository.GetOne(t => t.User.Id == user.Id && t.OauthClient.Id == client.Id);
 
             if (trust == null)
@@ -272,14 +278,17 @@ namespace MewPipe.Website.Controllers
                 Token = TokenGenerator.GenerateRandomString(32),
                 Type = "bearer",
                 OauthClient = client,
-                User = user
+                User = user,
+                Scope = viewModel.scope
             };
 
             _unitOfWork.OauthAccessTokenRepository.Insert(accessToken);
 
             var refreshToken = new OauthRefreshToken
             {
-                AccessToken = accessToken,
+                OauthClient = client,
+                User = user,
+                Scope = viewModel.scope,
                 ExpirationTime = DateTime.UtcNow.AddDays(14),
                 Token = TokenGenerator.GenerateRandomString(64)
             };
@@ -317,7 +326,7 @@ namespace MewPipe.Website.Controllers
                                         .Select(x => x.ErrorMessage)));
             }
 
-            var refreshToken = _unitOfWork.OauthRefreshTokenRepository.GetOne(rt => rt.Token == viewModel.refresh_token);
+            var oldRefreshToken = _unitOfWork.OauthRefreshTokenRepository.GetOne(rt => rt.Token == viewModel.refresh_token);
             var userId = User.Identity.GetUserId();
             var user = _unitOfWork.UserRepository.GetOne(u => u.Id == userId);
 
@@ -327,34 +336,47 @@ namespace MewPipe.Website.Controllers
                 throw new AuthenticationException();
             }
 
-            if (refreshToken == null)
+            if (oldRefreshToken == null)
             {
                 //TODO: Handle Error
                 return HandleJsonOauthError(OauthErrors.InvalidParameter, "invalid refresh_token");
             }
 
-            var oldAccessToken = refreshToken.AccessToken;
-
-            //Todo: Decide if we store the refresh token in the access token or in a separated class
-
-            /*var authorizationCode =
-                _unitOfWork.OauthAuthorizationCodeRepository.GetOne(
-                    ac =>
-                        ac.OauthClient.Id == client.Id && ac.User.Id == user.Id && ac.Code == viewModel.code);
-
-            if (authorizationCode == null)
+            var newAccessToken = new OauthAccessToken
             {
+                ExpirationTime = DateTime.UtcNow.AddHours(1),
+                Token = TokenGenerator.GenerateRandomString(32),
+                Type = "bearer",
+                OauthClient = oldRefreshToken.OauthClient,
+                User = oldRefreshToken.User,
+                Scope = oldRefreshToken.Scope
+            };
 
-                //TODO: Handle Error
-                return HandleJsonOauthError(OauthErrors.InvalidParameter, "code invalid");
-            }*/
+            _unitOfWork.OauthAccessTokenRepository.Insert(newAccessToken);
 
-            //Verify RefreshToken
+            var newRefreshToken = new OauthRefreshToken
+            {
+                OauthClient = oldRefreshToken.OauthClient,
+                User = oldRefreshToken.User,
+                Scope = oldRefreshToken.Scope,
+                ExpirationTime = DateTime.UtcNow.AddDays(14),
+                Token = TokenGenerator.GenerateRandomString(64)
+            };
 
-            //Return Access Token
-            var result = new AccessTokenResponseViewModel();
+            _unitOfWork.OauthRefreshTokenRepository.Insert(newRefreshToken);
+            _unitOfWork.OauthRefreshTokenRepository.Delete(oldRefreshToken);
 
-            //TODO: Handle Error
+            _unitOfWork.Save();
+
+            var result = new AccessTokenResponseViewModel
+            {
+                access_token = newAccessToken.Token,
+                expires_in = 3600,
+                scope = viewModel.scope,
+                refresh_token = newRefreshToken.Token,
+                token_type = newAccessToken.Type
+            };
+
             return Json(result);
         }
 
@@ -382,6 +404,22 @@ namespace MewPipe.Website.Controllers
                          select string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(value)))
                 .ToArray();
             return "?" + string.Join("&", array);
+        }
+
+        private void CleanupOauthDb()
+        {
+            //Cleanup Authorization codes
+
+            _unitOfWork.OauthAuthorizationCodeRepository.DeleteMany(ac => ac.ExpirationTime < DateTime.UtcNow);
+
+            //Cleanup Access tokens
+
+            _unitOfWork.OauthAccessTokenRepository.DeleteMany(ac => ac.ExpirationTime < DateTime.UtcNow);
+
+            //Cleanup Refresh tokens
+
+            _unitOfWork.OauthRefreshTokenRepository.DeleteMany(ac => ac.ExpirationTime < DateTime.UtcNow);
+
         }
         #endregion
     }
