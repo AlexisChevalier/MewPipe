@@ -58,9 +58,12 @@ namespace MewPipe.Accounts.Controllers
 
             var trust = _unitOfWork.OauthUserTrustRepository.GetOne(t => t.User.Id == user.Id && t.OauthClient.Id == client.Id);
 
-            if (trust == null)
+            if (!client.DialogDisabled) 
             {
-                return RedirectToAction("Dialog");
+                if (trust == null)
+                {
+                    return RedirectToAction("Dialog");
+                }   
             }
 
             /**
