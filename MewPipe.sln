@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MewPipe.DAL", "MewPipe.DAL\MewPipe.DAL.csproj", "{2F5A57BC-DBEC-4646-88A8-C2E7C4DC1ED4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MewPipe.Website", "MewPipe.Website\MewPipe.Website.csproj", "{C5F0676E-9337-43D2-A73C-71308E92EB2C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{6485ADEC-B08E-4587-A717-FDD730F5F8CA}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -14,12 +10,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MewPipe.API", "MewPipe.API\MewPipe.API.csproj", "{4ECCD490-6078-44B3-A8F6-D31DB8ACB22D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{271C9FEC-18DF-4E5B-B41A-443E12B974BA}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MewPipe.Logic", "MewPipe.Logic\MewPipe.Logic.csproj", "{2F5A57BC-DBEC-4646-88A8-C2E7C4DC1ED4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MewPipe.Accounts", "MewPipe.Accounts\MewPipe.Accounts.csproj", "{C5F0676E-9337-43D2-A73C-71308E92EB2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MewPipe.Website", "MewPipe.Website\MewPipe.Website.csproj", "{B1722292-1A04-4DDC-9289-E35E70914B93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MewPipe.ApiClient", "MewPipe.ApiClient\MewPipe.ApiClient.csproj", "{AEFA1D18-3D3D-474C-BDC1-7FE35FA8307E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4ECCD490-6078-44B3-A8F6-D31DB8ACB22D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ECCD490-6078-44B3-A8F6-D31DB8ACB22D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4ECCD490-6078-44B3-A8F6-D31DB8ACB22D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ECCD490-6078-44B3-A8F6-D31DB8ACB22D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2F5A57BC-DBEC-4646-88A8-C2E7C4DC1ED4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2F5A57BC-DBEC-4646-88A8-C2E7C4DC1ED4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F5A57BC-DBEC-4646-88A8-C2E7C4DC1ED4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -28,10 +43,14 @@ Global
 		{C5F0676E-9337-43D2-A73C-71308E92EB2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5F0676E-9337-43D2-A73C-71308E92EB2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5F0676E-9337-43D2-A73C-71308E92EB2C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4ECCD490-6078-44B3-A8F6-D31DB8ACB22D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4ECCD490-6078-44B3-A8F6-D31DB8ACB22D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4ECCD490-6078-44B3-A8F6-D31DB8ACB22D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4ECCD490-6078-44B3-A8F6-D31DB8ACB22D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1722292-1A04-4DDC-9289-E35E70914B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1722292-1A04-4DDC-9289-E35E70914B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1722292-1A04-4DDC-9289-E35E70914B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1722292-1A04-4DDC-9289-E35E70914B93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEFA1D18-3D3D-474C-BDC1-7FE35FA8307E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEFA1D18-3D3D-474C-BDC1-7FE35FA8307E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEFA1D18-3D3D-474C-BDC1-7FE35FA8307E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEFA1D18-3D3D-474C-BDC1-7FE35FA8307E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "title";
+}
+
+<h2>USER UPLOAD VIDEO</h2>
+
+<form enctype="multipart/form-data" action="/myVideos/upload" method="POST">
+    <!-- Le nom de l'élément input détermine le nom dans le tableau $_FILES -->
+    <input name="video" type="file" />
+    <input type="submit" value="Envoyer le fichier" />
+</form>

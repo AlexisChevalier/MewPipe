@@ -1,5 +1,6 @@
 using System.Web.Http;
 using System.Web.Mvc;
+using MewPipe.API.Areas.HelpPage.App_Start;
 
 namespace MewPipe.API.Areas.HelpPage
 {

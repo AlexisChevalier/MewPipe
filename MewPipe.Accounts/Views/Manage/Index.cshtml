@@ -1,0 +1,49 @@
+﻿@model MewPipe.Accounts.ViewModels.IndexViewModel
+@{
+    ViewBag.Title = "Account Settings";
+    ViewBag.BodyClass = "accounting";
+
+    var changePasswordUrl = Url.Action(Model.HasPassword ? "ChangePassword" : "SetPassword", "Manage");
+}
+
+<div class="row">
+    <div class="centerForm twoCols col-md-8 col-md-offset-2">
+        <div class="formHeader">
+            <h3 class="text-center">Account Settings</h3>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col">
+                    <div class="part">
+                        <h4>Security</h4>
+                        <div class="list-group">
+                            <a href="@changePasswordUrl" class="list-group-item">
+                                <strong class="text-left">
+                                    Password
+                                </strong>
+                                -
+                                <span class="hightlighted">Change</span>
+                                    @if (Model.HasPassword)
+                                    {
+                                        <span class="float-right">Defined</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="float-right">Not defined</span>
+                                    }
+                            </a>
+                            <a href="@Url.Action("ManageLogins", "Manage")" class="list-group-item">
+                                <strong class="text-left">
+                                    External logins
+                                </strong>                                -
+                                <span class="hightlighted">Change</span>
+                                <span class="float-right">@Model.Logins.Count activated</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

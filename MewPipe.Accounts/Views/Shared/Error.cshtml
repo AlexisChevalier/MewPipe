@@ -1,0 +1,11 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    ViewBag.Title = "Error";
+}
+
+<div class="systemError">
+    <h2>@ViewBag.Title</h2>
+    <h3>An unexpected error occurred while processing your request. We are sorry for the inconvenience.</h3>
+    @Html.ActionLink("Return to the home page", "Index", "Home", null, new { @class = "btn btn-success raised" })
+</div>

@@ -1,0 +1,85 @@
+﻿@model MewPipe.Accounts.ViewModels.ManageLoginsViewModel
+@using Microsoft.Owin.Security
+@{
+    ViewBag.Title = "Manage your external logins";
+    ViewBag.BodyClass = "accounting";
+}
+
+<div class="row">
+    <div class="centerForm singleCol col-md-6 col-md-offset-3">
+        <div class="formHeader">
+            <h3 class="text-center">Manage your external logins</h3>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col account">
+
+                    @{
+                        if (Model.CurrentLogins.Count > 0)
+                        {
+                            <div class="part">
+                                <h4 class="highlighted">Used Logins</h4>
+                                <ul class="list-group">
+                                    @foreach (var account in Model.CurrentLogins)
+                                    {
+                                        <li class="list-group-item">
+                                            <strong class="text-left">
+                                                @account.LoginProvider
+                                            </strong>
+                                            <span class="float-right">
+                                                @if (ViewBag.ShowRemoveButton)
+                                                {
+                                                    using (Html.BeginForm("RemoveLogin", "Manage"))
+                                                    {
+                                                        @Html.AntiForgeryToken()
+                                                        @Html.Hidden("loginProvider", account.LoginProvider)
+                                                        @Html.Hidden("providerKey", account.ProviderKey)
+
+                                                        <button type="submit" class="btn-link link-red" title="Remove this @account.LoginProvider login from your account">
+                                                            <i class="glyphicon glyphicon-remove"></i> Remove
+                                                        </button>
+                                                    }
+                                                }
+                                            </span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+
+                        }
+                        if (Model.OtherLogins.Count > 0)
+                        {
+                            <div class="part">
+                                <h4 class="highlighted">Available Logins</h4>
+                                @using (Html.BeginForm("LinkLogin", "Manage"))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <ul class="list-group">
+                                        @foreach (var p in Model.OtherLogins)
+                                        {
+                                            <li class="list-group-item">
+                                                <strong class="text-left">
+                                                    @p.AuthenticationType
+                                                </strong>
+                                                <span class="float-right">
+                                                    <button type="submit" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" class="btn-link link-green" title="Log in using your @p.Caption account">
+                                                        <i class="glyphicon glyphicon-plus"></i> Add
+                                                    </button>
+                                                </span>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
+                        }
+                    }
+
+                    <p class="text-center">
+                        @Html.ActionLink("Go back to the account settings", "Index")
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

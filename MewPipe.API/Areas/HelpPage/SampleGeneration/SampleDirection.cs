@@ -1,4 +1,4 @@
-namespace MewPipe.API.Areas.HelpPage
+namespace MewPipe.API.Areas.HelpPage.SampleGeneration
 {
     /// <summary>
     /// Indicates whether the sample is used for request or response

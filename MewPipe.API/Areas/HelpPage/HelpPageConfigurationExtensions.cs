@@ -13,6 +13,7 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using MewPipe.API.Areas.HelpPage.ModelDescriptions;
 using MewPipe.API.Areas.HelpPage.Models;
+using MewPipe.API.Areas.HelpPage.SampleGeneration;
 
 namespace MewPipe.API.Areas.HelpPage
 {

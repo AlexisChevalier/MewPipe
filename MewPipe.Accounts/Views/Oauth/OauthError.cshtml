@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "OauthError";
+}
+
+<h2>OAuth2 Error : @ViewBag.Error.TextCode (@ViewBag.Error.HttpCode)</h2>
+
+<p>
+    <h3>
+        @ViewBag.Error.Text
+    </h3>
+    @ViewBag.Error.Details
+</p>

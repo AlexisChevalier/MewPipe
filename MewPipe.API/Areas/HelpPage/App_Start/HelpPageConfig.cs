@@ -2,21 +2,16 @@
 // package to your project.
 ////#define Handle_PageResultOfT
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net.Http.Headers;
-using System.Reflection;
-using System.Web;
 using System.Web.Http;
+using MewPipe.API.Areas.HelpPage.SampleGeneration;
+
 #if Handle_PageResultOfT
 using System.Web.Http.OData;
 #endif
 
-namespace MewPipe.API.Areas.HelpPage
+namespace MewPipe.API.Areas.HelpPage.App_Start
 {
     /// <summary>
     /// Use this class to customize the Help Page.
@@ -68,12 +63,12 @@ namespace MewPipe.API.Areas.HelpPage
             //config.SetSampleRequest("1234", new MediaTypeHeaderValue("text/plain"), "Values", "Put");
 
             //// Uncomment the following to use the image on "../images/aspNetHome.png" directly as the response sample for media type "image/png"
-            //// on the controller named "Values" and action named "Get" with parameter "id".
-            //config.SetSampleResponse(new ImageSample("../images/aspNetHome.png"), new MediaTypeHeaderValue("image/png"), "Values", "Get", "id");
+            //// on the controller named "Values" and action named "GetStream" with parameter "id".
+            //config.SetSampleResponse(new ImageSample("../images/aspNetHome.png"), new MediaTypeHeaderValue("image/png"), "Values", "GetStream", "id");
 
             //// Uncomment the following to correct the sample request when the action expects an HttpRequestMessage with ObjectContent<string>.
-            //// The sample will be generated as if the controller named "Values" and action named "Get" were having string as the body parameter.
-            //config.SetActualRequestType(typeof(string), "Values", "Get");
+            //// The sample will be generated as if the controller named "Values" and action named "GetStream" were having string as the body parameter.
+            //config.SetActualRequestType(typeof(string), "Values", "GetStream");
 
             //// Uncomment the following to correct the sample response when the action returns an HttpResponseMessage with ObjectContent<string>.
             //// The sample will be generated as if the controller named "Values" and action named "Post" were returning a string.
@@ -88,7 +83,7 @@ namespace MewPipe.API.Areas.HelpPage
                 Type openGenericType = type.GetGenericTypeDefinition();
                 if (openGenericType == typeof(PageResult<>))
                 {
-                    // Get the T in PageResult<T>
+                    // GetStream the T in PageResult<T>
                     Type[] typeParameters = type.GetGenericArguments();
                     Debug.Assert(typeParameters.Length == 1);
 

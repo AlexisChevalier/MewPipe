@@ -6,8 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
-using MewPipe.DAL.Models.Oauth;
-using MewPipe.DAL.Repositories;
+using MewPipe.API.Extensions;
+using MewPipe.Logic.Models.Oauth;
+using MewPipe.Logic.Repositories;
 
 namespace MewPipe.API.Filters
 {
@@ -83,6 +84,8 @@ namespace MewPipe.API.Filters
                     return FromResult(actionContext.Response);
                 }
             }
+
+            actionContext.SetUser(token.User);
 
             return continuation();
         }

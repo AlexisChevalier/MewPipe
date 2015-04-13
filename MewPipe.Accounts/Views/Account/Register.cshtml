@@ -1,0 +1,56 @@
+﻿@using MewPipe.Accounts.ViewModels
+@model MewPipe.Accounts.ViewModels.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+    ViewBag.BodyClass = "accounting";
+}
+
+<div class="row">
+    <div class="centerForm twoCols col-md-8 col-md-offset-2">
+        <div class="formHeader">
+            <h3 class="text-center">Register</h3>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col account">
+                    @using (Html.BeginForm("Register", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <h4 class="header">Creating a new account</h4>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-body">
+                            <p>
+                                @Html.LabelFor(m => m.Email, new {@class = ""})
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email adress" })
+                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                            </p>
+                            <p>
+                                @Html.LabelFor(m => m.Password, new {@class = ""})
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password" })
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                            </p>
+                            <p>
+                                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "" })
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Confirm password" })
+                                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                            </p>
+                        </div>
+                        <button class="btn btn-primary raised btn-block " type="submit">Register</button>
+                        <p class="text-center">
+                            @Html.ActionLink("Already have an account ?", "Login")
+                        </p>
+                    }
+                </div>
+                <hr class="smallSeparator" />
+                <div class="col-md-6 col external">
+                    <h4>Use other accounts</h4>
+                    <p>
+                        You can also sign in using those services
+                    </p>
+                    @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

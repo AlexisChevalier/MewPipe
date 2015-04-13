@@ -13,18 +13,75 @@ namespace MewPipe.Website
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            routes.MapMvcAttributeRoutes();
-
+            /** Home **/
             routes.MapRoute(
-                name: "Account",
-                url: "Account/{action}/{id}",
-                defaults: new { controller = "Account", action = "Index", id = UrlParameter.Optional }
+                name: "HomePage",
+                url: "",
+                defaults: new { controller = "Home", action = "Index" }
             );
 
             routes.MapRoute(
-                name: "Manage",
-                url: "Manage/{action}/{id}",
-                defaults: new { controller = "Manage", action = "Index", id = UrlParameter.Optional }
+                name: "AboutPage",
+                url: "about",
+                defaults: new { controller = "Home", action = "About" }
+            );
+
+            routes.MapRoute(
+                name: "TermsOfUsePage",
+                url: "termsOfUse",
+                defaults: new { controller = "Home", action = "TermsOfUse" }
+            );
+
+            routes.MapRoute(
+                name: "PrivacyPage",
+                url: "privacy",
+                defaults: new { controller = "Home", action = "Privacy" }
+            );
+
+            /** Videos **/
+
+            routes.MapRoute(
+                name: "VideoPage",
+                url: "v/{videoId}",
+                defaults: new { controller = "Videos", action = "Index" }
+            );
+
+            routes.MapRoute(
+                name: "UserVideoUploadPage",
+                url: "myVideos/upload",
+                defaults: new { controller = "Videos", action = "UploadVideo" }
+            );
+
+            routes.MapRoute(
+                name: "UserVideoEditPage",
+                url: "myVideos/edit/{videoId}",
+                defaults: new { controller = "Videos", action = "EditVideo" }
+            );
+
+            routes.MapRoute(
+                name: "UserVideosPage",
+                url: "myVideos",
+                defaults: new { controller = "Videos", action = "UserVideos" }
+            );
+
+            /** Auth **/
+
+            routes.MapRoute(
+                name: "LoginRedirect",
+                url: "auth/login",
+                defaults: new { controller = "Auth", action = "Login" }
+            );
+
+            routes.MapRoute(
+                name: "OAuthEndpoint",
+                url: "auth/HandleOAuthRedirect",
+                defaults: new { controller = "Auth", action = "HandleOAuthRedirect" }
+            );
+
+            routes.MapRoute(
+                name: "LogOff",
+                url: "auth/LogOff",
+                defaults: new { controller = "Auth", action = "LogOff" }
             );
         }
     }

@@ -1,16 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using MewPipe.Website.Extensions;
+﻿using System.Web.Mvc;
 
 namespace MewPipe.Website.Controllers
 {
     public class HomeController : Controller
     {
-        [Route("", Name = "Home")]
         public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult About()
+        {
+            return View();
+        }
+
+        public ActionResult TermsOfUse()
+        {
+            return View();
+        }
+
+        public ActionResult Privacy()
         {
             return View();
         }

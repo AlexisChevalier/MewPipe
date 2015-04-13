@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2F5A57BC-DBEC-4646-88A8-C2E7C4DC1ED4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MewPipe.Logic</RootNamespace>
+    <AssemblyName>MewPipe.Logic</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.Extended">
+      <HintPath>..\packages\EntityFramework.Extended.6.1.0.133\lib\net45\EntityFramework.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.1.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.1.0\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.1.0\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.3.0.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\Libraries\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\Libraries\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="SendGrid.SmtpApi">
+      <HintPath>..\packages\SendGrid.SmtpApi.1.2.1\lib\net40\SendGrid.SmtpApi.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Contracts\AccessTokenContract.cs" />
+    <Compile Include="Contracts\UserContract.cs" />
+    <Compile Include="CustomHttpClient.cs" />
+    <Compile Include="Extensions\NameValueCollectionExtensions.cs" />
+    <Compile Include="MewPipeDbContext.cs" />
+    <Compile Include="Migrations\201501292254451_OauthUpdated.cs" />
+    <Compile Include="Migrations\201501292254451_OauthUpdated.Designer.cs">
+      <DependentUpon>201501292254451_OauthUpdated.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201501302235520_AddedScopeToAccessToken.cs" />
+    <Compile Include="Migrations\201501302235520_AddedScopeToAccessToken.Designer.cs">
+      <DependentUpon>201501302235520_AddedScopeToAccessToken.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201502120001050_UpdatedOauth.cs" />
+    <Compile Include="Migrations\201502120001050_UpdatedOauth.Designer.cs">
+      <DependentUpon>201502120001050_UpdatedOauth.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504112212579_AddedVideos.cs" />
+    <Compile Include="Migrations\201504112212579_AddedVideos.Designer.cs">
+      <DependentUpon>201504112212579_AddedVideos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504112215078_AddedVideosPrivacy.cs" />
+    <Compile Include="Migrations\201504112215078_AddedVideosPrivacy.Designer.cs">
+      <DependentUpon>201504112215078_AddedVideosPrivacy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504112249528_AddedVideosRelations.cs" />
+    <Compile Include="Migrations\201504112249528_AddedVideosRelations.Designer.cs">
+      <DependentUpon>201504112249528_AddedVideosRelations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504122228081_UpdatedOauthClient.cs" />
+    <Compile Include="Migrations\201504122228081_UpdatedOauthClient.Designer.cs">
+      <DependentUpon>201504122228081_UpdatedOauthClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504122245405_UpdatedOauthClient1.cs" />
+    <Compile Include="Migrations\201504122245405_UpdatedOauthClient1.Designer.cs">
+      <DependentUpon>201504122245405_UpdatedOauthClient1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504122257190_UpdatedOauthClient2.cs" />
+    <Compile Include="Migrations\201504122257190_UpdatedOauthClient2.Designer.cs">
+      <DependentUpon>201504122257190_UpdatedOauthClient2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Oauth\OauthAccessToken.cs" />
+    <Compile Include="Models\Oauth\OauthAuthorizationCode.cs" />
+    <Compile Include="Models\Oauth\OauthClient.cs" />
+    <Compile Include="Models\Oauth\OauthRefreshToken.cs" />
+    <Compile Include="Models\Oauth\OauthUserTrust.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Video.cs" />
+    <Compile Include="Mongo\MongoDbManager.cs" />
+    <Compile Include="Mongo\VideoGridFsClient.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\GenericRepository.cs" />
+    <Compile Include="Repositories\UnitOfWork.cs" />
+    <Compile Include="Services\VideoApiService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="Configuration\connectionstrings.default.config" />
+    <None Include="Configuration\connectionstrings.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201501292254451_OauthUpdated.resx">
+      <DependentUpon>201501292254451_OauthUpdated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201501302235520_AddedScopeToAccessToken.resx">
+      <DependentUpon>201501302235520_AddedScopeToAccessToken.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502120001050_UpdatedOauth.resx">
+      <DependentUpon>201502120001050_UpdatedOauth.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504112212579_AddedVideos.resx">
+      <DependentUpon>201504112212579_AddedVideos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504112215078_AddedVideosPrivacy.resx">
+      <DependentUpon>201504112215078_AddedVideosPrivacy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504112249528_AddedVideosRelations.resx">
+      <DependentUpon>201504112249528_AddedVideosRelations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504122228081_UpdatedOauthClient.resx">
+      <DependentUpon>201504122228081_UpdatedOauthClient.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504122245405_UpdatedOauthClient1.resx">
+      <DependentUpon>201504122245405_UpdatedOauthClient1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504122257190_UpdatedOauthClient2.resx">
+      <DependentUpon>201504122257190_UpdatedOauthClient2.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

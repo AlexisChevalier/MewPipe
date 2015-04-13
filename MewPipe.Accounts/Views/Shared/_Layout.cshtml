@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MewPipe - @ViewBag.Title</title>
+    @Styles.Render("~/styles")
+
+</head>
+<body class="@ViewBag.BodyClass">
+    <div class="fullHeight">
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="@Url.Action("Index", "Manage")" class="navbar-brand">
+                        <span class="black">Mew</span><span class="red">Pipe</span>
+                    </a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <div class="nav navbar-nav navbar-right">
+                        @Html.Partial("_LoginPartial")
+                    </div>
+                </div>
+            </div>
+        </div>
+        @Html.Partial("_FlashMessage")
+        <div class="container body-content">
+            @RenderBody()
+        </div>
+    </div>
+
+    @Html.Partial("_Footer")
+
+    @Scripts.Render("~/scripts")
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+        $(function () {
+            FlashMessages.attach($("#flash-messages"));
+        });
+    </script>
+</body>
+</html>
