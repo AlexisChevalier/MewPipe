@@ -9,9 +9,12 @@
             <p>
                 @foreach (var p in loginProviders)
                 {
-                    <button type="submit" class="btn-block btn-social btn-@p.AuthenticationType.ToLower()" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">
-                        <i class="fa fa-@p.AuthenticationType.ToLower()"></i> Sign in with @p.AuthenticationType
-                    </button>
+                    if (p.AuthenticationType != "OpenID")
+                    {
+                        <button type="submit" class="btn-block btn-social btn-@p.AuthenticationType.ToLower()" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">
+                            <i class="fa fa-@p.AuthenticationType.ToLower()"></i> Sign in with @p.AuthenticationType
+                        </button>
+                    }
                 }
             </p>
         </div>

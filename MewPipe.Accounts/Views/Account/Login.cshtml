@@ -46,6 +46,12 @@
                         You can also sign in using those services
                     </p>
                     @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+
+                    <hr/>
+                    <p>
+                        To login with your OpenID account, please enter your information below :
+                    </p>
+                    @Html.Partial("_OpenIdPartial", new OpenIdViewModel { ReturnUrl = ViewBag.ReturnUrl })
                 </div>
             </div>
         </div>

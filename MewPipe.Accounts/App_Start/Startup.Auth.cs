@@ -1,4 +1,5 @@
 ﻿using System;
+using MewPipe.Accounts.OpenID;
 using MewPipe.Logic;
 using MewPipe.Logic.Models;
 using Microsoft.AspNet.Identity;
@@ -45,6 +46,8 @@ namespace MewPipe.Accounts
             app.UseFacebookAuthentication(
                 appId: "1563990970506208",
                 appSecret: "664b35fc0e6e3362a184cfc02a3d1efa");
+
+            app.UseOpenIDAuthentication(new OpenIDAuthenticationOptions());
         }
     }
 }

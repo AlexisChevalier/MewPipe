@@ -26,10 +26,30 @@ namespace MewPipe.Accounts.Extensions
             return result;
         }
 
-        public static ActionResult Information(this ActionResult result, string message)
+        public static HttpContext Information(this HttpContext result, string message)
         {
             CreateCookieWithFlashMessage(Notification.Info, message);
             return result;
+        }
+
+        public static void SetErrorMessage(this HttpContext result, string message)
+        {
+            CreateCookieWithFlashMessage(Notification.Danger, message);
+        }
+
+        public static void SetWarningMessage(this HttpContext result, string message)
+        {
+            CreateCookieWithFlashMessage(Notification.Warning, message);
+        }
+
+        public static void SetSuccessMessage(this HttpContext result, string message)
+        {
+            CreateCookieWithFlashMessage(Notification.Success, message);
+        }
+
+        public static void SetInformationMessage(this ActionResult result, string message)
+        {
+            CreateCookieWithFlashMessage(Notification.Info, message);
         }
 
         private static void CreateCookieWithFlashMessage(Notification notification, string message)

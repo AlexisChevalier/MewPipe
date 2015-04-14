@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using MewPipe.Accounts.Filters;
@@ -60,7 +61,7 @@ namespace MewPipe.Accounts.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
-        //[OnlyAnonymousFilter]
+        [OnlyAnonymousFilter]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
@@ -71,7 +72,7 @@ namespace MewPipe.Accounts.Controllers
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
-        //[OnlyAnonymousFilter]
+        [OnlyAnonymousFilter]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
@@ -234,6 +235,15 @@ namespace MewPipe.Accounts.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        public ActionResult LogoutAndRedirect(string returnUrl)
+        {
+            returnUrl = String.IsNullOrWhiteSpace(returnUrl) ? "/" : returnUrl;
+
+            AuthenticationManager.SignOut();
+
+            return Redirect(returnUrl);
+        }
+
         #endregion
 
         #region External Logins
@@ -245,6 +255,7 @@ namespace MewPipe.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
+            returnUrl = String.IsNullOrWhiteSpace(returnUrl) ? "/" : returnUrl;
             // Request a redirect to the external login provider
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
@@ -254,6 +265,8 @@ namespace MewPipe.Accounts.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
+            returnUrl = String.IsNullOrWhiteSpace(returnUrl) ? "/" : returnUrl;
+
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
@@ -282,6 +295,8 @@ namespace MewPipe.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
+            returnUrl = String.IsNullOrWhiteSpace(returnUrl) ? "/" : returnUrl;
+
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Manage");

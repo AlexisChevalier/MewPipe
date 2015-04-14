@@ -40,39 +40,6 @@ namespace MewPipe.Accounts
                 defaults: new { controller = "Account", action = "Index", id = UrlParameter.Optional }
             );
 
-            /** Oauth **/
-
-            /*routes.MapRoute(
-                name: "OauthAuthorize",
-                url: "oauth/authorize",
-                defaults: new { controller = "Oauth", action = "Authorize" }
-            );
-
-            routes.MapRoute(
-                name: "OauthDialog",
-                url: "oauth/dialog",
-                defaults: new { controller = "Oauth", action = "Dialog" }
-            );
-
-            routes.MapRoute(
-                name: "OauthDialogPost",
-                url: "oauth/dialog",
-                defaults: new { controller = "Oauth", action = "DialogPost" }
-            );
-
-            routes.MapRoute(
-                name: "OauthAccessToken",
-                url: "oauth/token",
-                defaults: new { controller = "Oauth", action = "OauthAccessToken" }
-            );
-
-            routes.MapRoute(
-                name: "OauthRefrestToken",
-                url: "oauth/token",
-                defaults: new { controller = "Oauth", action = "OauthRefrestToken" }
-            );*/
-
-
             /** Manage **/
 
             routes.MapRoute(

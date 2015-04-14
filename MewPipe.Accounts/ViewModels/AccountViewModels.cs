@@ -62,6 +62,16 @@ namespace MewPipe.Accounts.ViewModels
         public bool RememberMe { get; set; }
     }
 
+    public class OpenIdViewModel
+    {
+        [Required]
+        [Display(Name = "OpenId Login Url")]
+        [Url]
+        public string OpenIdLoginUrl { get; set; }
+
+        public string ReturnUrl { get; set; }
+    }
+
     public class RegisterViewModel
     {
         [Required]

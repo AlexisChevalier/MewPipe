@@ -70,7 +70,9 @@ namespace MewPipe.Website.Controllers
         {
             Request.SaveIdentity(new Identity());
 
-            return RedirectToAction("Index", "Home").Success("Successfully logged you out");
+            var returnUrl = Url.Action("Index", "Home", null, Request.Url.Scheme);
+
+            return Redirect(ConfigurationManager.AppSettings["OAuth2LogoutEndpoint"] + "?returnUrl=" + returnUrl).Success("Successfully logged you out");;
         }
 
         #endregion
