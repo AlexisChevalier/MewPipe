@@ -102,6 +102,7 @@
   <ItemGroup>
     <Compile Include="Contracts\AccessTokenContract.cs" />
     <Compile Include="Contracts\UserContract.cs" />
+    <Compile Include="Contracts\VideoContract.cs" />
     <Compile Include="CustomHttpClient.cs" />
     <Compile Include="Extensions\NameValueCollectionExtensions.cs" />
     <Compile Include="MewPipeDbContext.cs" />

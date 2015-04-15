@@ -14,6 +14,13 @@ namespace MewPipe.API.Filters
 {
     public class Oauth2AuthorizeFilter : FilterAttribute, IAuthorizationFilter 
     {
+        public bool AllowAnonymousUsers { get; set; }
+
+        public Oauth2AuthorizeFilter()
+        {
+            AllowAnonymousUsers = false;
+        }
+
         private static readonly UnitOfWork UnitOfWork = new UnitOfWork();
 
         private string[] _scopes;
@@ -33,6 +40,11 @@ namespace MewPipe.API.Filters
             OauthAccessToken token;
             if (authenticationHeader == null)
             {
+                if (AllowAnonymousUsers)
+                {
+                    return continuation();
+                }
+
                 actionContext.Response = new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.Forbidden,

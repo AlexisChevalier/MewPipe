@@ -16,9 +16,9 @@ namespace MewPipe.API.Controllers
         HttpResponseMessage Get(string videoId);
     }
 
-    [Oauth2AuthorizeFilter]
     public class VideosController : ApiController, IVideosController
     {
+        [Oauth2AuthorizeFilter(AllowAnonymousUsers = true)]
         public HttpResponseMessage Get(string videoId)
         {
             Debug.Assert(videoId != null);
@@ -39,6 +39,7 @@ namespace MewPipe.API.Controllers
             }
         }
 
+        [Oauth2AuthorizeFilter]
         public HttpResponseMessage Post(string videoId)
         {
             using (var workerQueueManager = new WorkerQueueManager())
