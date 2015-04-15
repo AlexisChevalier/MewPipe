@@ -245,9 +245,6 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Configuration\connectionstrings.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Configuration\connectionstrings.default.config" />
     <Content Include="Content\_BootstrapHelpers.scss" />
     <Content Include="Content\Accounting.scss" />
