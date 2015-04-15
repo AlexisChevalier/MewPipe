@@ -1,9 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using MewPipe.API.Filters;
+using MewPipe.Logic.RabbitMQ;
+using MewPipe.Logic.RabbitMQ.Messages;
 using MewPipe.Logic.Services;
 
 namespace MewPipe.API.Controllers
@@ -38,22 +41,15 @@ namespace MewPipe.API.Controllers
 
         public HttpResponseMessage Post(string videoId)
         {
-            Debug.Assert(videoId != null);
+            using (var workerQueueManager = new WorkerQueueManager())
+            {
+                using (var channelQueue = workerQueueManager.GetChannelQueue(WorkerQueueManager.QueueChannelIdentifier.NewVideos))
+                {
+                    channelQueue.SendPersistentMessage(new NewVideoMessage(videoId));
+                }
+            }
 
-            var videoApiService = new VideoApiService();
-
-            try
-            {
-                return videoApiService.GetVideoHttpResponseMessage(Request, videoId, null);
-            }
-            catch (InvalidByteRangeException byteRangeException)
-            {
-                return Request.CreateErrorResponse(byteRangeException);
-            }
-            catch (HttpException httpException)
-            {
-                return Request.CreateErrorResponse((HttpStatusCode)httpException.GetHttpCode(), httpException);
-            }
+            return new HttpResponseMessage(HttpStatusCode.OK);
         }
     }
 }
