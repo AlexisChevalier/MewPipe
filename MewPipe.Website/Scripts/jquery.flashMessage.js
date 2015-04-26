@@ -1,6 +1,6 @@
 ﻿var FlashMessages = (function () {
     var target,
-        options = { timeout: 0, alert: 'info' };
+        options = { timeout: 0, alert: "info" };
 
 
     var attach = function (selector, optionsObject) {
@@ -14,7 +14,7 @@
 
     // GetStream the first alert message read from the cookie
     function setFlashMessageFromCookie() {
-        $.each(new Array('Success', 'Danger', 'Warning', 'Info'), function (i, alert) {
+        $.each(new Array("Success", "Danger", "Warning", "Info"), function (i, alert) {
             var cookie = $.cookie("Flash." + alert);
 
             if (cookie) {
@@ -30,8 +30,8 @@
 
     // Delete the named flash cookie
     function deleteFlashMessageCookie(alert) {
-        $.cookie("Flash." + alert, null, { path: '/' });
-        $.removeCookie("Flash." + alert, { path: '/' });
+        $.cookie("Flash." + alert, null, { path: "/", domain: ".mewpipe.local" });
+        $.removeCookie("Flash." + alert, { path: "/", domain: ".mewpipe.local" });
     }
 
 
@@ -41,7 +41,7 @@
             $(target).addClass("alert-" + options.alert.toString().toLowerCase());
 
             if (typeof options.message === "string") {
-                $('p', target).html("<span>" + options.message + "</span>");
+                $("p", target).html("<span>" + options.message + "</span>");
             } else {
                 target.empty().append(options.message);
             }
