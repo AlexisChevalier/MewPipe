@@ -185,8 +185,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\VideosController.cs" />
+    <Compile Include="Controllers\API\AccountController.cs" />
+    <Compile Include="Controllers\API\VideosController.cs" />
     <Compile Include="Extensions\HttpActionContextExtensions.cs" />
     <Compile Include="Filters\Oauth2AuthorizeFilter.cs" />
     <Compile Include="Global.asax.cs">

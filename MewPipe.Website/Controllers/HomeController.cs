@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
+using MewPipe.Logic.Repositories;
 
 namespace MewPipe.Website.Controllers
 {
@@ -6,6 +8,11 @@ namespace MewPipe.Website.Controllers
     {
         public ActionResult Index()
         {
+            
+            var unitOfWork = new UnitOfWork();
+
+            ViewBag.Videos = unitOfWork.VideoRepository.Get().ToList();
+
             return View();
         }
 

@@ -10,12 +10,17 @@ namespace MewPipe.Logic.Models
 {
     public class User : IdentityUser
     {
+        [InverseProperty("User")]
         public virtual ICollection<OauthUserTrust> OauthUserTrusts { get; set; }
+
         [InverseProperty("AllowedUsers")]
         public virtual ICollection<Video> VideosSharedWithMe { get; set; }
 
         [InverseProperty("User")]
-        public virtual ICollection<Video> Videos { get; set; } 
+        public virtual ICollection<Video> Videos { get; set; }
+
+        [InverseProperty("User")]
+        public virtual ICollection<VideoUploadToken> VideoUploadTokens { get; set; } 
 
         /**
          * defaultAuthenticationType should be of type DefaultAuthenticationTypes.*

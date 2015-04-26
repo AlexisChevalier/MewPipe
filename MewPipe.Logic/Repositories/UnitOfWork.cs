@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity.Core.Common.CommandTrees;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Models.Oauth;
 
@@ -9,6 +10,10 @@ namespace MewPipe.Logic.Repositories
         private readonly MewPipeDbContext _context = new MewPipeDbContext();
         private GenericRepository<User> _userRepository;
         private GenericRepository<Video> _videoRepository;
+        private GenericRepository<VideoFile> _videoFileRepository;
+        private GenericRepository<QualityType> _qualityTypeRepository;
+        private GenericRepository<MimeType> _mimeTypeRepository;
+        private GenericRepository<VideoUploadToken> _videoUploadTokenRepository;
         private GenericRepository<OauthAccessToken> _oauthAccessTokenRepository;
         private GenericRepository<OauthRefreshToken> _oauthRefreshTokenRepository;
         private GenericRepository<OauthAuthorizationCode> _oauthAuthorizationCodeRepository;
@@ -38,6 +43,58 @@ namespace MewPipe.Logic.Repositories
                     _videoRepository = new GenericRepository<Video>(_context);
                 }
                 return _videoRepository;
+            }
+        }
+
+        public GenericRepository<QualityType> QualityTypeRepository
+        {
+            get
+            {
+
+                if (_qualityTypeRepository == null)
+                {
+                    _qualityTypeRepository = new GenericRepository<QualityType>(_context);
+                }
+                return _qualityTypeRepository;
+            }
+        }
+
+        public GenericRepository<VideoFile> VideoFileRepository
+        {
+            get
+            {
+
+                if (_videoFileRepository == null)
+                {
+                    _videoFileRepository = new GenericRepository<VideoFile>(_context);
+                }
+                return _videoFileRepository;
+            }
+        }
+
+        public GenericRepository<MimeType> MimeTypeRepository
+        {
+            get
+            {
+
+                if (_mimeTypeRepository == null)
+                {
+                    _mimeTypeRepository = new GenericRepository<MimeType>(_context);
+                }
+                return _mimeTypeRepository;
+            }
+        }
+
+        public GenericRepository<VideoUploadToken> VideoUploadTokenRepository
+        {
+            get
+            {
+
+                if (_videoUploadTokenRepository == null)
+                {
+                    _videoUploadTokenRepository = new GenericRepository<VideoUploadToken>(_context);
+                }
+                return _videoUploadTokenRepository;
             }
         }
 

@@ -64,6 +64,8 @@ namespace MewPipe.Accounts.Controllers
         [OnlyAnonymousFilter]
         public ActionResult Login(string returnUrl)
         {
+            Session["EnableExternalAuth"] = true;
+
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }

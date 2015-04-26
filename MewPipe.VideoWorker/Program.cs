@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MewPipe.Logic.RabbitMQ;
 using MewPipe.Logic.RabbitMQ.Messages;
+using MewPipe.Logic.Services;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -60,6 +61,7 @@ namespace MewPipe.VideoWorker
 
         private static void HandleMessage(NewVideoMessage message)
         {
+            var service = new VideoWorkerService();
 
             //TODO: Call your main function here
             Thread.Sleep(1000);

@@ -1,7 +1,14 @@
-﻿@{
+﻿@using MewPipe.Logic.Models
+@{
     ViewBag.Title = "Home Page";
 }
 <div id="home">
+    <p>
+        @foreach (Video video in ViewBag.Videos)
+        {
+            <a href="/v/@video.PublicId">Video @video.PublicId</a><br/>
+        }
+    </p>
     <div class="row">
         <h2 class="text-center cursive">World trends</h2>
     </div>
@@ -15,7 +22,8 @@
                     <h3>
                         <a href="#">My awesome video</a>
                     </h3>
-                    <p>By <a href="#">MewPipe</a></p>
+                    <p>By <a href="#">MewPipe</a>
+                    </p>
                     <p>2104 views | One month ago</p>
                 </div>
             </div>
@@ -29,7 +37,8 @@
                     <h3>
                         <a href="#">My awesome video</a>
                     </h3>
-                    <p>By <a href="#">MewPipe</a></p>
+                    <p>By <a href="#">MewPipe</a>
+                    </p>
                     <p>2104 views | One month ago</p>
                 </div>
             </div>
@@ -43,7 +52,8 @@
                     <h3>
                         <a href="#">My awesome video</a>
                     </h3>
-                    <p>By <a href="#">MewPipe</a></p>
+                    <p>By <a href="#">MewPipe</a>
+                    </p>
                     <p>2104 views | One month ago</p>
                 </div>
             </div>
@@ -57,7 +67,8 @@
                     <h3>
                         <a href="#">My awesome video</a>
                     </h3>
-                    <p>By <a href="#">MewPipe</a></p>
+                    <p>By <a href="#">MewPipe</a>
+                    </p>
                     <p>2104 views | One month ago</p>
                 </div>
             </div>
@@ -76,7 +87,8 @@
                     <h3>
                         <a href="#">My awesome video</a>
                     </h3>
-                    <p>By <a href="#">MewPipe</a></p>
+                    <p>By <a href="#">MewPipe</a>
+                    </p>
                     <p>2104 views | One month ago</p>
                 </div>
             </div>
@@ -90,7 +102,8 @@
                     <h3>
                         <a href="#">My awesome video</a>
                     </h3>
-                    <p>By <a href="#">MewPipe</a></p>
+                    <p>By <a href="#">MewPipe</a>
+                    </p>
                     <p>2104 views | One month ago</p>
                 </div>
             </div>
@@ -104,7 +117,8 @@
                     <h3>
                         <a href="#">My awesome video</a>
                     </h3>
-                    <p>By <a href="#">MewPipe</a></p>
+                    <p>By <a href="#">MewPipe</a>
+                    </p>
                     <p>2104 views | One month ago</p>
                 </div>
             </div>
@@ -118,7 +132,8 @@
                     <h3>
                         <a href="#">My awesome video</a>
                     </h3>
-                    <p>By <a href="#">MewPipe</a></p>
+                    <p>By <a href="#">MewPipe</a>
+                    </p>
                     <p>2104 views | One month ago</p>
                 </div>
             </div>

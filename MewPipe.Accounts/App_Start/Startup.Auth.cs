@@ -34,7 +34,8 @@ namespace MewPipe.Accounts
                     OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, User>(
                         validateInterval: TimeSpan.FromMinutes(30),
                         regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager, DefaultAuthenticationTypes.ApplicationCookie))
-                }
+                },
+                CookieName = "MewPipeAccountsSession"
             });
 
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);

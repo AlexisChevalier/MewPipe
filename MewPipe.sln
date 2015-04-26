@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{6485ADEC-B08E-4587-A717-FDD730F5F8CA}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		Readme.txt = Readme.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MewPipe.API", "MewPipe.API\MewPipe.API.csproj", "{4ECCD490-6078-44B3-A8F6-D31DB8ACB22D}"
@@ -26,6 +27,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MewPipe.ApiClient", "MewPipe.ApiClient\MewPipe.ApiClient.csproj", "{AEFA1D18-3D3D-474C-BDC1-7FE35FA8307E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MewPipe.VideoWorker", "MewPipe.VideoWorker\MewPipe.VideoWorker.csproj", "{20709E28-1F6F-4AAB-AD8E-36AFE0F69E90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MewPipe.VideosRepository", "MewPipe.VideosRepository\MewPipe.VideosRepository.csproj", "{B2CB8E7C-73D3-4061-B10C-97293426B2AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +60,10 @@ Global
 		{20709E28-1F6F-4AAB-AD8E-36AFE0F69E90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20709E28-1F6F-4AAB-AD8E-36AFE0F69E90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20709E28-1F6F-4AAB-AD8E-36AFE0F69E90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2CB8E7C-73D3-4061-B10C-97293426B2AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2CB8E7C-73D3-4061-B10C-97293426B2AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2CB8E7C-73D3-4061-B10C-97293426B2AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2CB8E7C-73D3-4061-B10C-97293426B2AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

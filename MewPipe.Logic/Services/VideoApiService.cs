@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,12 +6,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Authentication;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using MewPipe.Logic.Contracts;
+using MewPipe.Logic.Helpers;
 using MewPipe.Logic.Models;
-using MewPipe.Logic.Mongo;
+using MewPipe.Logic.MongoDB;
 using MewPipe.Logic.Repositories;
 using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
@@ -22,7 +21,9 @@ namespace MewPipe.Logic.Services
     public interface IVideoApiService
     {
         HttpResponseMessage GetVideoHttpResponseMessage(HttpRequestMessage request, string videoId, User user);
-        Video UploadVideo(HttpRequestMessage request, User user);
+        Task<Video> UploadVideoFromMultipartRequest(HttpRequestMessage request, string tokenId);
+        VideoUploadToken GenerateVideoUploadToken(VideoUploadTokenRequestContract request, User user);
+        Video GetVideo(string videoId, User user);
     }
 
     public class VideoApiService : IVideoApiService
@@ -45,30 +46,144 @@ namespace MewPipe.Logic.Services
                 throw new HttpException(401, "Unauthorized");
             }
 
-            var videoStream = GetVideoStream(videoDetails.GridFsId);
+            var file = videoDetails.GetVideoFile();
+
+            var videoStream = GetVideoStream(new ObjectId(file.GridFsId));
 
             if (IsRangeRequest(request))
             {
-                return GetRangeResponse(request, videoStream, videoDetails);
+                return GetRangeResponse(request, videoStream, file);
             }
 
-            return GetSimpleResponse(request, videoStream, videoDetails);
+            return GetSimpleResponse(request, videoStream, file);
         }
 
-        #region GetVideoHttpResponseMessage region
+        public async Task<Video> UploadVideoFromMultipartRequest(HttpRequestMessage request, string tokenId)
+        {
+            //Test token
+            var token = GetVideoUploadTokenAndUserForId(tokenId);
 
-        private HttpResponseMessage GetRangeResponse(HttpRequestMessage request, Stream stream, Video videoDetails)
+            if (!IsTokenValid(token))
+            {
+                throw new HttpException(401, "Unauthorized");
+            }
+
+            //Upload
+
+            if (!request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpException(406, "Content-Type must me multipart/form-data");
+            }
+
+            var streamProvider = new MongoDbMultipartStreamProvider();
+
+            try
+            {
+                await request.Content.ReadAsMultipartAsync(streamProvider);
+            }
+            catch (IOException e)
+            {
+                var httpException = e.InnerException.InnerException;
+                throw httpException;
+            }
+            catch (Exception)
+            {
+                throw new HttpException(500, "Error while uploading video. Please try again.");
+            }
+
+            var details = streamProvider.VideoOptions;
+            var video = new Video
+            {
+                AllowedUsers = new List<User>(),
+                Description = null,
+                Name = null,
+                PrivacyStatus = Video.PrivacyStatusTypes.Private,
+                Status = Video.StatusTypes.Processing,
+                User = token.User,
+                VideoFiles = new List<VideoFile>()
+            };
+
+            var mimeTypeService = new VideoMimeTypeService(_unitOfWork);
+            var qualityTypeService = new VideoQualityTypeService(_unitOfWork);
+
+            video.VideoFiles.Add(new VideoFile
+                {
+                    Video = video,
+                    GridFsId = details.Id.ToString(),
+                    IsOriginalFile = true,
+                    MimeType = mimeTypeService.GetAllowedMimeTypeForDecoding(details.ContentType),
+                    QualityType = qualityTypeService.GetUploadingQualityType()
+                });
+
+            _unitOfWork.VideoRepository.Insert(video);
+            _unitOfWork.Save();
+
+            RemoveVideoUploadToken(token);
+
+            return video;
+        }
+
+        public Video GetVideo(string videoId, User user)
+        {
+            Debug.Assert(videoId != null);
+
+            var videoDetails = GetVideoDetails(videoId);
+
+            if (videoDetails == null)
+            {
+                throw new HttpException(404, "Video not found");
+            }
+
+            if (!IsUserAllowedToSeeVideo(videoId, user))
+            {
+                throw new HttpException(401, "Unauthorized");
+            }
+
+            return videoDetails;
+        }
+
+        public VideoUploadToken GenerateVideoUploadToken(VideoUploadTokenRequestContract request, User user)
+        {
+            Debug.Assert(request != null);
+            Debug.Assert(user != null);
+
+            if (request == null || user == null)
+            {
+                throw new HttpException(400, "Invalid parameters");
+            }
+
+            user = _unitOfWork.UserRepository.GetById(user.Id);
+
+            var token = new VideoUploadToken
+            {
+                ExpirationTime = DateTime.UtcNow.AddDays(1),
+                User = user,
+                NotificationHookUri = request.NotificationHookUri,
+                UploadRedirectUri = request.UploadRedirectUri
+            };
+
+            user.VideoUploadTokens.Add(token);
+
+            _unitOfWork.Save();
+
+            return token;
+        }
+
+
+        #region helpers
+
+        private HttpResponseMessage GetRangeResponse(HttpRequestMessage request, Stream stream, VideoFile videoFile)
         {
             var partialResponse = request.CreateResponse(HttpStatusCode.PartialContent);
-            partialResponse.Content = new ByteRangeStreamContent(stream, request.Headers.Range, videoDetails.MimeContentType);
+            partialResponse.Content = new ByteRangeStreamContent(stream, request.Headers.Range, videoFile.MimeType.HttpMimeType);
             return partialResponse;
         }
 
-        private HttpResponseMessage GetSimpleResponse(HttpRequestMessage request, Stream stream, Video videoDetails)
+        private HttpResponseMessage GetSimpleResponse(HttpRequestMessage request, Stream stream, VideoFile videoFile)
         {
             var fullResponse = request.CreateResponse(HttpStatusCode.OK);
             fullResponse.Content = new StreamContent(stream);
-            fullResponse.Content.Headers.ContentType = new MediaTypeHeaderValue(videoDetails.MimeContentType);
+            fullResponse.Content.Headers.ContentType = new MediaTypeHeaderValue(videoFile.MimeType.HttpMimeType);
             return fullResponse;
         }
 
@@ -96,25 +211,34 @@ namespace MewPipe.Logic.Services
         {
             Debug.Assert(videoId != null);
 
-            return _unitOfWork.VideoRepository.GetById(videoId);
+            var id = ShortGuid.Decode(videoId);
+
+            return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
         }
 
         private bool IsUserAllowedToSeeVideo(string videoId, User user)
         {
             Debug.Assert(videoId != null);
 
-            var videos = _unitOfWork.VideoRepository.Get(v => 
-                v.Id == videoId &&
-                v.Status == VideoStatus.Published &&
+            var videoGuid = ShortGuid.Decode(videoId);
+
+            var videos = _unitOfWork.VideoRepository.Get(v =>
+                v.Id == videoGuid &&
+                v.Status == Video.StatusTypes.Published &&
                 (
-                    v.PrivacyType == VideoPrivacyType.Public ||
-                    v.PrivacyType == VideoPrivacyType.LinkOnly ||
-                    v.User == user || 
+                    v.PrivacyStatus == Video.PrivacyStatusTypes.Public ||
+                    v.PrivacyStatus == Video.PrivacyStatusTypes.LinkOnly ||
+                    v.User == user ||
                     v.AllowedUsers.Contains(user)
                 )
-            );
+            ).ToArray();
 
-            if (videos.First().Id == videoId)
+            if (!videos.Any())
+            {
+                return false;
+            }
+
+            if (videos.First().PublicId == videoId)
             {
                 return true;
             }
@@ -122,19 +246,43 @@ namespace MewPipe.Logic.Services
             return false;
         }
 
-        #endregion
-
-        public Video UploadVideo(HttpRequestMessage request, User user)
+        private VideoUploadToken GetVideoUploadTokenAndUserForId(string tokenId)
         {
-            //Test rights
+            Debug.Assert(tokenId != null);
 
-            //Upload
+            var guid = Guid.Parse(tokenId);
+            var token = _unitOfWork.VideoUploadTokenRepository.GetOne(t => t.Id == guid, "User");
 
-            //Register on SQL
-
-            //Return details
-
-            return new Video();
+            return token;
         }
+
+        private void RemoveVideoUploadToken(VideoUploadToken token)
+        {
+            Debug.Assert(token != null);
+
+            _unitOfWork.VideoUploadTokenRepository.Delete(token);
+        }
+
+        private bool IsTokenValid(VideoUploadToken token)
+        {
+            if (token == null)
+            {
+                return false;
+            }
+
+            if (token.User == null)
+            {
+                return false;
+            }
+
+            if (token.ExpirationTime < DateTime.UtcNow)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
     }
 }

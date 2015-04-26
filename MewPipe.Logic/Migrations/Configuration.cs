@@ -1,16 +1,21 @@
-using System.Data.Entity.Migrations;
+using MewPipe.Logic.Models;
 using MewPipe.Logic.Models.Oauth;
 
 namespace MewPipe.Logic.Migrations
 {
-    internal sealed class Configuration : DbMigrationsConfiguration<MewPipeDbContext>
+    using System;
+    using System.Data.Entity;
+    using System.Data.Entity.Migrations;
+    using System.Linq;
+
+    internal sealed class Configuration : DbMigrationsConfiguration<MewPipe.Logic.MewPipeDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(MewPipeDbContext context)
+        protected override void Seed(MewPipe.Logic.MewPipeDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 
@@ -24,16 +29,8 @@ namespace MewPipe.Logic.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-
             context.OauthClients.AddOrUpdate(
                 c => c.ClientId,
-                new OauthClient
-                {
-                    ClientId = "my_client_id",
-                    ClientSecret = "my_client_secret",
-                    Description = "my description",
-                    RedirectUri = "http://localhost/testOauth"
-                },
                 new OauthClient
                 {
                     ClientId = "daa2fb46-fae8-4552-898c-4f27b3fd9003",
@@ -43,6 +40,98 @@ namespace MewPipe.Logic.Migrations
                     Name = "MewPipe Website",
                     RedirectUri = "http://mewpipe.local:44402/auth/HandleOAuthRedirect",
                     ImageSrc = "http://s.ytimg.com/yts/img/youtube_logo_stacked-vfl225ZTx.png"
+                });
+
+            context.QualityTypes.AddOrUpdate(
+                q => q.Name,
+                new QualityType
+                {
+                    Name = "Uploaded",
+                    IsUploaded = true
+                },
+                new QualityType
+                {
+                    Name = "Low",
+                    IsDefault = true
+                },
+                new QualityType
+                {
+                    Name = "High"
+                }
+                );
+
+            context.MimeTypes.AddOrUpdate(
+                m => m.HttpMimeType,
+                new MimeType
+                {
+                    HttpMimeType = "video/mp4",
+                    Name = "MP4",
+                    AllowedForDecoding = true,
+                    RequiredForEncoding = true,
+                    IsDefault = true
+                },
+                new MimeType
+                {
+                    HttpMimeType = "video/ogg",
+                    Name = "OGG",
+                    AllowedForDecoding = true,
+                    RequiredForEncoding = true
+                },
+                new MimeType
+                {
+                    HttpMimeType = "video/quicktime",
+                    Name = "MOV",
+                    AllowedForDecoding = true,
+                    RequiredForEncoding = false
+                },
+                new MimeType
+                {
+                    HttpMimeType = "video/mp4v-es",
+                    Name = "MPEG4",
+                    AllowedForDecoding = true,
+                    RequiredForEncoding = false
+                },
+                new MimeType
+                {
+                    HttpMimeType = "video/avi",
+                    Name = "AVI",
+                    AllowedForDecoding = true,
+                    RequiredForEncoding = false
+                },
+                new MimeType
+                {
+                    HttpMimeType = "video/x-ms-wmv",
+                    Name = "WMV",
+                    AllowedForDecoding = true,
+                    RequiredForEncoding = false
+                },
+                new MimeType
+                {
+                    HttpMimeType = "video/MP2P",
+                    Name = "MPEGPS",
+                    AllowedForDecoding = true,
+                    RequiredForEncoding = false
+                },
+                new MimeType
+                {
+                    HttpMimeType = "video/x-flv",
+                    Name = "FLV",
+                    AllowedForDecoding = true,
+                    RequiredForEncoding = false
+                },
+                new MimeType
+                {
+                    HttpMimeType = "video/3gpp",
+                    Name = "3GPP",
+                    AllowedForDecoding = true,
+                    RequiredForEncoding = false
+                },
+                new MimeType
+                {
+                    HttpMimeType = "video/webm",
+                    Name = "WebM",
+                    AllowedForDecoding = true,
+                    RequiredForEncoding = false
                 });
         }
     }

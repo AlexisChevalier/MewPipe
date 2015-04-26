@@ -13,6 +13,10 @@ namespace MewPipe.Logic
         }
 
         public DbSet<Video> Videos { get; set; }
+        public DbSet<VideoFile> VideoFiles { get; set; }
+        public DbSet<MimeType> MimeTypes { get; set; }
+        public DbSet<QualityType> QualityTypes { get; set; }
+        public DbSet<VideoUploadToken> VideoUploadTokens { get; set; }
 
         public DbSet<OauthClient> OauthClients { get; set; }
         public DbSet<OauthUserTrust> OauthUserTrusts { get; set; }

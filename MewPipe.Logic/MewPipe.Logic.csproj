@@ -101,57 +101,57 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\AccessTokenContract.cs" />
-    <Compile Include="Contracts\UserContract.cs" />
     <Compile Include="Contracts\VideoContract.cs" />
+    <Compile Include="Contracts\VideoUploadTokenContract.cs" />
+    <Compile Include="Contracts\UserContract.cs" />
     <Compile Include="CustomHttpClient.cs" />
     <Compile Include="Extensions\NameValueCollectionExtensions.cs" />
+    <Compile Include="Helpers\ShortGuid.cs" />
     <Compile Include="MewPipeDbContext.cs" />
-    <Compile Include="Migrations\201501292254451_OauthUpdated.cs" />
-    <Compile Include="Migrations\201501292254451_OauthUpdated.Designer.cs">
-      <DependentUpon>201501292254451_OauthUpdated.cs</DependentUpon>
+    <Compile Include="Migrations\201504260915390_init.cs" />
+    <Compile Include="Migrations\201504260915390_init.Designer.cs">
+      <DependentUpon>201504260915390_init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201501302235520_AddedScopeToAccessToken.cs" />
-    <Compile Include="Migrations\201501302235520_AddedScopeToAccessToken.Designer.cs">
-      <DependentUpon>201501302235520_AddedScopeToAccessToken.cs</DependentUpon>
+    <Compile Include="Migrations\201504260922293_changedVideoFile.cs" />
+    <Compile Include="Migrations\201504260922293_changedVideoFile.Designer.cs">
+      <DependentUpon>201504260922293_changedVideoFile.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201502120001050_UpdatedOauth.cs" />
-    <Compile Include="Migrations\201502120001050_UpdatedOauth.Designer.cs">
-      <DependentUpon>201502120001050_UpdatedOauth.cs</DependentUpon>
+    <Compile Include="Migrations\201504260929357_removedSizeFromVideoFile.cs" />
+    <Compile Include="Migrations\201504260929357_removedSizeFromVideoFile.Designer.cs">
+      <DependentUpon>201504260929357_removedSizeFromVideoFile.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201504112212579_AddedVideos.cs" />
-    <Compile Include="Migrations\201504112212579_AddedVideos.Designer.cs">
-      <DependentUpon>201504112212579_AddedVideos.cs</DependentUpon>
+    <Compile Include="Migrations\201504261125384_AddedMimeTypes.cs" />
+    <Compile Include="Migrations\201504261125384_AddedMimeTypes.Designer.cs">
+      <DependentUpon>201504261125384_AddedMimeTypes.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201504112215078_AddedVideosPrivacy.cs" />
-    <Compile Include="Migrations\201504112215078_AddedVideosPrivacy.Designer.cs">
-      <DependentUpon>201504112215078_AddedVideosPrivacy.cs</DependentUpon>
+    <Compile Include="Migrations\201504261148309_UpdatedVideos.cs" />
+    <Compile Include="Migrations\201504261148309_UpdatedVideos.Designer.cs">
+      <DependentUpon>201504261148309_UpdatedVideos.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201504112249528_AddedVideosRelations.cs" />
-    <Compile Include="Migrations\201504112249528_AddedVideosRelations.Designer.cs">
-      <DependentUpon>201504112249528_AddedVideosRelations.cs</DependentUpon>
+    <Compile Include="Migrations\201504261248460_AddedQualityType.cs" />
+    <Compile Include="Migrations\201504261248460_AddedQualityType.Designer.cs">
+      <DependentUpon>201504261248460_AddedQualityType.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201504122228081_UpdatedOauthClient.cs" />
-    <Compile Include="Migrations\201504122228081_UpdatedOauthClient.Designer.cs">
-      <DependentUpon>201504122228081_UpdatedOauthClient.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201504122245405_UpdatedOauthClient1.cs" />
-    <Compile Include="Migrations\201504122245405_UpdatedOauthClient1.Designer.cs">
-      <DependentUpon>201504122245405_UpdatedOauthClient1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201504122257190_UpdatedOauthClient2.cs" />
-    <Compile Include="Migrations\201504122257190_UpdatedOauthClient2.Designer.cs">
-      <DependentUpon>201504122257190_UpdatedOauthClient2.cs</DependentUpon>
+    <Compile Include="Migrations\201504261258186_UpdatedQualityType.cs" />
+    <Compile Include="Migrations\201504261258186_UpdatedQualityType.Designer.cs">
+      <DependentUpon>201504261258186_UpdatedQualityType.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\QualityType.cs" />
+    <Compile Include="Models\MimeType.cs" />
     <Compile Include="Models\Oauth\OauthAccessToken.cs" />
     <Compile Include="Models\Oauth\OauthAuthorizationCode.cs" />
     <Compile Include="Models\Oauth\OauthClient.cs" />
     <Compile Include="Models\Oauth\OauthRefreshToken.cs" />
     <Compile Include="Models\Oauth\OauthUserTrust.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\VideoFile.cs" />
     <Compile Include="Models\Video.cs" />
-    <Compile Include="Mongo\MongoDbManager.cs" />
-    <Compile Include="Mongo\VideoGridFsClient.cs" />
+    <Compile Include="Models\VideoUploadToken.cs" />
+    <Compile Include="MongoDB\MongoDbManager.cs" />
+    <Compile Include="MongoDB\MongoDbMultipartStreamProvider.cs" />
+    <Compile Include="MongoDB\MongoSessionStateStore.cs" />
+    <Compile Include="MongoDB\VideoGridFsClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RabbitMQ\ChannelQueueConsumer.cs" />
     <Compile Include="RabbitMQ\ChannelQueue.cs" />
@@ -161,6 +161,9 @@
     <Compile Include="Repositories\GenericRepository.cs" />
     <Compile Include="Repositories\UnitOfWork.cs" />
     <Compile Include="Services\VideoApiService.cs" />
+    <Compile Include="Services\VideoQualityTypeService.cs" />
+    <Compile Include="Services\VideoMimeTypeService.cs" />
+    <Compile Include="Services\VideoWorkerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
@@ -172,32 +175,26 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201501292254451_OauthUpdated.resx">
-      <DependentUpon>201501292254451_OauthUpdated.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201504260915390_init.resx">
+      <DependentUpon>201504260915390_init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201501302235520_AddedScopeToAccessToken.resx">
-      <DependentUpon>201501302235520_AddedScopeToAccessToken.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201504260922293_changedVideoFile.resx">
+      <DependentUpon>201504260922293_changedVideoFile.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201502120001050_UpdatedOauth.resx">
-      <DependentUpon>201502120001050_UpdatedOauth.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201504260929357_removedSizeFromVideoFile.resx">
+      <DependentUpon>201504260929357_removedSizeFromVideoFile.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201504112212579_AddedVideos.resx">
-      <DependentUpon>201504112212579_AddedVideos.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201504261125384_AddedMimeTypes.resx">
+      <DependentUpon>201504261125384_AddedMimeTypes.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201504112215078_AddedVideosPrivacy.resx">
-      <DependentUpon>201504112215078_AddedVideosPrivacy.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201504261148309_UpdatedVideos.resx">
+      <DependentUpon>201504261148309_UpdatedVideos.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201504112249528_AddedVideosRelations.resx">
-      <DependentUpon>201504112249528_AddedVideosRelations.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201504261248460_AddedQualityType.resx">
+      <DependentUpon>201504261248460_AddedQualityType.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201504122228081_UpdatedOauthClient.resx">
-      <DependentUpon>201504122228081_UpdatedOauthClient.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201504122245405_UpdatedOauthClient1.resx">
-      <DependentUpon>201504122245405_UpdatedOauthClient1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201504122257190_UpdatedOauthClient2.resx">
-      <DependentUpon>201504122257190_UpdatedOauthClient2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201504261258186_UpdatedQualityType.resx">
+      <DependentUpon>201504261258186_UpdatedQualityType.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
