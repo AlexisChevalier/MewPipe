@@ -69,10 +69,10 @@ INSTALLATION GUIDE FOR MewPipe
 9 - Start the project, it should fail with an IIS Express error
 
 10 - Go to <MY DOCUMENTS FOLDER>/IISExpress/config and open the file applicationhost.config in your favorite text editor
-	{0} Locate the section configuration -> system.applicationHost -> sites in the file
+	{0} Locate the section "configuration -> system.applicationHost -> sites" in the file
 	{0} In this section, you will find some virtual directories, one for each project configured to use IIS Express.
-	{0} You have to edit each section relative to our solution to match the fake domain we used in the hosts file.
-		(Note -> it may not me the exate same name, you may find a number between parenthesis after the name or not, Visual Studio creates a lot of Virtual Directories automatically, the good one will already have the good port configurated).
+	{0} You have to edit each section which relates to our solution to match the fake domain we used in the hosts file.
+		(Note -> it may not be the exact same name, you may find a number between parenthesis after the name or not, Visual Studio creates a lot of Virtual Directories automatically, the good one will already have the good port configured).
 		* <site name="MewPipe.Accounts"... -> You have to replace the binding element and change the bindingInformation to "*:44401:accounts.mewpipe.local"
 		* <site name="MewPipe.API"... -> You have to replace the binding element and change the bindingInformation to "*:44400:api.mewpipe.local"
 		* <site name="MewPipe.VideosRepository"... -> You have to replace the binding element and change the bindingInformation to "*:44403:videos-repository.mewpipe.local"

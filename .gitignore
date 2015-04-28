@@ -199,3 +199,4 @@ FakesAssemblies/
 #custom
 */Configuration/*
 !*/Configuration/*.default.config
+/MewPipe.Accounts/MewPipe.Accounts.idc
