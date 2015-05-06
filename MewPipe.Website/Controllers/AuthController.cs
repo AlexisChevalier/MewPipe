@@ -54,7 +54,7 @@ namespace MewPipe.Website.Controllers
                 return RedirectToAction("Index", "Home").Success("Successfully logged in");
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return RedirectToAction("Index", "Home").Error("Error while logging you in");
             }

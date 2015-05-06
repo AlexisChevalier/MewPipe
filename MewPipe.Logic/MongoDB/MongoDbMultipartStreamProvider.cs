@@ -75,7 +75,7 @@ namespace MewPipe.Logic.MongoDB
 
             if (VideoMimeType == null)
             {
-                throw new HttpException(400, "Mime type " + contentType.MediaType + " is not allowed on our serviec");
+                throw new HttpException(400, "Mime type " + contentType.MediaType + " is not allowed on our service");
             }
 
             VideoOptions = new MongoGridFSCreateOptions

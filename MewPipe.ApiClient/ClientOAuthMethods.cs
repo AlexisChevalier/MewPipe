@@ -30,5 +30,19 @@ namespace MewPipe.ApiClient
 
             return await _httpClient.SendPost<AccessTokenContract>(queryString, null, tokenEndpoint);
         }
+
+        public async Task<RefreshTokenContract> GetRefreshToken(string tokenEndpoint, AccessTokenContract accessToken)
+        {
+            var queryString = new NameValueCollection {
+                {"grant_type", "refresh_token"},
+                {"refresh_token", accessToken.refresh_token},
+                {"client_id", _clientId},
+                {"client_secret", _clientSecret}
+            }.ToQueryString();
+
+            var refreshToken = await _httpClient.SendPost<RefreshTokenContract>(queryString, null, tokenEndpoint);
+
+            return refreshToken;
+        }
     }
 }

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Newtonsoft.Json;
 
 namespace MewPipe.Logic
@@ -44,6 +47,11 @@ namespace MewPipe.Logic
         {
             var result = await _httpClient.GetAsync((endpointOverrider ?? _endpoint) + relativeUri);
 
+            if (result.StatusCode == HttpStatusCode.Forbidden)
+            {
+                throw new AuthenticationException();
+            }
+
             var stringContent = await result.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<T>(stringContent);
@@ -52,6 +60,11 @@ namespace MewPipe.Logic
         public async Task<T> SendPost<T>(string relativeUri, HttpContent data = null, string endpointOverrider = null)
         {
             var result = await _httpClient.PostAsync((endpointOverrider ?? _endpoint) + relativeUri, data);
+
+            if (result.StatusCode == HttpStatusCode.Forbidden)
+            {
+                throw new AuthenticationException();
+            }
 
             var stringContent = await result.Content.ReadAsStringAsync();
 

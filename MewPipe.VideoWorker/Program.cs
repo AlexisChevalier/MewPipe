@@ -58,8 +58,12 @@ namespace MewPipe.VideoWorker
 		{
 			var service = new VideoWorkerService();
 
+			var video = service.GetVideoDetails(message.VideoId);
 
 			//TODO: Call your main function here
+
+			service.MarkVideoAsPublished(video);
+
 			Thread.Sleep(1000);
 		}
 	}

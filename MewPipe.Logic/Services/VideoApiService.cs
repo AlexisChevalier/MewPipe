@@ -12,6 +12,8 @@ using MewPipe.Logic.Contracts;
 using MewPipe.Logic.Helpers;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.MongoDB;
+using MewPipe.Logic.RabbitMQ;
+using MewPipe.Logic.RabbitMQ.Messages;
 using MewPipe.Logic.Repositories;
 using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
@@ -23,6 +25,7 @@ namespace MewPipe.Logic.Services
         HttpResponseMessage GetVideoHttpResponseMessage(HttpRequestMessage request, string videoId, User user);
         Task<Video> UploadVideoFromMultipartRequest(HttpRequestMessage request, string tokenId);
         VideoUploadToken GenerateVideoUploadToken(VideoUploadTokenRequestContract request, User user);
+        VideoUploadToken GetVideoUploadToken(string tokenId, User user);
         Video GetVideo(string videoId, User user);
     }
 
@@ -100,7 +103,9 @@ namespace MewPipe.Logic.Services
                 PrivacyStatus = Video.PrivacyStatusTypes.Private,
                 Status = Video.StatusTypes.Processing,
                 User = token.User,
-                VideoFiles = new List<VideoFile>()
+                VideoFiles = new List<VideoFile>(),
+                NotificationHookUri = token.NotificationHookUri,
+                UploadRedirectUri = token.UploadRedirectUri
             };
 
             var mimeTypeService = new VideoMimeTypeService(_unitOfWork);
@@ -120,7 +125,27 @@ namespace MewPipe.Logic.Services
 
             RemoveVideoUploadToken(token);
 
+            using (var workerQueueManager = new WorkerQueueManager())
+            {
+                using (var channelQueue =
+                    workerQueueManager.GetChannelQueue(WorkerQueueManager.QueueChannelIdentifier.NewVideos))
+                {
+                    channelQueue.SendPersistentMessage(new NewVideoMessage(video.Id.ToString()));
+                }
+            }
+
             return video;
+        }
+
+        public VideoUploadToken GetVideoUploadToken(string tokenId, User user)
+        {
+            var token = GetVideoUploadTokenAndUserForId(tokenId);
+
+            if (!IsTokenValid(token))
+            {
+                throw new HttpException(401, "Unauthorized");
+            }
+            return token;
         }
 
         public Video GetVideo(string videoId, User user)
