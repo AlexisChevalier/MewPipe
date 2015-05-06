@@ -1,70 +1,66 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using MewPipe.Logic.RabbitMQ;
 using MewPipe.Logic.RabbitMQ.Messages;
 using MewPipe.Logic.Services;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 
 namespace MewPipe.VideoWorker
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            //TODO: If you need to handle the args[] array you should do it here.
+	internal class Program
+	{
+		private static void Main(string[] args)
+		{
+			//TODO: If you need to handle the args[] array you should do it here.
 
-            Run();
-        }
+			Run();
+		}
 
-        private static void Run()
-        {
-            using (var workerQueueManager = new WorkerQueueManager())
-            {
-                using (var channelQueueConsumer =
-                workerQueueManager.GetChannelQueueConsumer(WorkerQueueManager.QueueChannelIdentifier.NewVideos))
-                {
-                    while (true)
-                    {
-                        var newVideoMessage = channelQueueConsumer.DequeueMessage<NewVideoMessage>();
+		private static void Run()
+		{
+			using (var workerQueueManager = new WorkerQueueManager())
+			{
+				using (var channelQueueConsumer =
+					workerQueueManager.GetChannelQueueConsumer(WorkerQueueManager.QueueChannelIdentifier.NewVideos))
+				{
+					while (true)
+					{
+						var newVideoMessage = channelQueueConsumer.DequeueMessage<NewVideoMessage>();
 
-                        try
-                        {
-                            HandleMessage(newVideoMessage.GetMessageData());
+						try
+						{
+							HandleMessage(newVideoMessage.GetMessageData());
 
-                            Trace.WriteLine(String.Format("[INFO] Video {0} successfully encoded - DeliveryTag {1}", newVideoMessage.GetMessageData().VideoId, newVideoMessage.GetBasicDeliverEventArgs().DeliveryTag));
-                        }
-                        catch (InvalidFileException e)
-                        {
-                            //TODO: Should we clean the database ?
-                            //TODO: Find a way to notify the error.
-                            Trace.WriteLine(String.Format("[ERROR] Video {0}'s encoding failed - Invalid file - DeliveryTag {1}", newVideoMessage.GetMessageData().VideoId, newVideoMessage.GetBasicDeliverEventArgs().DeliveryTag));
-                        }
-                        catch (Exception e)
-                        {
-                            //TODO: Should we clean the database ?
-                            //TODO: Should we handle another exception (CorruptedFileException, BadFileException, etc... ?)
-                            Trace.WriteLine(e);
-                        }
+							Trace.WriteLine(String.Format("[INFO] Video {0} successfully encoded - DeliveryTag {1}",
+								newVideoMessage.GetMessageData().VideoId, newVideoMessage.GetBasicDeliverEventArgs().DeliveryTag));
+						}
+						catch (InvalidFileException e)
+						{
+							//TODO: Should we clean the database ?
+							//TODO: Find a way to notify the error.
+							Trace.WriteLine(String.Format("[ERROR] Video {0}'s encoding failed - Invalid file - DeliveryTag {1}",
+								newVideoMessage.GetMessageData().VideoId, newVideoMessage.GetBasicDeliverEventArgs().DeliveryTag));
+						}
+						catch (Exception e)
+						{
+							//TODO: Should we clean the database ?
+							//TODO: Should we handle another exception (CorruptedFileException, BadFileException, etc... ?)
+							Trace.WriteLine(e);
+						}
 
-                        channelQueueConsumer.AcknowledgeMessage(newVideoMessage);
-                    }
-                }
-            }   
-        }
+						channelQueueConsumer.AcknowledgeMessage(newVideoMessage);
+					}
+				}
+			}
+		}
 
-        private static void HandleMessage(NewVideoMessage message)
-        {
-            var service = new VideoWorkerService();
+		private static void HandleMessage(NewVideoMessage message)
+		{
+			var service = new VideoWorkerService();
 
-            //TODO: Call your main function here
-            Thread.Sleep(1000);
-        }
-    }
+
+			//TODO: Call your main function here
+			Thread.Sleep(1000);
+		}
+	}
 }
