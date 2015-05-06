@@ -42,6 +42,9 @@ namespace MewPipe.Logic.Models
         [InverseProperty("Video")]
         public ICollection<VideoFile> VideoFiles { get; set; }
 
+        public string UploadRedirectUri { get; set; }
+        public string NotificationHookUri { get; set; }
+
         public string PublicId
         {
             get { return new ShortGuid(Id); }

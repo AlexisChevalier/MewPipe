@@ -4,8 +4,7 @@
 
 <h2>USER UPLOAD VIDEO</h2>
 
-<form enctype="multipart/form-data" action="http://videos-repository.mewpipe.local:44403/api/videosdata?uploadRequestId=@ViewBag.Token.Id" method="POST">
-    <!-- Le nom de l'élément input détermine le nom dans le tableau $_FILES -->
+<form enctype="multipart/form-data" action="http://videos-repository.mewpipe.local:44403/api/videosdata?uploadRequestId=@ViewBag.Token.Id&returnType=redirect" method="POST">
     <input name="video" type="file" />
     <input type="submit" value="Envoyer le fichier" />
 </form>

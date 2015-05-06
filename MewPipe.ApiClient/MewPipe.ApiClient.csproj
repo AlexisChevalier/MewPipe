@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientExceptions.cs" />
     <Compile Include="ClientVideoMethods.cs" />
     <Compile Include="ClientAccountMethods.cs" />
     <Compile Include="ClientOAuthMethods.cs" />

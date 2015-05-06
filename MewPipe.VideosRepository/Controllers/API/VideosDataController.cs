@@ -2,14 +2,17 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using MewPipe.Logic.Helpers;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Repositories;
 using MewPipe.Logic.Services;
 using MewPipe.VideosRepository.Security;
 using MewPipe.Website.Security;
+using Newtonsoft.Json.Linq;
 
 namespace MewPipe.VideosRepository.Controllers.API
 {
@@ -27,7 +30,7 @@ namespace MewPipe.VideosRepository.Controllers.API
             User user = null;
             if (identity.User != null)
             {
-                _unitOfWork.UserRepository.GetById(identity.User.Id);
+                user = _unitOfWork.UserRepository.GetById(identity.User.Id);
             }
 
             var videoApiService = new VideoApiService();
@@ -47,7 +50,7 @@ namespace MewPipe.VideosRepository.Controllers.API
         }
 
         [Route("api/videosData")]
-        public async Task<string> Post(string uploadRequestId)
+        public async Task<HttpResponseMessage> Post(string uploadRequestId, string returnType = "redirect")
         {
             Debug.Assert(uploadRequestId != null);
 
@@ -55,9 +58,20 @@ namespace MewPipe.VideosRepository.Controllers.API
 
             var video = await videoApiService.UploadVideoFromMultipartRequest(Request, uploadRequestId);
 
-            //TODO: HANDLE UPLOAD
+            if (returnType == "redirect")
+            {
+                var response = Request.CreateResponse(HttpStatusCode.Moved);
+                response.Headers.Location = new Uri(video.UploadRedirectUri + video.PublicId);
+                return response;
+            }
 
-            return "";
+            return new HttpResponseMessage
+            {
+                Content = new ObjectContent<dynamic>(new
+                {
+                    VideoId = video.PublicId
+                }, new JsonMediaTypeFormatter())
+            };
         }
     }
 }

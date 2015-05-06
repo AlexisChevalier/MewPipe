@@ -100,6 +100,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\RefreshTokenContract.cs" />
     <Compile Include="Contracts\AccessTokenContract.cs" />
     <Compile Include="Contracts\VideoContract.cs" />
     <Compile Include="Contracts\VideoUploadTokenContract.cs" />
@@ -135,6 +136,10 @@
     <Compile Include="Migrations\201504261258186_UpdatedQualityType.cs" />
     <Compile Include="Migrations\201504261258186_UpdatedQualityType.Designer.cs">
       <DependentUpon>201504261258186_UpdatedQualityType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504281850416_UpdatedVideo.cs" />
+    <Compile Include="Migrations\201504281850416_UpdatedVideo.Designer.cs">
+      <DependentUpon>201504281850416_UpdatedVideo.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\QualityType.cs" />
@@ -195,6 +200,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201504261258186_UpdatedQualityType.resx">
       <DependentUpon>201504261258186_UpdatedQualityType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504281850416_UpdatedVideo.resx">
+      <DependentUpon>201504281850416_UpdatedVideo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
