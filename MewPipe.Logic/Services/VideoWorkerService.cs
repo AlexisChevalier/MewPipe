@@ -10,91 +10,92 @@ using MongoDB.Driver.GridFS;
 
 namespace MewPipe.Logic.Services
 {
-    public interface IVideoWorkerService
-    {
-        Video GetVideoDetails(string videoId);
-        MongoGridFSStream GetVideoUploadedFile(Video video);
-        VideoFile AddVideoFile(string videoId, MimeType mimeType, QualityType qualityType, Stream fileStream);
-        void MarkVideoAsPublished(Video video);
-        void RemoveVideoUploadedFile(Video video);
-    }
+	public interface IVideoWorkerService
+	{
+		Video GetVideoDetails(string videoId);
+		MongoGridFSStream GetVideoUploadedFile(Video video);
+		VideoFile AddVideoFile(string videoId, MimeType mimeType, QualityType qualityType, Stream fileStream);
+		void MarkVideoAsPublished(Video video);
+		void RemoveVideoUploadedFile(Video video);
+	}
 
-    public class VideoWorkerService : IVideoWorkerService
-    {
-        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
-        Video IVideoWorkerService.GetVideoDetails(string videoId)
-        {
-            return GetVideoDetails(videoId);
-        }
+	public class VideoWorkerService : IVideoWorkerService
+	{
+		private readonly UnitOfWork _unitOfWork = new UnitOfWork();
 
-        public MongoGridFSStream GetVideoUploadedFile(Video video)
-        {
-            var videoService = new VideoGridFsClient();
+		Video IVideoWorkerService.GetVideoDetails(string videoId)
+		{
+			return GetVideoDetails(videoId);
+		}
 
-            if (video == null)
-            {
-                throw new NullReferenceException();
-            }
+		public MongoGridFSStream GetVideoUploadedFile(Video video)
+		{
+			var videoService = new VideoGridFsClient();
 
-            var originalFile = video.GetOriginalFile();
+			if (video == null)
+			{
+				throw new NullReferenceException();
+			}
 
-            return videoService.GetVideoStream(new ObjectId(originalFile.GridFsId));
-        }
+			var originalFile = video.GetOriginalFile();
 
-        public VideoFile AddVideoFile(string videoId, MimeType mimeType, QualityType qualityType, Stream fileStream)
-        {
-            var videoService = new VideoGridFsClient();
+			return videoService.GetVideoStream(new ObjectId(originalFile.GridFsId));
+		}
 
-            var video = GetVideoDetails(videoId);
+		public VideoFile AddVideoFile(string videoId, MimeType mimeType, QualityType qualityType, Stream fileStream)
+		{
+			var videoService = new VideoGridFsClient();
 
-            var dbMimeType = _unitOfWork.MimeTypeRepository.GetById(mimeType.Id);
-            var dbQualityType = _unitOfWork.QualityTypeRepository.GetById(qualityType.Id);
+			var video = GetVideoDetails(videoId);
 
-            var result = videoService.CreateVideoWithStream(fileStream, videoId);
+			var dbMimeType = _unitOfWork.MimeTypeRepository.GetById(mimeType.Id);
+			var dbQualityType = _unitOfWork.QualityTypeRepository.GetById(qualityType.Id);
 
-            var videoFile = new VideoFile
-            {
-                GridFsId = result.Id.ToString(),
-                IsOriginalFile = false,
-                MimeType = dbMimeType,
-                QualityType = dbQualityType,
-                Video = video
-            };
+			var result = videoService.CreateVideoWithStream(fileStream, videoId);
 
-            _unitOfWork.VideoFileRepository.Insert(videoFile);
-            _unitOfWork.Save();
+			var videoFile = new VideoFile
+			{
+				GridFsId = result.Id.ToString(),
+				IsOriginalFile = false,
+				MimeType = dbMimeType,
+				QualityType = dbQualityType,
+				Video = video
+			};
 
-            return videoFile;
-        }
+			_unitOfWork.VideoFileRepository.Insert(videoFile);
+			_unitOfWork.Save();
 
-        public void MarkVideoAsPublished(Video video)
-        {
-            var dbVideo = GetVideoDetails(video.PublicId);
+			return videoFile;
+		}
 
-            dbVideo.Status = Video.StatusTypes.Published;
+		public void MarkVideoAsPublished(Video video)
+		{
+			var dbVideo = GetVideoDetails(video.PublicId);
 
-            _unitOfWork.VideoRepository.Update(dbVideo);
-            _unitOfWork.Save();
-        }
+			dbVideo.Status = Video.StatusTypes.Published;
 
-        public void RemoveVideoUploadedFile(Video video)
-        {
-            var file = video.GetOriginalFile();
+			_unitOfWork.VideoRepository.Update(dbVideo);
+			_unitOfWork.Save();
+		}
 
-            var videoService = new VideoGridFsClient();
+		public void RemoveVideoUploadedFile(Video video)
+		{
+			var file = video.GetOriginalFile();
 
-            videoService.RemoveFile(new ObjectId(file.GridFsId));
+			var videoService = new VideoGridFsClient();
 
-            _unitOfWork.VideoFileRepository.Delete(file.Id);
-        }
+			videoService.RemoveFile(new ObjectId(file.GridFsId));
 
-        public Video GetVideoDetails(string publicVideoId)
-        {
-            Debug.Assert(publicVideoId != null);
+			_unitOfWork.VideoFileRepository.Delete(file.Id);
+		}
 
-            var id = ShortGuid.Decode(publicVideoId);
+		public Video GetVideoDetails(string publicVideoId)
+		{
+			Debug.Assert(publicVideoId != null);
 
-            return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
-        }
-    }
+			var id = ShortGuid.Decode(publicVideoId);
+
+			return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
+		}
+	}
 }

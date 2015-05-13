@@ -1,88 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace MewPipe.Website
 {
-    public class RouteConfig
-    {
-        public static void RegisterRoutes(RouteCollection routes)
-        {
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+	public class RouteConfig
+	{
+		public static void RegisterRoutes(RouteCollection routes)
+		{
+			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            /** Home **/
-            routes.MapRoute(
-                name: "HomePage",
-                url: "",
-                defaults: new { controller = "Home", action = "Index" }
-            );
+			/** Home **/
+			routes.MapRoute("HomePage", "", new {controller = "Home", action = "Index"}
+				);
 
-            routes.MapRoute(
-                name: "AboutPage",
-                url: "about",
-                defaults: new { controller = "Home", action = "About" }
-            );
+			routes.MapRoute("AboutPage", "about", new {controller = "Home", action = "About"}
+				);
 
-            routes.MapRoute(
-                name: "TermsOfUsePage",
-                url: "termsOfUse",
-                defaults: new { controller = "Home", action = "TermsOfUse" }
-            );
+			routes.MapRoute("TermsOfUsePage", "termsOfUse", new {controller = "Home", action = "TermsOfUse"}
+				);
 
-            routes.MapRoute(
-                name: "PrivacyPage",
-                url: "privacy",
-                defaults: new { controller = "Home", action = "Privacy" }
-            );
+			routes.MapRoute("PrivacyPage", "privacy", new {controller = "Home", action = "Privacy"}
+				);
 
-            /** Videos **/
+			/** Videos **/
 
-            routes.MapRoute(
-                name: "VideoPage",
-                url: "v/{videoId}",
-                defaults: new { controller = "Videos", action = "Index" }
-            );
+			routes.MapRoute("VideoPage", "v/{videoId}", new {controller = "Videos", action = "Index"}
+				);
 
-            routes.MapRoute(
-                name: "UserVideoUploadPage",
-                url: "myVideos/upload",
-                defaults: new { controller = "Videos", action = "UploadVideo" }
-            );
+			routes.MapRoute("UserVideoUploadPage", "myVideos/upload", new {controller = "Videos", action = "UploadVideo"}
+				);
 
-            routes.MapRoute(
-                name: "UserVideoEditPage",
-                url: "myVideos/edit/{videoId}",
-                defaults: new { controller = "Videos", action = "EditVideo" }
-            );
+			routes.MapRoute("UserVideoEditPage", "myVideos/edit/{videoId}",
+				new {controller = "Videos", action = "EditVideo", videoId = UrlParameter.Optional}
+				);
 
-            routes.MapRoute(
-                name: "UserVideosPage",
-                url: "myVideos",
-                defaults: new { controller = "Videos", action = "UserVideos" }
-            );
+			routes.MapRoute("UserVideosPage", "myVideos", new {controller = "Videos", action = "UserVideos"}
+				);
 
-            /** Auth **/
+			/** Auth **/
 
-            routes.MapRoute(
-                name: "LoginRedirect",
-                url: "auth/login",
-                defaults: new { controller = "Auth", action = "Login" }
-            );
+			routes.MapRoute("LoginRedirect", "auth/login", new {controller = "Auth", action = "Login"}
+				);
 
-            routes.MapRoute(
-                name: "OAuthEndpoint",
-                url: "auth/HandleOAuthRedirect",
-                defaults: new { controller = "Auth", action = "HandleOAuthRedirect" }
-            );
+			routes.MapRoute("OAuthEndpoint", "auth/HandleOAuthRedirect",
+				new {controller = "Auth", action = "HandleOAuthRedirect"}
+				);
 
-            routes.MapRoute(
-                name: "LogOff",
-                url: "auth/LogOff",
-                defaults: new { controller = "Auth", action = "LogOff" }
-            );
-        }
-    }
+			routes.MapRoute("LogOff", "auth/LogOff", new {controller = "Auth", action = "LogOff"}
+				);
+		}
+	}
 }
