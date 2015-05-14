@@ -18,11 +18,19 @@ namespace MewPipe.Website
                     "~/Scripts/jquery.flashMessage.js"
                     ));
 
+            bundles.Add(new ScriptBundle("~/scripts/upload").Include(
+                    "~/Scripts/uploader.js",
+                    "~/Scripts/Site/upload.js"
+                    ));
+
             bundles.Add(new StyleBundle("~/styles").Include(
                       "~/Content/Libs/bootstrap.css",
                       "~/Content/Libs/bootstrap-social.css",
                       "~/Content/Libs/font-awesome.css",
                       "~/Content/Main.css"));
+
+            bundles.Add(new StyleBundle("~/styles/upload").Include(
+                      "~/Content/UploadVideo.css"));
         }
     }
 }

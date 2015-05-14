@@ -21,11 +21,13 @@ namespace MewPipe.Website.Controllers
 			return View();
 		}
 
+        [SiteAuthorize]
 		public ActionResult UserVideos()
 		{
 			return View();
 		}
 
+        [SiteAuthorize]
 		public async Task<ActionResult> UploadVideo()
 		{
 			_apiClient.SetBearerToken(Request.GetIdentity().AccessToken.access_token);
@@ -39,7 +41,7 @@ namespace MewPipe.Website.Controllers
 			return View();
 		}
 
-
+        [SiteAuthorize]
 		public async Task<ActionResult> EditVideo(string videoId)
 		{
 			_apiClient.SetBearerToken(Request.GetIdentity().AccessToken.access_token);
@@ -48,6 +50,7 @@ namespace MewPipe.Website.Controllers
 		}
 
 		[HttpPost]
+        [SiteAuthorize]
 		public async Task<ActionResult> EditVideo(ValidateUploadedVideoViewModel viewModel)
 		{
 			return View();

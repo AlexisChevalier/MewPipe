@@ -233,6 +233,12 @@
     <Content Include="Content\Main.min.css">
       <DependentUpon>Main.css</DependentUpon>
     </Content>
+    <Content Include="Content\UploadVideo.css">
+      <DependentUpon>UploadVideo.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\UploadVideo.min.css">
+      <DependentUpon>UploadVideo.css</DependentUpon>
+    </Content>
     <Content Include="Content\Vendors\BootstrapButtons.css">
       <DependentUpon>BootstrapButtons.scss</DependentUpon>
     </Content>
@@ -286,7 +292,12 @@
     <Content Include="fonts\noteworthy.ttf" />
     <Content Include="fonts\noteworthy.woff" />
     <Content Include="Configuration\connectionstrings.config" />
+    <Content Include="Content\UploadVideo.scss" />
+    <Content Include="Content\UploadVideo.css.map">
+      <DependentUpon>UploadVideo.css</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\uploader.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -299,6 +310,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\Site\upload.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
