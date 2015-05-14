@@ -1,5 +1,19 @@
 ﻿@{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Your Videos";
 }
 
-<h2>USER VIDEOS</h2>
+<h2>Your Videos</h2>
+
+<ul class="list-group">
+    @foreach (var video in ViewBag.videos)
+    {
+        var name = String.IsNullOrWhiteSpace(video.Name) ? "Unnamed video" : video.Name;
+        var description = String.IsNullOrWhiteSpace(video.Description) ? "No description" : video.Description;
+
+        <li class="list-group-item">
+            <a href="/v/@video.PublicId">@name</a> - <a href="/myVideos/edit/@video.PublicId">Edit</a>
+            <br />
+            @description
+        </li>
+    }
+</ul>

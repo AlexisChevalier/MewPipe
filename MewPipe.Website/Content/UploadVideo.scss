@@ -51,30 +51,14 @@
         background-color: #fcfcfc;
         .fakeButton {
             background-color: #a91020;
+            background: #f26d6d;
         }
     }
 }
-
-.button {
-    cursor: pointer;
-    background-color: #e1172c;
-	padding: 5px 15px;
-	color: white;
-	padding: 6px 0px;
-	font-size: 14px;
-	font-weight: bold;
-	border-radius: 2px;
-	position: relative;
-	overflow: hidden;
-	display: block;
-	width: 300px;
-	margin: 10px auto 0px auto;
+button {
+    display: block;
+    margin-top: 15px;
 }
-
-.button:hover {
-    background-color: #a91020;
-}
-
 #fileView {
 	text-align: center;
 	display: none;

@@ -40,25 +40,12 @@
     border: 4px dashed #e1172c;
     background-color: #fcfcfc; }
     .uploader:hover .fakeButton {
-      background-color: #a91020; }
+      background-color: #a91020;
+      background: #f26d6d; }
 
-.button {
-  cursor: pointer;
-  background-color: #e1172c;
-  padding: 5px 15px;
-  color: white;
-  padding: 6px 0px;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
+button {
   display: block;
-  width: 300px;
-  margin: 10px auto 0px auto; }
-
-.button:hover {
-  background-color: #a91020; }
+  margin-top: 15px; }
 
 #fileView {
   text-align: center;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
@@ -39,43 +40,43 @@ namespace MewPipe.Logic.MongoDB
 
             if (parent == null || headers == null)
             {
-                throw new HttpException(400, "Invalid request");
+                throw new MongoDbMultipartStreamProviderException(HttpStatusCode.BadRequest, "Invalid request");
             }
 
             if (Contents.Count > 1)
             {
-                throw new HttpException(400, "You can only send one video at a time !");
+                throw new MongoDbMultipartStreamProviderException(HttpStatusCode.BadRequest, "You can only send one video at a time !");
             }
             
             if (parent.Headers.ContentLength > MaxRequestSizeInBytes) // 500mb + 1mb (http request size)
             {
-                throw new HttpException(400, "Your request is over the maximum request size (which is 524296192 bytes)");
+                throw new MongoDbMultipartStreamProviderException(HttpStatusCode.BadRequest, "Your request is over the maximum request size (which is 524296192 bytes)");
             }
 
             var contentDisposition = headers.ContentDisposition;
 
             if (contentDisposition == null)
             {
-                throw new HttpException(400, "'Content-Disposition' header field in MIME multipart body part not found.");
+                throw new MongoDbMultipartStreamProviderException(HttpStatusCode.BadRequest, "'Content-Disposition' header field in MIME multipart body part not found.");
             }
 
             if (string.IsNullOrEmpty(contentDisposition.FileName))
             {
-                throw new HttpException(400, "'Content-Disposition' header field in MIME multipart body part doesn't precise the filename, this request must only contains one single file and nothing else.");
+                throw new MongoDbMultipartStreamProviderException(HttpStatusCode.BadRequest, "'Content-Disposition' header field in MIME multipart body part doesn't precise the filename, this request must only contains one single file and nothing else.");
             }
 
             var contentType = headers.ContentType;
 
             if (contentType == null)
             {
-                throw new HttpException(400, "'Content-Type' header field in MIME multipart body part not found.");
+                throw new MongoDbMultipartStreamProviderException(HttpStatusCode.BadRequest, "'Content-Type' header field in MIME multipart body part not found.");
             }
 
             VideoMimeType = _videoMimeTypeService.GetAllowedMimeTypeForDecoding(contentType.MediaType);
 
             if (VideoMimeType == null)
             {
-                throw new HttpException(400, "Mime type " + contentType.MediaType + " is not allowed on our service");
+                throw new MongoDbMultipartStreamProviderException(HttpStatusCode.BadRequest, "Mime type " + contentType.MediaType + " is not allowed on our service");
             }
 
             VideoOptions = new MongoGridFSCreateOptions
@@ -91,7 +92,7 @@ namespace MewPipe.Logic.MongoDB
             }
             catch (Exception)
             {
-                throw new HttpException(500, "Unexpected server error. Please try again.");
+                throw new MongoDbMultipartStreamProviderException(HttpStatusCode.InternalServerError, "Unexpected server error. Please try again.");
             }
         }
 
@@ -120,6 +121,22 @@ namespace MewPipe.Logic.MongoDB
         private int GetRandomWaitingTime()
         {
             return Random.Next(100, 300);
+        }
+    }
+
+    public class MongoDbMultipartStreamProviderException : Exception
+    {
+        public MongoDbMultipartStreamProviderException(HttpStatusCode httpStatusCode, string message, Exception innerException)
+            : base(message, innerException)
+        {
+            HttpStatusCode = httpStatusCode;
+        }
+
+        public HttpStatusCode HttpStatusCode { get; set; }
+
+        public MongoDbMultipartStreamProviderException(HttpStatusCode httpStatusCode, string message) : base(message)
+        {
+            HttpStatusCode = httpStatusCode;
         }
     }
 }

@@ -1,5 +1,155 @@
-﻿@{
-    ViewBag.Title = "title";
+﻿@model MewPipe.Website.ViewModels.EditVideoViewModel
+@using MewPipe.Logic.Contracts
+@using MewPipe.Logic.Models
+@{
+    var video = ViewBag.VideoDetails as VideoContract;
+
+    ViewBag.Title = String.Format("Edit \"{0}\"", video.Name);
 }
 
-<h2>USER EDIT VIDEOS</h2>
+@section styles {
+    @Styles.Render("~/styles/editVideo")
+}
+
+<h2>@video.Name - Edition</h2>
+
+@using (Html.BeginForm("EditVideo", "Videos", FormMethod.Post))
+{
+    <div class="row">
+        <div class="col-md-6">
+            <div class="control">
+                @Html.LabelFor(m => m.Name)
+                <br />
+                @Html.TextBoxFor(m => m.Name, new { @placeholder = "Video Name" })
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="help">
+                <strong>The name</strong> of your video is important to help other users find your videos.
+                <br />
+                It will be used in our Search Engine to give the best suggestions for our users.
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="contentZone">
+        <label>Preview</label>
+        @if (video.Status != Video.StatusTypes.Published)
+        {
+            <div class="darken notReady">
+                <p>
+                    This video is currently being converted by our servers. It is not visible yet but you will receive a mail when you video will be available.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="darken player">
+                <video width="320" height="240" controls autoplay="autoplay">
+                    <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@video.PublicId" type="video/mp4">
+                </video>
+            </div>
+        }
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="control">
+                @Html.LabelFor(m => m.Description)
+                <br />
+                @Html.TextAreaFor(m => m.Description)
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="help">
+                <strong>The description</strong> of your video is here to add a textual description to your video.
+                <br />
+                You can add some details, links, transaltions, summary or anything that you want here.
+                <br />
+                Depending on the relevancy of the description, it may be used in the Search Engine.
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="control">
+                @Html.LabelFor(m => m.PrivacyStatus)
+                <br />
+                @Html.EnumDropDownListFor(m => m.PrivacyStatus)
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="help">
+                <strong>Public</strong> will put your video in our Search Engine and it will be available publicly and in the search module.
+                <br />
+                <strong>Link Only</strong> won't index your video in our Search Engine and it will be available only to the people that have the link.
+                <br />
+                <strong>Private</strong> will give the access to your video through a White-List (if this option is selected you can modify this white list below).
+            </div>
+        </div>
+    </div>
+    <div class="buttonZone">
+        <button class="btn btn-danger raised" type="submit">Update my video</button>
+    </div>
+
+}
+@if (video.PrivacyStatus == Video.PrivacyStatusTypes.Private)
+{
+
+    <hr class="sep" />
+
+    <h2>Video's White List</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="control">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        Jacques Dupont (jacques.dupont@gmail.com) - <a href="#">Remove</a>
+                    </li>
+                    <li class="list-group-item">
+                        Antoine Machin (antoine.machin@gmail.com) - <a href="#">Remove</a>
+                    </li>
+                    <li class="list-group-item">
+                        Jean Truc (jean.truc@gmail.com) - <a href="#">Remove</a>
+                    </li>
+                </ul>
+                <label for="addWhileListPerson">Add a person (Type the user's email)</label>
+                <input id="addWhileListPerson" type="text" placeholder="User's email" />
+                <p class="text-right" style="margin-top: 15px;">
+                    <button class="btn btn-danger btn-sm raised" type="submit">Add to my video's white list</button>
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="help">
+                <strong>Your video is currently in private mode. </strong>
+                <br />
+                This means that only you and the persons in the list on the left can access your video.
+            </div>
+        </div>
+    </div>
+}
+
+<hr class="sep" />
+
+<h2>Delete this video</h2>
+<div class="row">
+    <div class="col-md-6">
+        <div class="help">
+            <strong>Deleting this video will be definitive.</strong>
+            <br />
+            You won't be able to get back the files and the video won't be available anymore on MewPipe.
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="control">
+            <button class="btn btn-default raised btn-block" type="submit">Delete this video (Definitively)</button>
+        </div>
+    </div>
+</div>
+<p>
+
+</p>
+<div class="buttonZone">
+</div>

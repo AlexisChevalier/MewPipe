@@ -206,6 +206,12 @@
     <Content Include="Content\Accounting.min.css">
       <DependentUpon>Accounting.css</DependentUpon>
     </Content>
+    <Content Include="Content\EditVideo.css">
+      <DependentUpon>EditVideo.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\EditVideo.min.css">
+      <DependentUpon>EditVideo.css</DependentUpon>
+    </Content>
     <Content Include="Content\Errors.css">
       <DependentUpon>Errors.scss</DependentUpon>
     </Content>
@@ -296,6 +302,10 @@
     <Content Include="Content\UploadVideo.css.map">
       <DependentUpon>UploadVideo.css</DependentUpon>
     </Content>
+    <Content Include="Content\EditVideo.scss" />
+    <Content Include="Content\EditVideo.css.map">
+      <DependentUpon>EditVideo.css</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\uploader.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -341,7 +351,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
     <Folder Include="Views\Auth\" />
   </ItemGroup>
   <ItemGroup>

@@ -17,7 +17,7 @@
         <h2>Upload a new video</h2>
         <div>Drop your video file here</div>
         <div class="or">- or -</div>
-        <span class="fakeButton button">Click to open the file browser</span>
+        <button class="btn btn-danger raised fakeButton" type="submit">Click to open the file browser</button>
         <label>
             <input type="file" name="video" title="">
         </label>
@@ -43,9 +43,10 @@
         <h2>Your video is being converted by our servers ...</h2>
         <p>
             It could take some time. While we are busy with your video, you can start to edit its properties.
-            <div id="editVideo" class="button">
-                Edit my video's parameters
-            </div>
+            <br/>
+            <button id="editVideo" class="btn btn-danger raised" onclick=" location.reload() ">
+                 Edit my video's parameters
+            </button>
         </p>
     </div>
 
@@ -53,9 +54,10 @@
         <h2>An unexpected error occured</h2>
         <p>
             There was an error uploading your video. Please verify that your file is conform to MewPipe requirements and reload the page to try again.
-            <div class="button" onclick="location.reload()">
+            <br />
+            <button class="btn btn-danger raised" onclick="location.reload()">
                 Reload the page
-            </div>
+            </button>
         </p>
     </div>
 </div>

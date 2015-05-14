@@ -31,6 +31,9 @@ namespace MewPipe.Website
 
             bundles.Add(new StyleBundle("~/styles/upload").Include(
                       "~/Content/UploadVideo.css"));
+
+            bundles.Add(new StyleBundle("~/styles/editVideo").Include(
+                      "~/Content/EditVideo.css"));
         }
     }
 }

@@ -29,8 +29,8 @@ window.uploadVideoModule = window.uploadVideoModule || {};
     }
 
     function onNewFile(id, file) {
-        $elements.dropZone.fadeOut(300);
-        $elements.fileView.fadeIn(300);
+        $elements.dropZone.hide();
+        $elements.fileView.show();
 
         $elements.videoFileName.text(file.name);
         window.onbeforeunload = confirmExit;
@@ -57,26 +57,26 @@ window.uploadVideoModule = window.uploadVideoModule || {};
 
     function onUploadSuccess(id, data) {
         $elements.progressBarInner.width("100%");
-        $elements.fileView.fadeOut(300);
-        $elements.doneView.fadeIn(300);
+        $elements.fileView.hide();
+        $elements.doneView.show();
         uploadedVideoId = data.VideoId;
         window.onbeforeunload = null;
     }
 
     function onUploadError(id, message) {
-        $elements.dropZone.fadeOut(300);
-        $elements.errorView.fadeOut(300);
-        $elements.fileView.fadeOut(300);
-        $elements.doneView.fadeIn(300);
+        $elements.dropZone.hide();
+        $elements.errorView.hide();
+        $elements.fileView.hide();
+        $elements.doneView.show();
         window.onbeforeunload = null;
     }
 
     function onFileTypeError(file) {
-        FlashMessages.setMessage("danger", message);
+        FlashMessages.setMessage("danger", "The file type you selected is not accepted by MewPipe.");
     }
 
     function onFileSizeError(file) {
-        FlashMessages.setMessage("danger", message);
+        FlashMessages.setMessage("danger", "The video file you selected is too large. MewPipe only accepts files up to 500 MB.");
     }
 
     function getDmUploaderOptions() {
