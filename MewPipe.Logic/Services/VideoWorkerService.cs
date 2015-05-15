@@ -17,6 +17,9 @@ namespace MewPipe.Logic.Services
 		VideoFile AddVideoFile(string videoId, MimeType mimeType, QualityType qualityType, Stream fileStream);
 		void MarkVideoAsPublished(Video video);
 		void RemoveVideoUploadedFile(Video video);
+
+		//TODO: To be implemented:
+		MongoGridFSStream GetStreamToAddConvertedVideo(string videoId, string format, string quality);
 	}
 
 	public class VideoWorkerService : IVideoWorkerService
@@ -96,6 +99,18 @@ namespace MewPipe.Logic.Services
 			var id = ShortGuid.Decode(publicVideoId);
 
 			return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
+		}
+
+		/// <summary>
+		/// Retourne un MongoGridFSStream qui pointe sur le bon endroit de mongo en fonction de l'id de la video, le format et la qualité.
+		/// </summary>
+		/// <param name="videoId">L'id de la video originale dont la video covertit provient.</param>
+		/// <param name="format">Le format de la video convertie (valeurs: "mp4" ou "ogg" (faire un enum ?)</param>
+		/// <param name="quality">La qualité de la video convertie (valeurs: "1080" ou "720" ou "480"  ou "360" (faire un enum ?)</param>
+		/// <returns>Un MongoGridFSStream qui pointe sur le bon endroit de mongo en fonction de l'id de la video, le format et la qualité.</returns>
+		public MongoGridFSStream GetStreamToAddConvertedVideo(string videoId, string format, string quality)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
