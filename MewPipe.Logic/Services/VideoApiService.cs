@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Http;
 using MewPipe.Logic.Contracts;
 using MewPipe.Logic.Helpers;
 using MewPipe.Logic.Models;
@@ -27,6 +28,12 @@ namespace MewPipe.Logic.Services
 		VideoUploadToken GenerateVideoUploadToken(VideoUploadTokenRequestContract request, User user);
 		VideoUploadToken GetVideoUploadToken(string tokenId, User user);
 		Video GetVideo(string videoId, User user);
+		Video[] GetUserVideos(User user);
+        Video UpdateVideo(string videoId, User user, VideoUpdateContract contract);
+        UserContract[] GetVideoWhiteList(string videoId, User user);
+        UserContract[] AddUserToWhiteList(string videoId, string usertoAddEmail, User user);
+        UserContract[] RemoveUserFromWhiteList(string videoId, string usertoAddId, User user);
+	    Video DeleteVideo(string videoId, User user);
 	}
 
 	public class VideoApiService : IVideoApiService
@@ -40,13 +47,21 @@ namespace MewPipe.Logic.Services
 			var videoDetails = GetVideoDetails(videoId);
 
 			if (videoDetails == null)
-			{
-				throw new HttpException(404, "Video not found");
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Unauthorized")
+                });
 			}
 
 			if (!IsUserAllowedToSeeVideo(videoId, user))
-			{
-				throw new HttpException(401, "Unauthorized");
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Unauthorized")
+                });
 			}
 
 			var file = videoDetails.GetVideoFile();
@@ -67,15 +82,23 @@ namespace MewPipe.Logic.Services
 			var token = GetVideoUploadTokenAndUserForId(tokenId);
 
 			if (!IsTokenValid(token))
-			{
-				throw new HttpException(401, "Unauthorized");
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Unauthorized")
+                });
 			}
 
 			//Upload
 
 			if (!request.Content.IsMimeMultipartContent())
 			{
-				throw new HttpException(406, "Content-Type must me multipart/form-data");
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotAcceptable,
+                    Content = new StringContent("Content-Type must me multipart/form-data")
+                });
 			}
 
 			var streamProvider = new MongoDbMultipartStreamProvider();
@@ -86,26 +109,40 @@ namespace MewPipe.Logic.Services
 			}
 			catch (IOException e)
 			{
-				var httpException = e.InnerException.InnerException;
-				throw httpException;
+				var httpException = e.InnerException.InnerException as MongoDbMultipartStreamProviderException;
+			    if (httpException == null)
+			    {
+			        throw;
+			    }
+
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = httpException.HttpStatusCode,
+                    Content = new StringContent(httpException.Message)
+                });
 			}
 			catch (Exception)
 			{
-				throw new HttpException(500, "Error while uploading video. Please try again.");
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Content = new StringContent("Error while uploading video. Please try again.")
+                });
 			}
 
 			var details = streamProvider.VideoOptions;
 			var video = new Video
 			{
 				AllowedUsers = new List<User>(),
-				Description = null,
-				Name = null,
+				Description = "",
+				Name = "New Video",
 				PrivacyStatus = Video.PrivacyStatusTypes.Private,
 				Status = Video.StatusTypes.Processing,
 				User = token.User,
 				VideoFiles = new List<VideoFile>(),
 				NotificationHookUri = token.NotificationHookUri,
-				UploadRedirectUri = token.UploadRedirectUri
+				UploadRedirectUri = token.UploadRedirectUri,
+                DateTimeUtc = DateTime.UtcNow
 			};
 
 			var mimeTypeService = new VideoMimeTypeService(_unitOfWork);
@@ -143,7 +180,11 @@ namespace MewPipe.Logic.Services
 
 			if (!IsTokenValid(token))
 			{
-				throw new HttpException(401, "Unauthorized");
+			    throw new HttpResponseException(new HttpResponseMessage
+			    {
+			        StatusCode = HttpStatusCode.Unauthorized,
+			        Content = new StringContent("Unauthorized")
+			    });
 			}
 			return token;
 		}
@@ -156,25 +197,214 @@ namespace MewPipe.Logic.Services
 
 			if (videoDetails == null)
 			{
-				throw new HttpException(404, "Video not found");
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("Video not found")
+                });
 			}
 
 			if (!IsUserAllowedToSeeVideo(videoId, user))
 			{
-				throw new HttpException(401, "Unauthorized");
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Unauthorized")
+                });
 			}
 
 			return videoDetails;
 		}
 
-		public VideoUploadToken GenerateVideoUploadToken(VideoUploadTokenRequestContract request, User user)
+	    public Video[] GetUserVideos(User user)
+	    {
+	        return GetUserVideos(user.Id);
+	    }
+
+	    public Video UpdateVideo(string videoId, User user, VideoUpdateContract contract)
+	    {
+	        var video = GetVideoDetails(videoId);
+
+	        if (video.User.Id != user.Id)
+	        {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Unauthorized")
+                });
+	        }
+
+	        video.Name = contract.Name;
+	        video.Description = contract.Description;
+	        if (contract.PrivacyStatus != Video.PrivacyStatusTypes.Private)
+	        {
+	            video.AllowedUsers = new List<User>();
+	        }
+	        video.PrivacyStatus = contract.PrivacyStatus;
+
+            //TODO: Remove from search engine
+
+            _unitOfWork.VideoRepository.Update(video);
+            _unitOfWork.Save();
+	        return video;
+	    }
+
+	    public UserContract[] GetVideoWhiteList(string videoId, User user)
+	    {
+            var video = GetVideoDetails(videoId);
+
+            if (video.User.Id != user.Id)
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Unauthorized")
+                });
+            }
+
+	        return video.AllowedUsers.Select(u => new UserContract(u)).ToArray();
+	    }
+
+	    public UserContract[] AddUserToWhiteList(string videoId, string usertoAddEmail, User user)
+	    {
+            var video = GetVideoDetails(videoId);
+
+            if (video.User.Id != user.Id)
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Unauthorized")
+                });
+            }
+
+            if (video.PrivacyStatus != Video.PrivacyStatusTypes.Private)
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Video is not in private mode")
+                });
+            }
+
+	        var userToAdd = _unitOfWork.UserRepository.GetOne(u => u.Email == usertoAddEmail);
+
+	        if (userToAdd == null)
+	        {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("User not found")
+                });
+	        }
+
+	        if (video.AllowedUsers == null)
+	        {
+	            video.AllowedUsers = new List<User>();
+	        }
+
+            video.AllowedUsers.Add(userToAdd);
+
+            _unitOfWork.VideoRepository.Update(video);
+            _unitOfWork.Save();
+
+            return video.AllowedUsers.Select(u => new UserContract(u)).ToArray();
+	    }
+
+	    public UserContract[] RemoveUserFromWhiteList(string videoId, string usertoAddId, User user)
+	    {
+            var video = GetVideoDetails(videoId);
+
+            if (video.User.Id != user.Id)
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Unauthorized")
+                });
+            }
+
+            if (video.PrivacyStatus != Video.PrivacyStatusTypes.Private)
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Video is not in private mode")
+                });
+            }
+
+            var userToRemove = video.AllowedUsers.FirstOrDefault(u => u.Id == usertoAddId);
+
+            if (userToRemove == null)
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("User not found")
+                });
+            }
+
+	        if (video.AllowedUsers == null)
+	        {
+	            video.AllowedUsers = new List<User>();
+	        }
+	        else
+	        {
+                video.AllowedUsers.Remove(userToRemove);
+            }
+            _unitOfWork.VideoRepository.Update(video);
+            _unitOfWork.Save();
+
+            return video.AllowedUsers.Select(u => new UserContract(u)).ToArray();
+	    }
+
+	    public Video DeleteVideo(string videoId, User user)
+	    {
+            var video = GetVideoDetails(videoId);
+	        var videoGridFsClient = new VideoGridFsClient();
+
+            if (video.User.Id != user.Id)
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Unauthorized")
+                });
+            }
+
+            //TODO: remove from search engine
+
+            video.Status = Video.StatusTypes.Processing;
+
+            _unitOfWork.VideoRepository.Update(video);
+            _unitOfWork.Save();
+
+	        foreach (var videoFile in video.VideoFiles)
+	        {
+                videoGridFsClient.RemoveFile(new ObjectId(videoFile.GridFsId));
+	        }
+
+            _unitOfWork.VideoRepository.Delete(video);
+            _unitOfWork.Save();
+
+            //TODO: This has probably failed because i'm a noob with the constraints in Entity Framework.
+            //TODO: We will need to check this
+
+	        return video;
+	    }
+
+	    public VideoUploadToken GenerateVideoUploadToken(VideoUploadTokenRequestContract request, User user)
 		{
 			Debug.Assert(request != null);
 			Debug.Assert(user != null);
 
 			if (request == null || user == null)
 			{
-				throw new HttpException(400, "Invalid parameters");
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Content = new StringContent("Invalid Parameters")
+                });
 			}
 
 			user = _unitOfWork.UserRepository.GetById(user.Id);
@@ -231,13 +461,20 @@ namespace MewPipe.Logic.Services
 			return videoService.GetVideoStream(gridVideoId);
 		}
 
+        private Video[] GetUserVideos(string userId)
+        {
+            Debug.Assert(userId != null);
+
+            return _unitOfWork.VideoRepository.Get(v => v.User.Id == userId, q => q.OrderBy(v => v.DateTimeUtc), "VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType").ToArray();
+        }
+
 		private Video GetVideoDetails(string videoId)
 		{
 			Debug.Assert(videoId != null);
 
 			var id = ShortGuid.Decode(videoId);
 
-			return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
+            return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "AllowedUsers, User, VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
 		}
 
 		private bool IsUserAllowedToSeeVideo(string videoId, User user)
@@ -252,8 +489,8 @@ namespace MewPipe.Logic.Services
 				(
 					v.PrivacyStatus == Video.PrivacyStatusTypes.Public ||
 					v.PrivacyStatus == Video.PrivacyStatusTypes.LinkOnly ||
-					v.User == user ||
-					v.AllowedUsers.Contains(user)
+					v.User.Id == user.Id ||
+					v.AllowedUsers.Any(u => u.Id == user.Id)
 					)
 				).ToArray();
 

@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/styles")
+    <title>@ViewBag.Title - MewPipe</title>
+        @Styles.Render("~/styles")
+        @RenderSection("styles", required: false)
 
 </head>
 <body class="@ViewBag.BodyClass">
@@ -21,7 +22,7 @@
                     <a href="@Url.RouteUrl("HomePage")" class="navbar-brand">
                         <span class="black">Mew</span><span class="red">Pipe</span>
                     </a>
-                    <ul class="nav navbar-nav">
+                    <!--<ul class="nav navbar-nav">
                         <li>
                             <form class="search">
                                 <div class="form-group">
@@ -30,7 +31,7 @@
                                 </div>
                             </form>
                         </li>
-                    </ul>
+                    </ul>-->
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <div class="nav navbar-nav navbar-right">

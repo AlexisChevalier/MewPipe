@@ -93,6 +93,10 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -102,6 +106,7 @@
   <ItemGroup>
     <Compile Include="Contracts\RefreshTokenContract.cs" />
     <Compile Include="Contracts\AccessTokenContract.cs" />
+    <Compile Include="Contracts\VideoUpdateContract.cs" />
     <Compile Include="Contracts\VideoContract.cs" />
     <Compile Include="Contracts\VideoUploadTokenContract.cs" />
     <Compile Include="Contracts\UserContract.cs" />
@@ -140,6 +145,14 @@
     <Compile Include="Migrations\201504281850416_UpdatedVideo.cs" />
     <Compile Include="Migrations\201504281850416_UpdatedVideo.Designer.cs">
       <DependentUpon>201504281850416_UpdatedVideo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505141033272_UpdatedVideos1.cs" />
+    <Compile Include="Migrations\201505141033272_UpdatedVideos1.Designer.cs">
+      <DependentUpon>201505141033272_UpdatedVideos1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505141715351_UpdatedVideos2.cs" />
+    <Compile Include="Migrations\201505141715351_UpdatedVideos2.Designer.cs">
+      <DependentUpon>201505141715351_UpdatedVideos2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\QualityType.cs" />
@@ -203,6 +216,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201504281850416_UpdatedVideo.resx">
       <DependentUpon>201504281850416_UpdatedVideo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505141033272_UpdatedVideos1.resx">
+      <DependentUpon>201505141033272_UpdatedVideos1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505141715351_UpdatedVideos2.resx">
+      <DependentUpon>201505141715351_UpdatedVideos2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

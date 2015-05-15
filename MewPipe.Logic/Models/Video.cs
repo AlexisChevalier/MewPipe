@@ -17,15 +17,21 @@ namespace MewPipe.Logic.Models
     {    
         public enum StatusTypes
         {
+            [Display(Name = "Created")]
             Created,
+            [Display(Name = "Converted")]
             Processing,
+            [Display(Name = "Published")]
             Published
         }
 
         public enum PrivacyStatusTypes
         {
+            [Display(Name = "Public")]
             Public,
+            [Display(Name = "Link only")]
             LinkOnly,
+            [Display(Name = "Private")]
             Private
         }
 
@@ -41,6 +47,9 @@ namespace MewPipe.Logic.Models
         public ICollection<User> AllowedUsers { get; set; }
         [InverseProperty("Video")]
         public ICollection<VideoFile> VideoFiles { get; set; }
+
+        public DateTime DateTimeUtc { get; set; }
+        public long Seconds { get; set; }
 
         public string UploadRedirectUri { get; set; }
         public string NotificationHookUri { get; set; }

@@ -18,5 +18,10 @@ namespace MewPipe.ApiClient
         {
             return await _httpClient.SendGet<UserContract>("account");
         }
+
+        public async Task<VideoContract[]> GetUserVideos()
+        {
+            return await _httpClient.SendGet<VideoContract[]>("account/videos");
+        }
     }
 }

@@ -1,0 +1,51 @@
+﻿.control {  
+    padding: 15px;
+}
+.help {
+    padding: 15px;
+    font-style: italic;
+}
+
+hr {
+    border-color: #BBBBBB;
+}
+
+.contentZone {
+    padding: 15px;
+    margin-top: 20px;
+    .darken  {    
+        padding: 10px;
+        background-color: grey; 
+    }
+    .notReady {
+        text-align: center;
+        color: white;
+        font-size: 18px;
+        p {
+            margin: 0;
+        }
+    }
+    .player {
+
+    }
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+}
+input[type="text"] {
+    height: 40px;
+    width: 100%; 
+    padding-left: 10px;
+}
+
+select {
+    height: 40px;
+    width: 100%; 
+    padding-left: 10px;
+}
+
+.buttonZone {
+    text-align: center;
+}

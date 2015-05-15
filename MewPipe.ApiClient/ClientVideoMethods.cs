@@ -19,11 +19,38 @@ namespace MewPipe.ApiClient
             return await _httpClient.SendGet<VideoContract>("videos" + "/" + publicVideoId);
         }
 
+        public async Task<UserContract[]> GetVideoWhiteList(string publicVideoId)
+        {
+            return await _httpClient.SendGet<UserContract[]>("videos" + "/" + publicVideoId + "/whiteList");
+        }
+
+        public async Task<VideoContract> UpdateVideo(string publicVideoId, VideoUpdateContract contract)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(contract), Encoding.UTF8, "application/json");
+
+            return await _httpClient.SendPut<VideoContract>("videos" + "/" + publicVideoId, content);
+        }
+
         public async Task<VideoUploadTokenContract> RequestVideoUploadToken(VideoUploadTokenRequestContract contract)
         {
             var content = new StringContent(JsonConvert.SerializeObject(contract), Encoding.UTF8, "application/json");
 
             return await _httpClient.SendPost<VideoUploadTokenContract>("videos", content);
+        }
+
+        public async Task<VideoContract> DeleteVideo(string publicVideoId)
+        {
+            return await _httpClient.SendDelete<VideoContract>("videos" + "/" + publicVideoId);
+        }
+
+        public async Task<UserContract[]> RemoveUserFromWhiteList(string publicVideoId, string userId)
+        {
+            return await _httpClient.SendDelete<UserContract[]>("videos" + "/" + publicVideoId + "/whiteList?userId=" + userId);
+        }
+
+        public async Task<UserContract[]> AddUserToWhiteList(string publicVideoId, string userEmail)
+        {
+            return await _httpClient.SendPost<UserContract[]>("videos" + "/" + publicVideoId + "/whiteList?userEmail=" + userEmail);
         }
     }
 }

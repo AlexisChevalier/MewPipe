@@ -6,6 +6,7 @@ using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using MewPipe.Logic.Helpers;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Repositories;
@@ -16,6 +17,7 @@ using Newtonsoft.Json.Linq;
 
 namespace MewPipe.VideosRepository.Controllers.API
 {
+    [EnableCors(origins: "http://mewpipe.local:44402", headers: "*", methods: "*")]
     public class VideosDataController : ApiController
     {
         private readonly UnitOfWork _unitOfWork = new UnitOfWork();

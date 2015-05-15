@@ -1,10 +1,63 @@
 ﻿@{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Upload a video";
 }
 
-<h2>USER UPLOAD VIDEO</h2>
+@section scripts
+{
+    @Scripts.Render("~/scripts/upload")
+    <script type="text/javascript">
+        window.uploadVideoModule.setUploadUrl("http://videos-repository.mewpipe.local:44403/api/videosdata?uploadRequestId=@ViewBag.Token.Id&returnType=json");
+    </script>
+}
+@section styles {
+    @Styles.Render("~/styles/upload")
+}
+<div class="upload">
+    <div id="uploadZone" class="uploader">
+        <h2>Upload a new video</h2>
+        <div>Drop your video file here</div>
+        <div class="or">- or -</div>
+        <button class="btn btn-danger raised fakeButton" type="submit">Click to open the file browser</button>
+        <label>
+            <input type="file" name="video" title="">
+        </label>
+    </div>
 
-<form enctype="multipart/form-data" action="http://videos-repository.mewpipe.local:44403/api/videosdata?uploadRequestId=@ViewBag.Token.Id&returnType=redirect" method="POST">
-    <input name="video" type="file" />
-    <input type="submit" value="Envoyer le fichier" />
-</form>
+    <div id="fileView">
+        <h2>Uploading <span id="videoFileName"></span> ...</h2>
+        <div class="progressBar">
+            <div class="innerBar" id="innerProgressBar" style="width: 0">
+
+            </div>
+
+            <span class="percent" id="percent">
+                0%
+            </span>
+        </div>
+        <p>
+            We are currently uploading your video to our servers. Please don't close the window, it could take some time.
+        </p>
+    </div>
+
+    <div id="doneView">
+        <h2>Your video is being converted by our servers ...</h2>
+        <p>
+            It could take some time. While we are busy with your video, you can start to edit its properties.
+            <br/>
+            <button id="editVideo" class="btn btn-danger raised" onclick=" location.reload() ">
+                 Edit my video's parameters
+            </button>
+        </p>
+    </div>
+
+    <div id="errorView">
+        <h2>An unexpected error occured</h2>
+        <p>
+            There was an error uploading your video. Please verify that your file is conform to MewPipe requirements and reload the page to try again.
+            <br />
+            <button class="btn btn-danger raised" onclick="location.reload()">
+                Reload the page
+            </button>
+        </p>
+    </div>
+</div>
