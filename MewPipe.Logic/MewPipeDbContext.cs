@@ -28,5 +28,15 @@ namespace MewPipe.Logic
         {
             return new MewPipeDbContext();
         }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Video>()
+                .HasMany(v => v.VideoFiles)
+                .WithOptional()
+                .WillCascadeOnDelete(true);
+        }
     }
 }

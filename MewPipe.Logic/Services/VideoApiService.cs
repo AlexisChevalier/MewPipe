@@ -384,8 +384,8 @@ namespace MewPipe.Logic.Services
                 videoGridFsClient.RemoveFile(new ObjectId(videoFile.GridFsId));
 	        }
 
-            _unitOfWork.VideoRepository.Delete(video);
-            _unitOfWork.Save();
+	        _unitOfWork.VideoRepository.Delete(video);
+	        _unitOfWork.Save();
 
             //TODO: This has probably failed because i'm a noob with the constraints in Entity Framework.
             //TODO: We will need to check this

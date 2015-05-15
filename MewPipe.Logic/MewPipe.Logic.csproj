@@ -154,6 +154,10 @@
     <Compile Include="Migrations\201505141715351_UpdatedVideos2.Designer.cs">
       <DependentUpon>201505141715351_UpdatedVideos2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201505152011476_AddedCascadeConstraint.cs" />
+    <Compile Include="Migrations\201505152011476_AddedCascadeConstraint.Designer.cs">
+      <DependentUpon>201505152011476_AddedCascadeConstraint.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\QualityType.cs" />
     <Compile Include="Models\MimeType.cs" />
@@ -222,6 +226,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201505141715351_UpdatedVideos2.resx">
       <DependentUpon>201505141715351_UpdatedVideos2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505152011476_AddedCascadeConstraint.resx">
+      <DependentUpon>201505152011476_AddedCascadeConstraint.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

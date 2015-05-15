@@ -31,9 +31,11 @@ hr {
 }
 
 textarea {
+    padding: 10px;
     width: 100%;
     height: 100px;
 }
+
 input[type="text"] {
     height: 40px;
     width: 100%; 
@@ -47,5 +49,18 @@ select {
 }
 
 .buttonZone {
+    text-align: center;
+}
+
+.input-validation-error {
+}
+
+.field-validation-error {
+    background-color: #e1172c;
+    color: white;
+    padding: 5px;
+    font-weight: bold;
+    width: 100%;
+    display: block;
     text-align: center;
 }

@@ -16,6 +16,7 @@ namespace MewPipe.API.Controllers.API
 {
     public class VideosController : ApiController
     {
+        [HttpGet]
         [Route("api/videos/{publicVideoId}")]
         [Oauth2AuthorizeFilter(AllowAnonymousUsers = true)]
         public VideoContract Get(string publicVideoId)
@@ -41,6 +42,7 @@ namespace MewPipe.API.Controllers.API
             return new VideoUploadTokenContract(token);
         }
 
+        [HttpPut]
         [Route("api/videos/{publicVideoId}")]
         [Oauth2AuthorizeFilter]
         public VideoContract PutUpdateBasicVideoDetails(string publicVideoId, [FromBody]VideoUpdateContract contract)
@@ -55,6 +57,7 @@ namespace MewPipe.API.Controllers.API
             return new VideoContract(updatedVideo);
         }
 
+        [HttpDelete]
         [Route("api/videos/{publicVideoId}")]
         [Oauth2AuthorizeFilter]
         public VideoContract DeleteVideo(string publicVideoId)
@@ -68,6 +71,7 @@ namespace MewPipe.API.Controllers.API
             return new VideoContract(deletedVideo);
         }
 
+        [HttpGet]
         [Route("api/videos/{publicVideoId}/whiteList")]
         [Oauth2AuthorizeFilter]
         public UserContract[] GetVideoWhiteList(string publicVideoId)
@@ -81,6 +85,7 @@ namespace MewPipe.API.Controllers.API
             return whiteList;
         }
 
+        [HttpPost]
         [Route("api/videos/{publicVideoId}/whiteList")]
         [Oauth2AuthorizeFilter]
         public UserContract[] PostUserToWhiteList(string publicVideoId, string userEmail)
@@ -95,6 +100,7 @@ namespace MewPipe.API.Controllers.API
             return whiteList;
         }
 
+        [HttpDelete]
         [Route("api/videos/{publicVideoId}/whiteList")]
         [Oauth2AuthorizeFilter]
         public UserContract[] DeleteUserFromWhiteList(string publicVideoId, string userId)

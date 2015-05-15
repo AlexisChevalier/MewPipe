@@ -45,7 +45,7 @@ namespace MewPipe.Logic.Models
         public PrivacyStatusTypes PrivacyStatus { get; set; }
         [InverseProperty("VideosSharedWithMe")]
         public ICollection<User> AllowedUsers { get; set; }
-        [InverseProperty("Video")]
+        //[InverseProperty("Video")]
         public ICollection<VideoFile> VideoFiles { get; set; }
 
         public DateTime DateTimeUtc { get; set; }

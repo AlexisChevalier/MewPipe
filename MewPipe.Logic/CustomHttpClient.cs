@@ -60,6 +60,7 @@ namespace MewPipe.Logic
             {
                 throw new HttpResponseException(result);
             }
+
             return JsonConvert.DeserializeObject<T>(stringContent);
         }
 
@@ -100,7 +101,7 @@ namespace MewPipe.Logic
         }
         public async Task<T> SendPut<T>(string relativeUri, HttpContent data = null, string endpointOverrider = null)
         {
-            var result = await _httpClient.PostAsync((endpointOverrider ?? _endpoint) + relativeUri, data);
+            var result = await _httpClient.PutAsync((endpointOverrider ?? _endpoint) + relativeUri, data);
 
             if (result.StatusCode == HttpStatusCode.Forbidden)
             {

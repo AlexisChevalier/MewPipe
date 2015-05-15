@@ -26,4 +26,20 @@ namespace MewPipe.Website.ViewModels
         [Required(ErrorMessage = "Please select a valid privacy mode")]
         public Video.PrivacyStatusTypes PrivacyStatus { get; set; }
     }
+    public class DeleteVideoViewModel
+    {
+        [Required(ErrorMessage = "Invalid Video")]
+        public string PublicId { get; set; }
+    }
+
+    public class AddUserToVideoWhiteListViewModel
+    {
+        [Required(ErrorMessage = "Invalid Video")]
+        public string PublicId { get; set; }
+
+        [Display(Name = "User Email")]
+        [Required(ErrorMessage = "Please type a valid name")]
+        [EmailAddress(ErrorMessage = "Please type a valid email address")]
+        public string UserEmail { get; set; }
+    }
 }

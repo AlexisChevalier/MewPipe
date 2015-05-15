@@ -1,4 +1,5 @@
-﻿@{
+﻿@using EntityFramework.Extensions
+@{
     ViewBag.Title = "Your Videos";
 }
 
@@ -12,8 +13,14 @@
 
         <li class="list-group-item">
             <a href="/v/@video.PublicId">@name</a> - <a href="/myVideos/edit/@video.PublicId">Edit</a>
-            <br />
+            <br/>
             @description
         </li>
     }
 </ul>
+@if (ViewBag.videos == null || ViewBag.videos.Length == 0)
+{
+    <p>
+        You don't have any video yet.
+    </p>
+}

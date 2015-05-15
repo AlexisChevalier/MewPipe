@@ -348,6 +348,8 @@
     <Content Include="Views\Videos\UploadVideo.cshtml" />
     <Content Include="Views\Videos\UserVideos.cshtml" />
     <Content Include="Views\Videos\ValidateUploadedVideo.cshtml" />
+    <Content Include="Views\Videos\_DeleteVideoForm.cshtml" />
+    <Content Include="Views\Videos\_AddUserToVideoWhiteListForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

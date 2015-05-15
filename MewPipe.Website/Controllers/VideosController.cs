@@ -2,8 +2,10 @@
 using System.Configuration;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Routing;
 using MewPipe.ApiClient;
 using MewPipe.Logic.Contracts;
+using MewPipe.Logic.Models;
 using MewPipe.Website.Extensions;
 using MewPipe.Website.Security;
 using MewPipe.Website.ViewModels;
@@ -62,6 +64,12 @@ namespace MewPipe.Website.Controllers
                     return RedirectToAction("UserVideos").Error("Can't find a video with this ID");
                 }
 
+                if (video.PrivacyStatus == Video.PrivacyStatusTypes.Private)
+                {
+                    var whiteList = await _apiClient.GetVideoWhiteList(videoId);
+                    ViewBag.WhiteList = whiteList;
+                }
+
                 ViewBag.VideoDetails = video;
 
                 var viewModel = new EditVideoViewModel
@@ -93,19 +101,90 @@ namespace MewPipe.Website.Controllers
 
             try
             {
-                var video = await _apiClient.GetVideoDetails(viewModel.PublicId);
-
-                if (video == null)
+                await _apiClient.UpdateVideo(viewModel.PublicId, new VideoUpdateContract
                 {
-                    return RedirectToAction("UserVideos").Error("Can't find a video with this ID");
-                }
+                    Description = viewModel.Description,
+                    Name = viewModel.Name,
+                    PrivacyStatus = viewModel.PrivacyStatus
+                });
 
-                return RedirectToAction("UserVideos").Success("Video successfully updated !");
+                return RedirectToAction("EditVideo", new {videoId = viewModel.PublicId}).Success("Video successfully updated !");
             }
             catch (Exception e)
             {
-                return RedirectToAction("UserVideos").Error("Can't find a video with this ID");
+                return RedirectToAction("EditVideo", new {videoId = viewModel.PublicId}).Error("There was an error updating your video.");
             }
 		}
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [SiteAuthorize]
+        public async Task<ActionResult> DeleteVideo(DeleteVideoViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("UserVideos", "Videos").Error("Invalid request");
+            }
+
+            _apiClient.SetBearerToken(Request.GetIdentity().AccessToken.access_token);
+
+            try
+            {
+                await _apiClient.DeleteVideo(viewModel.PublicId);
+
+                return RedirectToAction("UserVideos").Success("Video successfully deleted !");
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("UserVideos").Error("There was an error deleting your video.");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [SiteAuthorize]
+        public async Task<ActionResult> AddUserToVideoWhitelist(AddUserToVideoWhiteListViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("UserVideos", "Videos").Error("Invalid request");
+            }
+
+            _apiClient.SetBearerToken(Request.GetIdentity().AccessToken.access_token);
+
+            try
+            {
+                await _apiClient.AddUserToWhiteList(viewModel.PublicId, viewModel.UserEmail);
+
+                return RedirectToAction("EditVideo", new { videoId = viewModel.PublicId }).Success("User successfully added to the white list !");
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("EditVideo", new { videoId = viewModel.PublicId }).Error("Can't add this user to the whitelist. Maybe he doesn't exists.");
+            }
+        }
+
+        [HttpGet]
+        [SiteAuthorize]
+        public async Task<ActionResult> RemoveUserFromVideoWhitelist(string videoId, string userId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("UserVideos", "Videos").Error("Invalid request");
+            }
+
+            _apiClient.SetBearerToken(Request.GetIdentity().AccessToken.access_token);
+
+            try
+            {
+                await _apiClient.RemoveUserFromWhiteList(videoId, userId);
+
+                return RedirectToAction("EditVideo", new { videoId = videoId }).Success("Video successfully deleted !");
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("EditVideo", new { videoId = videoId }).Error("There was an error deleting your video.");
+            }
+        }
 	}
 }

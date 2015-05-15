@@ -96,6 +96,8 @@ namespace MewPipe.VideoWorker
 		private static void DoTotalConversion(Video video)
 		{
 			var service = new VideoWorkerService(); //TODO put it as a static field
+		    var mimeTypeService = new VideoMimeTypeService();
+		    var qualityTypeService = new VideoQualityTypeService();
 
 			MongoGridFSStream oVideoStream = service.GetVideoUploadedFile(video);
 
@@ -106,6 +108,24 @@ namespace MewPipe.VideoWorker
 			StreamToFile(oVideoStream, inputFilePath);
 
 			string vidId = video.Id.ToString();
+
+		    var encodingMimeTypes = mimeTypeService.GetEncodingMimeTypes();
+		    var encodingQualityTypes = qualityTypeService.GetEncodingQualityTypes();
+
+            /**
+             * @JB : Supprime ce commentaire une fois utilisé stp
+             * Tu peux itérer sur les mime types d'encoding et sur les qualités prédéfinies afin d'obtenir directement des objets
+             * stockés en DB que je pourrais réutiliser aprés dans les services
+             * Ca va te poser soucis sur ton code par contre, je pense qu'une factory pour récupérer le bon converter peut régler le soucis
+             */
+            foreach (var mimeType in encodingMimeTypes)
+		    {
+                foreach (var qualityType in encodingQualityTypes)
+                {
+                    //TODO: Do something if the video is good enough
+                }
+		    }
+
 
 			VideoConverterHelper.To1080Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "1080"));
 			VideoConverterHelper.To720Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "720"));

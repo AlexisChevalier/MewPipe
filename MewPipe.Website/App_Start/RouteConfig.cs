@@ -34,6 +34,18 @@ namespace MewPipe.Website
 				new {controller = "Videos", action = "EditVideo", videoId = UrlParameter.Optional}
 				);
 
+            routes.MapRoute("UserVideoDelete", "myVideos/delete/{videoId}",
+                new { controller = "Videos", action = "DeleteVideo", videoId = UrlParameter.Optional }
+                );
+
+            routes.MapRoute("UserVideoWhiteListAdd", "myVideos/whiteList/add/{videoId}",
+                new { controller = "Videos", action = "AddUserToVideoWhitelist", videoId = UrlParameter.Optional }
+                );
+
+            routes.MapRoute("UserVideoWhiteListDelete", "myVideos/whiteList/delete/{videoId}",
+                new { controller = "Videos", action = "RemoveUserFromVideoWhitelist", videoId = UrlParameter.Optional }
+                );
+
 			routes.MapRoute("UserVideosPage", "myVideos", new {controller = "Videos", action = "UserVideos"}
 				);
 

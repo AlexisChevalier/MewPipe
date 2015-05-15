@@ -1,0 +1,8 @@
+﻿@model MewPipe.Website.ViewModels.EditVideoViewModel
+
+@using (Html.BeginForm("DeleteVideo", "Videos", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.PublicId)
+    <button class="btn btn-default raised btn-block" type="submit">Delete this video (Definitively)</button>
+}

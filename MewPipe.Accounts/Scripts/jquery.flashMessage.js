@@ -30,8 +30,8 @@
 
     // Delete the named flash cookie
     function deleteFlashMessageCookie(alert) {
-        $.cookie("Flash." + alert, null, { path: "/", domain: ".mewpipe.local" });
-        $.removeCookie("Flash." + alert, { path: "/", domain: ".mewpipe.local" });
+        $.cookie("Flash." + alert, null, { path: "/" });
+        $.removeCookie("Flash." + alert, { path: "/" });
     }
 
 

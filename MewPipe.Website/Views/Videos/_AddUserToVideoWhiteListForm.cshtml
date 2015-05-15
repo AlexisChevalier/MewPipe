@@ -1,0 +1,14 @@
+﻿@model MewPipe.Website.ViewModels.AddUserToVideoWhiteListViewModel
+
+@using (Html.BeginForm("AddUserToVideoWhitelist", "Videos", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.PublicId)
+    @Html.LabelFor(m => m.UserEmail)
+    @Html.TextBoxFor(m => m.UserEmail)
+    @Html.ValidationMessageFor(m => m.UserEmail)
+
+    <p class="text-right" style="margin-top: 15px;">
+        <button class="btn btn-danger btn-sm raised" type="submit">Add to my video's white list</button>
+    </p>
+}
