@@ -20,6 +20,8 @@ namespace MewPipe.Logic.Services
 
 		//TODO: To be implemented:
 		MongoGridFSStream GetStreamToAddConvertedVideo(string videoId, string format, string quality);
+
+        MongoGridFSStream GetStreamToAddVideoThumbnail(string videoId);
 	}
 
 	public class VideoWorkerService : IVideoWorkerService
@@ -112,5 +114,15 @@ namespace MewPipe.Logic.Services
 		{
 			throw new NotImplementedException();
 		}
+
+        /// <summary>
+        /// Retourne un MongoGridFSStream qui pointe sur le bon endroit de mongo ou stocker le thumbnail d'une video
+        /// </summary>
+        /// <param name="videoId">L'id de la video originale dont la video convertie provient</param>
+        /// <returns>un MongoGridFSStream qui pointe sur le bon endroit de mongo ou stocker le thumbnail d'une video</returns>
+        public MongoGridFSStream GetStreamToAddVideoThumbnail(string videoId)
+        {
+            throw new NotImplementedException();
+        }
 	}
 }
