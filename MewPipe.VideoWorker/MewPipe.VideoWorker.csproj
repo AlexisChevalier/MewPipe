@@ -81,6 +81,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Helper\NRecoMethodExtensions.cs" />
     <Compile Include="Helper\VideoConverterHelper.cs" />
+    <Compile Include="Helper\VideoInfosHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
