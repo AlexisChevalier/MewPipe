@@ -51,12 +51,20 @@ namespace MewPipe.Logic.Migrations
                 },
                 new QualityType
                 {
-                    Name = "Low",
+                    Name = "360",
                     IsDefault = true
                 },
                 new QualityType
                 {
-                    Name = "High"
+                    Name = "480"
+                },
+                new QualityType
+                {
+                    Name = "720"
+                },
+                new QualityType
+                {
+                    Name = "1080"
                 }
                 );
 

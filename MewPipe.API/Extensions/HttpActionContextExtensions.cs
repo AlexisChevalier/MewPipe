@@ -17,7 +17,14 @@ namespace MewPipe.API.Extensions
 
         public static User GetUser(this HttpActionContext httpActionContext)
         {
-            return httpActionContext.Request.GetRouteData().Values["USER"] as User;
+            try
+            {
+                return httpActionContext.Request.GetRouteData().Values["USER"] as User;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

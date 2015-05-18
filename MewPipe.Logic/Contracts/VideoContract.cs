@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using MewPipe.Logic.Models;
 
@@ -18,6 +19,13 @@ namespace MewPipe.Logic.Contracts
             DateTimeUtc = video.DateTimeUtc;
             Status = video.Status;
             PrivacyStatus = video.PrivacyStatus;
+
+            VideoFiles = new List<VideoFileContract>();
+
+            foreach (var videoFile in video.VideoFiles)
+            {
+                VideoFiles.Add(new VideoFileContract(videoFile));
+            }
         }
 
         public string PublicId { get; set; }
@@ -27,5 +35,6 @@ namespace MewPipe.Logic.Contracts
         public DateTime DateTimeUtc { get; set; }
         public Video.StatusTypes Status { get; set; }
         public Video.PrivacyStatusTypes PrivacyStatus { get; set; }
+        public List<VideoFileContract> VideoFiles { get; set; }
     }
 }

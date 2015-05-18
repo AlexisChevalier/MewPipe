@@ -1,9 +1,45 @@
 ﻿@{
     ViewBag.Title = "title";
+    ViewBag.BodyClass = "hasPlayer onTop";
 }
 
-<h2>FUTURE PAGE DE VIDEO</h2>
+@section scripts
+{
+    @Scripts.Render("~/scripts/player")
+    <script type="text/javascript">
+        $(function () {
+            var videoData = @(Html.Raw(ViewBag.JsonVideoDetails));
+            window.playerModule.initPlayer(videoData, function(err, result) {
+                
+            });
+        });
+</script>
+}
 
-<video width="320" height="240" controls autoplay="autoplay">
-    <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@ViewBag.VideoId" type="video/mp4">
-</video>
+@section styles
+{
+    @Styles.Render("~/styles/player")
+}
+
+<div class="videoContainer">
+    <video id="mewPipePlayerElement"
+           width="854"
+           height="480"
+           autoplay
+           controls
+           poster="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/11/1397210130748/Spring-Lamb.-Image-shot-2-011.jpg"
+           class="video-js vjs-default-skin">
+        <!--<source src="http://videos-repository.mewpipe.local:44403/api/videosData/@ViewBag.VideoDetails.PublicId?encoding=video/mp4&quality=360" type="video/mp4" data-res="360">
+        <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@ViewBag.VideoDetails.PublicId?encoding=video/mp4&quality=480" type="video/mp4" data-res="480">
+        <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@ViewBag.VideoDetails.PublicId?encoding=video/mp4&quality=720" type="video/mp4" data-res="720">
+        <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@ViewBag.VideoDetails.PublicId?encoding=video/mp4&quality=1080" type="video/mp4" data-res="1080">-->
+    </video>
+</div>
+<div class="container">
+    <div class="row">
+            
+    </div>
+</div>
+
+<!---->
+<!--<video id="mewPipePlayerElement" controls="controls" poster="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/11/1397210130748/Spring-Lamb.-Image-shot-2-011.jpg"></video>-->

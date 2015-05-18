@@ -9,6 +9,7 @@ using MewPipe.Logic.Models;
 using MewPipe.Website.Extensions;
 using MewPipe.Website.Security;
 using MewPipe.Website.ViewModels;
+using Newtonsoft.Json;
 
 namespace MewPipe.Website.Controllers
 {
@@ -19,9 +20,17 @@ namespace MewPipe.Website.Controllers
 			ConfigurationManager.AppSettings["OAuth2ClientID"],
 			ConfigurationManager.AppSettings["OAuth2ClientSecret"]);
 
-		public ActionResult Index(string videoId)
+		public async Task<ActionResult> Index(string videoId)
 		{
-			ViewBag.VideoId = videoId;
+            var video = await _apiClient.GetVideoDetails(videoId);
+
+            if (video == null)
+            {
+                //TODO: 404
+            }
+
+            ViewBag.VideoDetails = video;
+		    ViewBag.JsonVideoDetails = JsonConvert.SerializeObject(video);
 			return View();
 		}
 

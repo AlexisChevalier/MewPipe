@@ -16,12 +16,11 @@ namespace MewPipe.Logic.Services
 		MongoGridFSStream GetVideoUploadedFile(Video video);
 		VideoFile AddVideoFile(string videoId, MimeType mimeType, QualityType qualityType, Stream fileStream);
 		void MarkVideoAsPublished(Video video);
-		void RemoveVideoUploadedFile(Video video);
+        void RemoveVideoUploadedFile(Video video); 
+        MongoGridFSStream GetStreamToAddVideoThumbnail(Video video);
 
 		//TODO: To be implemented:
 		MongoGridFSStream GetStreamToAddConvertedVideo(string videoId, string format, string quality);
-
-        MongoGridFSStream GetStreamToAddVideoThumbnail(string videoId);
 	}
 
 	public class VideoWorkerService : IVideoWorkerService
@@ -118,11 +117,13 @@ namespace MewPipe.Logic.Services
         /// <summary>
         /// Retourne un MongoGridFSStream qui pointe sur le bon endroit de mongo ou stocker le thumbnail d'une video
         /// </summary>
-        /// <param name="videoId">L'id de la video originale dont la video convertie provient</param>
+        /// <param name="video">La video originale dont la video convertie provient</param>
         /// <returns>un MongoGridFSStream qui pointe sur le bon endroit de mongo ou stocker le thumbnail d'une video</returns>
-        public MongoGridFSStream GetStreamToAddVideoThumbnail(string videoId)
+        public MongoGridFSStream GetStreamToAddVideoThumbnail(Video video)
         {
-            throw new NotImplementedException();
+            var thumbnailService = new ThumbnailGridFsClient();
+
+            return thumbnailService.GetThumbnailWritingStream(video);
         }
 	}
 }
