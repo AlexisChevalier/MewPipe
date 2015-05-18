@@ -14,13 +14,10 @@ namespace MewPipe.Logic.Services
 	{
 		Video GetVideoDetails(string videoId);
 		MongoGridFSStream GetVideoUploadedFile(Video video);
-		VideoFile AddVideoFile(string videoId, MimeType mimeType, QualityType qualityType, Stream fileStream);
 		void MarkVideoAsPublished(Video video);
         void RemoveVideoUploadedFile(Video video); 
         MongoGridFSStream GetStreamToAddVideoThumbnail(Video video);
-
-		//TODO: To be implemented:
-		MongoGridFSStream GetStreamToAddConvertedVideo(string videoId, string format, string quality);
+        MongoGridFSStream GetStreamToAddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType);
 	}
 
 	public class VideoWorkerService : IVideoWorkerService
@@ -43,33 +40,7 @@ namespace MewPipe.Logic.Services
 
 			var originalFile = video.GetOriginalFile();
 
-			return videoService.GetVideoStream(new ObjectId(originalFile.GridFsId));
-		}
-
-		public VideoFile AddVideoFile(string videoId, MimeType mimeType, QualityType qualityType, Stream fileStream)
-		{
-			var videoService = new VideoGridFsClient();
-
-			var video = GetVideoDetails(videoId);
-
-			var dbMimeType = _unitOfWork.MimeTypeRepository.GetById(mimeType.Id);
-			var dbQualityType = _unitOfWork.QualityTypeRepository.GetById(qualityType.Id);
-
-			var result = videoService.CreateVideoWithStream(fileStream, videoId);
-
-			var videoFile = new VideoFile
-			{
-				GridFsId = result.Id.ToString(),
-				IsOriginalFile = false,
-				MimeType = dbMimeType,
-				QualityType = dbQualityType,
-				Video = video
-			};
-
-			_unitOfWork.VideoFileRepository.Insert(videoFile);
-			_unitOfWork.Save();
-
-			return videoFile;
+			return videoService.GetVideoStream(video, originalFile.MimeType, originalFile.QualityType);
 		}
 
 		public void MarkVideoAsPublished(Video video)
@@ -88,7 +59,7 @@ namespace MewPipe.Logic.Services
 
 			var videoService = new VideoGridFsClient();
 
-			videoService.RemoveFile(new ObjectId(file.GridFsId));
+			videoService.RemoveFile(video, video.GetOriginalFile().MimeType, video.GetOriginalFile().QualityType);
 
 			_unitOfWork.VideoFileRepository.Delete(file.Id);
 		}
@@ -102,17 +73,6 @@ namespace MewPipe.Logic.Services
 			return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
 		}
 
-		/// <summary>
-		/// Retourne un MongoGridFSStream qui pointe sur le bon endroit de mongo en fonction de l'id de la video, le format et la qualité.
-		/// </summary>
-		/// <param name="videoId">L'id de la video originale dont la video covertit provient.</param>
-		/// <param name="format">Le format de la video convertie (valeurs: "mp4" ou "ogg" (faire un enum ?)</param>
-		/// <param name="quality">La qualité de la video convertie (valeurs: "1080" ou "720" ou "480"  ou "360" (faire un enum ?)</param>
-		/// <returns>Un MongoGridFSStream qui pointe sur le bon endroit de mongo en fonction de l'id de la video, le format et la qualité.</returns>
-		public MongoGridFSStream GetStreamToAddConvertedVideo(string videoId, string format, string quality)
-		{
-			throw new NotImplementedException();
-		}
 
         /// <summary>
         /// Retourne un MongoGridFSStream qui pointe sur le bon endroit de mongo ou stocker le thumbnail d'une video
@@ -125,5 +85,40 @@ namespace MewPipe.Logic.Services
 
             return thumbnailService.GetThumbnailWritingStream(video);
         }
+
+        /// <summary>
+        /// Retourne un MongoGridFSStream qui pointe sur le bon endroit de mongo en fonction de l'id de la video, le format et la qualité.
+        /// </summary>
+        /// <param name="video">La video originale dont la video covertit provient.</param>
+        /// <param name="mimeType">Le format de la video convertie (valeurs: "mp4" ou "ogg")</param>
+        /// <param name="qualityType">La qualité de la video convertie (valeurs: "1080" ou "720" ou "480"  ou "360")</param>
+        /// <returns>Un MongoGridFSStream qui pointe sur le bon endroit de mongo en fonction de l'id de la video, le format et la qualité.</returns>
+
+	    public MongoGridFSStream GetStreamToAddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType)
+	    {
+            var videoGridFsClient = new VideoGridFsClient();
+
+            var stream = videoGridFsClient.GetVideoWritingStream(video, mimeType, qualityType);
+
+            var dbVideo = GetVideoDetails(video.PublicId);
+
+            var dbMimeType = _unitOfWork.MimeTypeRepository.GetById(mimeType.Id);
+            var dbQualityType = _unitOfWork.QualityTypeRepository.GetById(qualityType.Id);
+
+            var videoFile = new VideoFile
+            {
+                //GridFsId = result.Id.ToString(),
+                IsOriginalFile = false,
+                MimeType = dbMimeType,
+                QualityType = dbQualityType,
+                Video = dbVideo
+            };
+
+            _unitOfWork.VideoFileRepository.Insert(videoFile);
+            _unitOfWork.Save();
+
+
+            return stream;
+	    }
 	}
 }

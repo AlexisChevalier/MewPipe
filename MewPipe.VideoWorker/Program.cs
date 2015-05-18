@@ -126,11 +126,11 @@ namespace MewPipe.VideoWorker
                 }
 		    }
 
-
-			VideoConverterHelper.To1080Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "1080"));
-			VideoConverterHelper.To720Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "720"));
-			VideoConverterHelper.To480Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "480"));
-			VideoConverterHelper.To360Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "360"));
+            //TODO: Code broken by refactoring the service (Alexis)
+			//VideoConverterHelper.To1080Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "1080"));
+			//VideoConverterHelper.To720Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "720"));
+			//VideoConverterHelper.To480Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "480"));
+			//VideoConverterHelper.To360Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "360"));
 
 			Console.WriteLine("All conversions done !");
 		}

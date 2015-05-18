@@ -31,7 +31,7 @@ window.playerModule = window.playerModule || {};
             var mimeType = videoDetails.VideoFiles[i].MimeType.HttpMimeType;
             var qualityType = videoDetails.VideoFiles[i].QualityType.Name;
             if (mimeType === format) {
-                var source = videoEndpointUri + videoDetails.PublicId + "?encoding=" + mimeType + "?quality=" + qualityType;
+                var source = videoEndpointUri + videoDetails.PublicId + "?encoding=" + mimeType + "&quality=" + qualityType;
                 sources.push({
                     type: format,
                     src: source,

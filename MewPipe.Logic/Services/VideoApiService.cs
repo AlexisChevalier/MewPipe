@@ -67,7 +67,16 @@ namespace MewPipe.Logic.Services
 
             var file = videoDetails.GetVideoFile(mimeType, qualityType);
 
-			var videoStream = GetVideoStream(new ObjectId(file.GridFsId));
+            if (file == null)
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("Video file Not Found")
+                });
+            }
+
+			var videoStream = GetVideoStream(videoDetails, mimeType, qualityType);
 
 			if (IsRangeRequest(request))
 			{
@@ -131,7 +140,24 @@ namespace MewPipe.Logic.Services
                 });
 			}
 
-			var streamProvider = new MongoDbMultipartStreamProvider();
+            var video = new Video
+            {
+                AllowedUsers = new List<User>(),
+                Description = "",
+                Name = "New Video",
+                PrivacyStatus = Video.PrivacyStatusTypes.Private,
+                Status = Video.StatusTypes.Processing,
+                User = token.User,
+                VideoFiles = new List<VideoFile>(),
+                NotificationHookUri = token.NotificationHookUri,
+                UploadRedirectUri = token.UploadRedirectUri,
+                DateTimeUtc = DateTime.UtcNow
+            };
+
+            _unitOfWork.VideoRepository.Insert(video);
+            _unitOfWork.Save();
+
+			var streamProvider = new MongoDbMultipartStreamProvider(video);
 
 			try
 			{
@@ -139,6 +165,7 @@ namespace MewPipe.Logic.Services
 			}
 			catch (IOException e)
 			{
+                _unitOfWork.VideoRepository.Delete(video);
 				var httpException = e.InnerException.InnerException as MongoDbMultipartStreamProviderException;
 			    if (httpException == null)
 			    {
@@ -153,6 +180,7 @@ namespace MewPipe.Logic.Services
 			}
 			catch (Exception)
 			{
+                _unitOfWork.VideoRepository.Delete(video);
                 throw new HttpResponseException(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
@@ -161,19 +189,6 @@ namespace MewPipe.Logic.Services
 			}
 
 			var details = streamProvider.VideoOptions;
-			var video = new Video
-			{
-				AllowedUsers = new List<User>(),
-				Description = "",
-				Name = "New Video",
-				PrivacyStatus = Video.PrivacyStatusTypes.Private,
-				Status = Video.StatusTypes.Processing,
-				User = token.User,
-				VideoFiles = new List<VideoFile>(),
-				NotificationHookUri = token.NotificationHookUri,
-				UploadRedirectUri = token.UploadRedirectUri,
-                DateTimeUtc = DateTime.UtcNow
-			};
 
 			var mimeTypeService = new VideoMimeTypeService(_unitOfWork);
 			var qualityTypeService = new VideoQualityTypeService(_unitOfWork);
@@ -187,7 +202,7 @@ namespace MewPipe.Logic.Services
 				QualityType = qualityTypeService.GetUploadingQualityType()
 			});
 
-			_unitOfWork.VideoRepository.Insert(video);
+			_unitOfWork.VideoRepository.Update(video);
 			_unitOfWork.Save();
 
 			RemoveVideoUploadToken(token);
@@ -392,6 +407,7 @@ namespace MewPipe.Logic.Services
 	    {
             var video = GetVideoDetails(videoId);
 	        var videoGridFsClient = new VideoGridFsClient();
+	        var thumbnailGridFsClient = new ThumbnailGridFsClient();
 
             if (video.User.Id != user.Id)
             {
@@ -411,8 +427,11 @@ namespace MewPipe.Logic.Services
 
 	        foreach (var videoFile in video.VideoFiles)
 	        {
-                videoGridFsClient.RemoveFile(new ObjectId(videoFile.GridFsId));
+                videoGridFsClient.RemoveFile(video, videoFile.MimeType, videoFile.QualityType);
 	        }
+
+            //TODO: Not tested (impossible at the moment).
+            thumbnailGridFsClient.RemoveFile(new ObjectId(video.Id.ToBson()));
 
 	        _unitOfWork.VideoRepository.Delete(video);
 	        _unitOfWork.Save();
@@ -491,12 +510,10 @@ namespace MewPipe.Logic.Services
 			return false;
 		}
 
-		private MongoGridFSStream GetVideoStream(ObjectId gridVideoId)
+		private MongoGridFSStream GetVideoStream(Video video, MimeType mimeType, QualityType qualityType)
 		{
-			Debug.Assert(gridVideoId != null);
-
 			var videoService = new VideoGridFsClient();
-			return videoService.GetVideoStream(gridVideoId);
+            return videoService.GetVideoStream(video, mimeType, qualityType);
 		}
 
         private MongoGridFSStream GetThumbnailStream(Video video)
