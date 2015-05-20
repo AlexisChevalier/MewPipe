@@ -13,12 +13,55 @@ namespace MewPipe.Logic.Repositories
         private GenericRepository<VideoFile> _videoFileRepository;
         private GenericRepository<QualityType> _qualityTypeRepository;
         private GenericRepository<MimeType> _mimeTypeRepository;
+        private GenericRepository<Impression> _impressionRepository;
+        private GenericRepository<Tag> _tagRepository;
+        private GenericRepository<Category> _categoryRepository;
+
         private GenericRepository<VideoUploadToken> _videoUploadTokenRepository;
         private GenericRepository<OauthAccessToken> _oauthAccessTokenRepository;
         private GenericRepository<OauthRefreshToken> _oauthRefreshTokenRepository;
         private GenericRepository<OauthAuthorizationCode> _oauthAuthorizationCodeRepository;
         private GenericRepository<OauthUserTrust> _oauthUserTrustRepository;
         private GenericRepository<OauthClient> _oauthClientRepository;
+
+        public GenericRepository<Impression> ImpressionRepository
+        {
+            get
+            {
+
+                if (_impressionRepository == null)
+                {
+                    _impressionRepository = new GenericRepository<Impression>(_context);
+                }
+                return _impressionRepository;
+            }
+        }
+
+        public GenericRepository<Tag> TagRepository
+        {
+            get
+            {
+
+                if (_tagRepository == null)
+                {
+                    _tagRepository = new GenericRepository<Tag>(_context);
+                }
+                return _tagRepository;
+            }
+        }
+
+        public GenericRepository<Category> CategoryRepository
+        {
+            get
+            {
+
+                if (_categoryRepository == null)
+                {
+                    _categoryRepository = new GenericRepository<Category>(_context);
+                }
+                return _categoryRepository;
+            }
+        }
 
         public GenericRepository<User> UserRepository
         {

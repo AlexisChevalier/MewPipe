@@ -104,10 +104,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\ImpressionContract.cs" />
     <Compile Include="Contracts\MimeTypeContract.cs" />
     <Compile Include="Contracts\QualityTypeContract.cs" />
     <Compile Include="Contracts\RefreshTokenContract.cs" />
     <Compile Include="Contracts\AccessTokenContract.cs" />
+    <Compile Include="Contracts\CategoryContract.cs" />
     <Compile Include="Contracts\VideoFileContract.cs" />
     <Compile Include="Contracts\VideoUpdateContract.cs" />
     <Compile Include="Contracts\VideoContract.cs" />
@@ -161,7 +163,13 @@
     <Compile Include="Migrations\201505152011476_AddedCascadeConstraint.Designer.cs">
       <DependentUpon>201505152011476_AddedCascadeConstraint.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201505182219164_AddedVideoInformations.cs" />
+    <Compile Include="Migrations\201505182219164_AddedVideoInformations.Designer.cs">
+      <DependentUpon>201505182219164_AddedVideoInformations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Impression.cs" />
     <Compile Include="Models\QualityType.cs" />
     <Compile Include="Models\MimeType.cs" />
     <Compile Include="Models\Oauth\OauthAccessToken.cs" />
@@ -169,6 +177,7 @@
     <Compile Include="Models\Oauth\OauthClient.cs" />
     <Compile Include="Models\Oauth\OauthRefreshToken.cs" />
     <Compile Include="Models\Oauth\OauthUserTrust.cs" />
+    <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\VideoFile.cs" />
     <Compile Include="Models\Video.cs" />
@@ -233,6 +242,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201505152011476_AddedCascadeConstraint.resx">
       <DependentUpon>201505152011476_AddedCascadeConstraint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505182219164_AddedVideoInformations.resx">
+      <DependentUpon>201505182219164_AddedVideoInformations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

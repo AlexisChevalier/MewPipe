@@ -34,6 +34,22 @@ namespace MewPipe.Logic.Repositories
             return orderBy != null ? orderBy(query).ToList() : query.ToList();
         }
 
+        public virtual decimal Count(
+            Expression<Func<TEntity, bool>> filter = null,
+            string includeProperties = "")
+        {
+            IQueryable<TEntity> query = DbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            query = includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+
+            return query.Count();
+        }
+
         public virtual TEntity GetOne(
             Expression<Func<TEntity, bool>> filter = null,
             string includeProperties = "")

@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientCategoryMethods.cs" />
+    <Compile Include="ClientImpressionMethods.cs" />
     <Compile Include="ClientExceptions.cs" />
     <Compile Include="ClientVideoMethods.cs" />
     <Compile Include="ClientAccountMethods.cs" />

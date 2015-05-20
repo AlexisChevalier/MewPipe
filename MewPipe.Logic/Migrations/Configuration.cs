@@ -29,6 +29,65 @@ namespace MewPipe.Logic.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+            context.Categories.AddOrUpdate(
+                c => c.Name,
+                new Category
+                {
+                    Name = "News and Politics"
+                },
+                new Category
+                {
+                    Name = "Cars"
+                }, 
+                new Category
+                {
+                    Name = "Entertainment"
+                },
+                new Category
+                {
+                    Name = "Education"
+                },
+                new Category
+                {
+                    Name = "Movies"
+                },
+                new Category
+                {
+                    Name = "ONGs"
+                },
+                new Category
+                {
+                    Name = "Humor"
+                },
+                new Category
+                {
+                    Name = "Video games"
+                },
+                new Category
+                {
+                    Name = "Music"
+                },
+                new Category
+                {
+                    Name = "Science"
+                },
+                new Category
+                {
+                    Name = "People and blogs"
+                },
+                new Category
+                {
+                    Name = "Sport"
+                },
+                new Category
+                {
+                    Name = "Lifestyle"
+                },
+                new Category
+                {
+                    Name = "Travels and events"
+                });
+
             context.OauthClients.AddOrUpdate(
                 c => c.ClientId,
                 new OauthClient

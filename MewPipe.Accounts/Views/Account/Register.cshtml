@@ -38,7 +38,7 @@
                         </div>
                         <button class="btn btn-primary raised btn-block " type="submit">Register</button>
                         <p class="text-center">
-                            @Html.ActionLink("Already have an account ?", "Login")
+                            @Html.ActionLink("Already have an account ?", "Login", new { ReturnUrl = ViewBag.ReturnUrl })
                         </p>
                     }
                 </div>
@@ -49,6 +49,11 @@
                         You can also sign in using those services
                     </p>
                     @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+                    <hr />
+                    <p>
+                        To register with your OpenID account, please enter your information below :
+                    </p>
+                    @Html.Partial("_OpenIdPartial", new OpenIdViewModel { ReturnUrl = ViewBag.ReturnUrl })
                 </div>
             </div>
         </div>

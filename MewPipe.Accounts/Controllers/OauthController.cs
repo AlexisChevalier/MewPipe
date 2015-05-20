@@ -334,14 +334,14 @@ namespace MewPipe.Accounts.Controllers
             if (oldRefreshToken == null)
             {
                 //TODO: Handle Error
-                return HandleJsonOauthError(OauthErrors.InvalidParameter, "invalid refresh_token");
+                return HandleJsonOauthError(OauthErrors.ExpiredRefreshToken, "invalid refresh_token");
             }
             var user = oldRefreshToken.User;
 
             if (user == null)
             {
                 //TODO: Handle Error
-                throw new AuthenticationException();
+                return HandleJsonOauthError(OauthErrors.ExpiredRefreshToken, "invalid user");
             }
 
             

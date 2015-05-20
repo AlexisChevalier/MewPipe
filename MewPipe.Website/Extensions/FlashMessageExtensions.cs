@@ -32,7 +32,7 @@ namespace MewPipe.Website.Extensions
             return result;
         }
 
-        private static void CreateCookieWithFlashMessage(Notification notification, string message)
+        public static void CreateCookieWithFlashMessage(Notification notification, string message)
         {
             HttpContext.Current.Response.Cookies.Add(new HttpCookie(string.Format("Flash.{0}", notification), message)
             {
@@ -40,7 +40,7 @@ namespace MewPipe.Website.Extensions
             });
         }
 
-        private enum Notification
+        public enum Notification
         {
             Danger,
             Warning,

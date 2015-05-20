@@ -2,6 +2,7 @@
 {
     public static class OauthErrors
     {
+        public static OauthError ExpiredRefreshToken = new OauthError("expired_refresh_token", "Refresh tokens expires after 14 days", 481);
         public static OauthError InvalidRedirectionUri = new OauthError ("invalid_request", "Invalid redirection uri, see details", 400);
         public static OauthError RedirectionUriRequired = new OauthError ("invalid_request", "Redirection URI is required", 400);
         public static OauthError InvalidParameter = new OauthError ("invalid_request", "Invalid parameter(s), see details", 400);

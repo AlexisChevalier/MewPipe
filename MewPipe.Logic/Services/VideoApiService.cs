@@ -35,6 +35,8 @@ namespace MewPipe.Logic.Services
         UserContract[] AddUserToWhiteList(string videoId, string usertoAddEmail, User user);
         UserContract[] RemoveUserFromWhiteList(string videoId, string usertoAddId, User user);
 	    Video DeleteVideo(string videoId, User user);
+	    Video AddView(string videoId);
+	    Video SetImpression(ImpressionContract contract);
 	}
 
 	public class VideoApiService : IVideoApiService
@@ -151,7 +153,11 @@ namespace MewPipe.Logic.Services
                 VideoFiles = new List<VideoFile>(),
                 NotificationHookUri = token.NotificationHookUri,
                 UploadRedirectUri = token.UploadRedirectUri,
-                DateTimeUtc = DateTime.UtcNow
+                DateTimeUtc = DateTime.UtcNow,
+                Category = null,
+                Impressions = new List<Impression>(),
+                Tags = new List<Tag>(),
+                Views = 0
             };
 
             _unitOfWork.VideoRepository.Insert(video);
@@ -442,6 +448,64 @@ namespace MewPipe.Logic.Services
 	        return video;
 	    }
 
+	    public Video AddView(string videoId)
+	    {
+            var video = GetVideoDetails(videoId);
+
+	        video.Views += 1;
+
+            _unitOfWork.VideoRepository.Update(video);
+            _unitOfWork.Save();
+            return video;
+	    }
+
+	    public Video SetImpression(ImpressionContract contract)
+	    {
+	        var video = GetVideoDetails(contract.PublicVideoId);
+
+	        if (video == null)
+	        {
+	            throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("Video Not Found")
+                });
+	        }
+
+	        var user = _unitOfWork.UserRepository.GetById(contract.UserId);
+
+            if (user == null)
+	        {
+	            throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("User Not Found")
+                });
+	        }
+
+	        var impression = _unitOfWork.ImpressionRepository.GetOne(i => i.Video.Id == video.Id && i.User.Id == user.Id);
+
+	        if (impression == null)
+	        {
+	            impression = new Impression
+	            {
+	                Type = contract.Type,
+	                User = user,
+	                Video = video
+	            };
+            
+                _unitOfWork.ImpressionRepository.Insert(impression);
+            }
+	        else
+	        {
+	            impression.Type = contract.Type;
+                _unitOfWork.ImpressionRepository.Update(impression);
+	        }
+            _unitOfWork.Save();
+
+	        return video;
+	    }
+
 	    public VideoUploadToken GenerateVideoUploadToken(VideoUploadTokenRequestContract request, User user)
 		{
 			Debug.Assert(request != null);
@@ -537,7 +601,7 @@ namespace MewPipe.Logic.Services
 
 			var id = ShortGuid.Decode(videoId);
 
-            return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "AllowedUsers, User, VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
+            return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "Impressions, Tags, Category, AllowedUsers, User, VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
 		}
 
 		private bool IsUserAllowedToSeeVideo(string videoId, User user)

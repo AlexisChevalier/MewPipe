@@ -104,8 +104,10 @@ namespace MewPipe.Accounts.Controllers
         // GET: /Account/Register
         [AllowAnonymous]
         [OnlyAnonymousFilter]
-        public ActionResult Register()
+        public ActionResult Register(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
+
             return View();
         }
 
@@ -115,7 +117,7 @@ namespace MewPipe.Accounts.Controllers
         [AllowAnonymous]
         [OnlyAnonymousFilter]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -125,6 +127,7 @@ namespace MewPipe.Accounts.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
+                    return RedirectToLocal(returnUrl);
                     return RedirectToAction("Index", "Manage");
                 }
                 AddErrors(result);
@@ -141,8 +144,9 @@ namespace MewPipe.Accounts.Controllers
         //
         // GET: /Account/ForgotPassword
         [AllowAnonymous]
-        public ActionResult ForgotPassword()
+        public ActionResult ForgotPassword(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -151,8 +155,9 @@ namespace MewPipe.Accounts.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model, string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByNameAsync(model.Email);
@@ -387,7 +392,7 @@ namespace MewPipe.Accounts.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Manage");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult
