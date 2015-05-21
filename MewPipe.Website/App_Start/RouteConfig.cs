@@ -26,6 +26,8 @@ namespace MewPipe.Website
 
 			routes.MapRoute("VideoPage", "v/{videoId}", new {controller = "Videos", action = "Index"}
 				);
+            routes.MapRoute("SearchVideosPage", "search", new { controller = "Videos", action = "Search" }
+                );
 
 			routes.MapRoute("UserVideoUploadPage", "myVideos/upload", new {controller = "Videos", action = "UploadVideo"}
 				);

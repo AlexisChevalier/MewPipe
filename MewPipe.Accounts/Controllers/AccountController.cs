@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using MewPipe.Accounts.Extensions;
 using MewPipe.Accounts.Filters;
 using MewPipe.Accounts.ViewModels;
 using MewPipe.Logic.Models;
@@ -163,7 +164,8 @@ namespace MewPipe.Accounts.Controllers
                 var user = await UserManager.FindByNameAsync(model.Email);
                 if (user == null)
                 {
-                    return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                    HttpContext.SetInformationMessage("If the email you provided exists, we sent you an email to reset your password !");
+                    return RedirectToAction("ForgotPassword", "Account", new {ReturnUrl = returnUrl});
                 }
 
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
@@ -171,19 +173,12 @@ namespace MewPipe.Accounts.Controllers
                 var code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
                 await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                HttpContext.SetInformationMessage("If the email you provided exists, we sent you an email to reset your password !");
+                return RedirectToAction("ForgotPassword", "Account", new { ReturnUrl = returnUrl });
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
-        }
-
-        //
-        // GET: /Account/ForgotPasswordConfirmation
-        [AllowAnonymous]
-        public ActionResult ForgotPasswordConfirmation()
-        {
-            return View();
         }
 
         //

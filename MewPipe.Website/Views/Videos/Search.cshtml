@@ -1,0 +1,32 @@
+﻿@using EntityFramework.Extensions
+@using MewPipe.Logic.Models
+@{
+    ViewBag.Title = "Search page";
+
+    var videosList = ViewBag.Videos as Video[];
+    var noSearch = ViewBag.NoSearch is bool && (bool) ViewBag.NoSearch;
+}
+
+@*
+    <h2>Your Videos</h2>
+
+    <ul class="list-group">
+        @foreach (var video in ViewBag.videos)
+        {
+            var name = String.IsNullOrWhiteSpace(video.Name) ? "Unnamed video" : video.Name;
+            var description = String.IsNullOrWhiteSpace(video.Description) ? "No description" : video.Description;
+
+            <li class="list-group-item">
+                <a href="/v/@video.PublicId">@name</a> - <a href="/myVideos/edit/@video.PublicId">Edit</a>
+                <br />
+                @description
+            </li>
+        }
+    </ul>
+    @if (ViewBag.videos == null || ViewBag.videos.Length == 0)
+    {
+        <p>
+            You don't have any video yet.
+        </p>
+    }
+*@

@@ -42,6 +42,24 @@ namespace MewPipe.Website.Controllers
 			return View();
 		}
 
+        public async Task<ActionResult> Search(string term = null, string orderCriteria = "date", bool orderDesc = false,
+            int page = 0)
+        {
+            if (term == null)
+            {
+                ViewBag.Results = new Video[0];
+                ViewBag.NoSearch = true;
+            }
+            else
+            {
+                var videos = await _apiClient.SearchVideos(term, orderCriteria, orderDesc, page, 20);
+                ViewBag.Results = videos;
+                ViewBag.NoSearch = false;
+            }
+
+            return View();
+        }
+
         [SiteAuthorize]
         public async Task<ActionResult> UserVideos()
         {

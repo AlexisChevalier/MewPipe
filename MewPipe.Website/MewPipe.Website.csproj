@@ -380,6 +380,7 @@
     <Content Include="Views\Videos\_DeleteVideoForm.cshtml" />
     <Content Include="Views\Videos\_AddUserToVideoWhiteListForm.cshtml" />
     <Content Include="Views\Shared\_Player.cshtml" />
+    <Content Include="Views\Videos\Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
