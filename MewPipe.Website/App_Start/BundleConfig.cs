@@ -45,6 +45,9 @@ namespace MewPipe.Website
                       "~/Content/Libs/videojs.css",
                       "~/Content/Libs/video-js-resolutions.css",
                       "~/Content/Player.css"));
+
+            bundles.Add(new StyleBundle("~/styles/search").Include(
+                      "~/Content/Search.css"));
         }
     }
 }

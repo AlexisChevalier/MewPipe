@@ -44,12 +44,12 @@ namespace MewPipe.ApiClient
             return await _httpClient.SendDelete<VideoContract>("videos" + "/" + publicVideoId);
         }
 
-        public async Task<VideoContract[]> SearchVideos(string term, string orderCriteria, bool orderDesc, int page, int limit)
+        public async Task<SearchContract> SearchVideos(string term, string orderCriteria, bool orderDesc, int page, int limit)
         {
             var url = String.Format("search/videos?term={0}&orderCriteria={1}&orderDesc={2}&page={3}&limit={4}", term,
                 orderCriteria, orderDesc, page, limit);
 
-            return await _httpClient.SendGet<VideoContract[]>(url);
+            return await _httpClient.SendGet<SearchContract>(url);
         }
 
         public async Task<UserContract[]> RemoveUserFromWhiteList(string publicVideoId, string userId)

@@ -252,6 +252,12 @@
     <Content Include="Content\Player.min.css">
       <DependentUpon>Player.css</DependentUpon>
     </Content>
+    <Content Include="Content\Search.css">
+      <DependentUpon>Search.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\Search.min.css">
+      <DependentUpon>Search.css</DependentUpon>
+    </Content>
     <Content Include="Content\UploadVideo.css">
       <DependentUpon>UploadVideo.scss</DependentUpon>
     </Content>
@@ -332,6 +338,10 @@
     <Content Include="fonts\VideoJS-Resolutions.eot" />
     <Content Include="fonts\VideoJS-Resolutions.ttf" />
     <Content Include="fonts\VideoJS-Resolutions.woff" />
+    <Content Include="Content\Search.scss" />
+    <Content Include="Content\Search.css.map">
+      <DependentUpon>Search.css</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\video-js-resolutions.js" />
     <Content Include="Scripts\videojs.js" />

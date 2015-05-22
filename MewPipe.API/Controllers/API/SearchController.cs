@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -11,6 +12,7 @@ using MewPipe.Logic.Helpers;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Repositories;
 using MewPipe.Logic.Services;
+using WebGrease.Css.Extensions;
 
 namespace MewPipe.API.Controllers.API
 {
@@ -18,18 +20,30 @@ namespace MewPipe.API.Controllers.API
     {
         [HttpGet]
         [Route("api/search/videos")]
-        public VideoContract[] SearchVideos(string term, string orderCriteria = "date", bool orderDesc = false,
+        public SearchContract SearchVideos(string term, string orderCriteria = "date", bool orderDesc = false,
             int page = 0, int limit = 20)
         {
             limit = limit > 40 ? 40 : limit;
 
             var uow = new UnitOfWork();
 
-            var results = uow.VideoRepository.Search(v => v.PrivacyStatus == Video.PrivacyStatusTypes.Public && v.Status == Video.StatusTypes.Published && (v.Description.Contains(term) || v.Name.Contains(term)),
-                GetSearchVideoOrderCriteria(orderCriteria, orderDesc), "Impressions, Tags, Category, AllowedUsers, User, VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType", limit, page * limit)
-                .Select(v => new VideoContract(v)).ToArray();
+            var results =
+                uow.VideoRepository.Search(
+                    v =>
+                        v.PrivacyStatus == Video.PrivacyStatusTypes.Public &&
+                        v.Status == Video.StatusTypes.Published &&
+                        (v.Description.Contains(term) || v.Name.Contains(term)),
+                    GetSearchVideoOrderCriteria(orderCriteria, orderDesc),
+                    "Impressions, Tags, Category, AllowedUsers, User, VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType",
+                    limit, page*limit);
 
-            return results;
+            var videoContracts = results.Item2.Select(v => new VideoContract(v)).ToArray();
+
+            return new SearchContract
+            {
+                Results = videoContracts,
+                ResultsCount = results.Item1
+            };
         }
 
         private Func<IQueryable<Video>, IOrderedQueryable<Video>> GetSearchVideoOrderCriteria(string orderCriteria, bool orderDesc)
@@ -51,18 +65,20 @@ namespace MewPipe.API.Controllers.API
                     {
                         return source => source.OrderByDescending(v =>
                         (
+                            (v.Impressions.Count == 0 ? 0 :
                             v.Impressions.Count(i => i.Type == Impression.ImpressionType.Good)
                             /
-                            v.Impressions.Count
-                        ) * 100);
+                            v.Impressions.Count) * 100
+                        ));
                     }
 
                     return source => source.OrderBy(v =>
                         (
+                            (v.Impressions.Count == 0 ? 0 :
                             v.Impressions.Count(i => i.Type == Impression.ImpressionType.Good)
                             /
-                            v.Impressions.Count
-                        ) * 100);
+                            v.Impressions.Count) * 100
+                        ));
                 }
                 case "views":
                 {

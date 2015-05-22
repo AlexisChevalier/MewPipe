@@ -1,32 +1,150 @@
-﻿@using EntityFramework.Extensions
+﻿@using System.ServiceModel.Configuration
+@using EntityFramework.Extensions
+@using MewPipe.Logic.Contracts
+@model MewPipe.Website.ViewModels.SearchViewModel
 @using MewPipe.Logic.Models
 @{
-    ViewBag.Title = "Search page";
+    ViewBag.Title = "Search Videos";
+    ViewBag.BodyClass = "searchPage";
 
-    var videosList = ViewBag.Videos as Video[];
+    var results = ViewBag.Results as SearchContract;
     var noSearch = ViewBag.NoSearch is bool && (bool) ViewBag.NoSearch;
+
+    var currentLowerResult = Model.Page * 20 + 1;
+    var currentHigherResult = Model.Page + 1 * 20;
+    var totalResults = (int) results.ResultsCount;
+    if (currentHigherResult > totalResults)
+    {
+        currentHigherResult = totalResults;
+    }
 }
 
-@*
-    <h2>Your Videos</h2>
+@section styles
+{
+    @Styles.Render("~/styles/search")
+}
 
-    <ul class="list-group">
-        @foreach (var video in ViewBag.videos)
+<div class="searchPanel">
+    @using (Html.BeginForm("Search", "Videos", FormMethod.Get, new { @class = "", @role = "search" }))
+    {
+        <div class="input-group">
+            @Html.TextBoxFor(m => m.Term, new {@class = "form-control", @placeholder = "Search"})
+            <span class="input-group-btn">
+                <button class="btn btn-info appendedBtn" type="submit">SEARCH</button>
+            </span>
+        </div>
+        <div class="options">
+            <div class="row">
+                <div class="col-xs-6 text-center">
+                    <span class="title">SEARCH CRITERIA</span>
+                    <label class="criteriaLabel">
+                        @Html.RadioButtonFor(m => m.OrderCriteria, "date") Date
+                    </label>
+                    <label class="criteriaLabel">
+                        @Html.RadioButtonFor(m => m.OrderCriteria, "goodImpressionsPercentage") Appreciation
+                    </label>
+                    <label class="criteriaLabel">
+                        @Html.RadioButtonFor(m => m.OrderCriteria, "views") Views
+                    </label>
+                </div>
+                <div class="col-xs-6 text-center" style="display: table-cell;">
+                    <label class="orderLabel" for="@Html.DisplayNameFor(m => m.OrderDesc)">SORT ORDER</label>
+                    @Html.DropDownListFor(m => m.OrderDesc, new List<SelectListItem>()
+                    {
+                        new SelectListItem
+                        {
+                            Text = "Ascendant",
+                            Value = "False"
+                        },
+                        new SelectListItem
+                        {
+                            Text = "Descendant",
+                            Value = "True"
+                        }
+                    })
+                </div>
+            </div>
+            
+            
+        </div>
+    }
+</div>
+
+@if (!noSearch && results != null && results.Results.Any())
+{
+    <ul class="list-group results">
+        @foreach (var video in results.Results)
         {
             var name = String.IsNullOrWhiteSpace(video.Name) ? "Unnamed video" : video.Name;
             var description = String.IsNullOrWhiteSpace(video.Description) ? "No description" : video.Description;
 
             <li class="list-group-item">
-                <a href="/v/@video.PublicId">@name</a> - <a href="/myVideos/edit/@video.PublicId">Edit</a>
-                <br />
+                <a href="/v/@video.PublicId">@name</a>
+                <br/>
                 @description
             </li>
         }
     </ul>
-    @if (ViewBag.videos == null || ViewBag.videos.Length == 0)
-    {
-        <p>
-            You don't have any video yet.
-        </p>
-    }
-*@
+    <nav>
+        <ul class="pager">
+
+            <li>
+                Result(s) @currentLowerResult - @currentHigherResult on @totalResults total search results
+            </li>
+            @if (currentLowerResult > 1)
+            {
+                <li class="previous">
+                    <a href="@Url.Action("Search", new
+                         {
+                             Term = Model.Term,
+                             OrderCriteria = Model.OrderCriteria,
+                             OrderDesc = Model.OrderDesc,
+                             Page = Model.Page - 1
+                         })">
+                        <span aria-hidden="true">&larr;</span>
+                        Previous results
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="previous disabled">
+                    <a href="#">
+                        <span aria-hidden="true">&larr;</span>
+                        Previous results
+                    </a>
+                </li>
+            }
+
+            @if (currentHigherResult < results.ResultsCount)
+            {
+                <li class="next">
+                    <a href="@Url.Action("Search", new
+                             {
+                                 Term = Model.Term,
+                                 OrderCriteria = Model.OrderCriteria,
+                                 OrderDesc = Model.OrderDesc,
+                                 Page = Model.Page + 1
+                             })">
+                        Next results
+                        <span aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="next disabled">
+                    <a href="#">
+                         Next results
+                        <span aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@if (results == null || !results.Results.Any())
+{
+    <p class="noresults">Your search returned no results !</p>
+}

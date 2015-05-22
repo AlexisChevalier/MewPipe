@@ -42,22 +42,23 @@ namespace MewPipe.Website.Controllers
 			return View();
 		}
 
-        public async Task<ActionResult> Search(string term = null, string orderCriteria = "date", bool orderDesc = false,
-            int page = 0)
+        public async Task<ActionResult> Search(SearchViewModel viewModel)
         {
-            if (term == null)
+            ViewBag.HideSearchBar = true;
+
+            if (viewModel.Term == null)
             {
-                ViewBag.Results = new Video[0];
+                ViewBag.Results = new SearchContract();
                 ViewBag.NoSearch = true;
             }
             else
             {
-                var videos = await _apiClient.SearchVideos(term, orderCriteria, orderDesc, page, 20);
+                var videos = await _apiClient.SearchVideos(viewModel.Term, viewModel.OrderCriteria, viewModel.OrderDesc, viewModel.Page, 20);
                 ViewBag.Results = videos;
                 ViewBag.NoSearch = false;
             }
 
-            return View();
+            return View(viewModel);
         }
 
         [SiteAuthorize]

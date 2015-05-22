@@ -44,6 +44,8 @@ html, body {
   font-weight: bold;
   font-family: 'Open Sans', sans-serif;
   font-size: 18px; }
+  .navbar-default .navbar-form {
+    border: none; }
   .navbar-default .navbar-brand {
     display: block;
     font-family: 'Noteworthy', cursive;
@@ -55,19 +57,16 @@ html, body {
       .navbar-default .navbar-brand span.red {
         color: #e1172c; }
   .navbar-default .search {
-    display: block; }
-    .navbar-default .search .form-group {
-      margin: 0;
-      margin-top: 8px;
-      position: relative; }
-      .navbar-default .search .form-group i.glyphicon {
-        font-size: 20px;
-        position: absolute;
-        left: 10px;
-        top: 7px; }
-      .navbar-default .search .form-group input {
-        padding-left: 35px;
-        text-align: left; }
+    max-width: 220px; }
+    .navbar-default .search .appendedBtn {
+      padding: 0;
+      padding: 6px 12px;
+      border-width: 1px;
+      background-color: #e1172c;
+      border-radius: 0; }
+    .navbar-default .search input {
+      height: 32px;
+      border-radius: 0; }
   .navbar-default .navbar-brand {
     color: #e1172c; }
     .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
@@ -79,8 +78,11 @@ html, body {
     .navbar-default .navbar-nav > li > a {
       text-transform: uppercase;
       font-size: 15px;
+      font-size: 14px;
+      font-weight: 600;
       padding-top: 15px;
       padding-bottom: 15px;
+      padding: 15px 9px;
       color: #e1172c; }
       .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
         color: #a50d1d; }
@@ -104,6 +106,12 @@ html, body {
       color: #a50d1d; }
   .navbar-default .navbar-right {
     float: right !important; }
+
+.navbar-collapse.in .search, .navbar-collapse.collapsing .search {
+  max-width: none; }
+.navbar-collapse.in .navbar-right, .navbar-collapse.collapsing .navbar-right {
+  clear: both;
+  float: none !important; }
 
 @media (min-width: 768px) {
   .navbar-right {
@@ -145,5 +153,23 @@ footer {
     margin-top: 10px; }
   footer hr {
     border-top: 1px solid #616161; }
+
+@media (min-width: 992px) {
+  .navbar-default .search {
+    max-width: 320px; }
+
+  .navbar-default .navbar-nav > li > a {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    color: #e1172c; }
+ }
+
+@media (min-width: 1200px) {
+  .navbar-default .search {
+    max-width: 420px; }
+ }
 
 /*# sourceMappingURL=Layout.css.map */

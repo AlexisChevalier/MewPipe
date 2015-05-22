@@ -34,7 +34,7 @@ namespace MewPipe.Logic.Repositories
             return orderBy != null ? orderBy(query).ToList() : query.ToList();
         }
 
-        public virtual IEnumerable<TEntity> Search(
+        public virtual Tuple<decimal, IEnumerable<TEntity>> Search(
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
             string includeProperties = "",
@@ -50,7 +50,10 @@ namespace MewPipe.Logic.Repositories
 
             query = includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
 
-            return orderBy(query).Skip(skip).Take(limit).ToList();
+            var results = orderBy(query).Skip(skip).Take(limit).ToArray();
+            var count = query.Count();
+
+            return new Tuple<decimal, IEnumerable<TEntity>>(count, results);
         }
 
         public virtual decimal Count(
