@@ -16,7 +16,7 @@ namespace MewPipe.VideoWorker.Helper
 
 		private const string OutPrefix = "out";
 
-		#region Helpers
+		#region Private helpers
 
 		private static ConvertSettings GetConvertSettings(string frameSize, string customOutputArgs)
 		{
@@ -58,7 +58,7 @@ namespace MewPipe.VideoWorker.Helper
 
 		#endregion
 
-		#region 1080p to 360p MP4 conversions
+		#region Conversions: 1080p to 360p MP4
 
 		public static void To1080Mp4(string inputPath, Stream outputStream)
 		{
