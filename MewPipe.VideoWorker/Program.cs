@@ -95,7 +95,6 @@ namespace MewPipe.VideoWorker
 
 			foreach (var mimeType in encodingMimeTypes)
 			{
-				if (!mimeType.Name.Equals("MP4")) continue; // Only MP4 conversion is supported TODO: remove when ogg is supported
 				foreach (var qualityType in encodingQualityTypes)
 				{
 					try
