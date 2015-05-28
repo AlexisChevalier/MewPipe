@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using MewPipe.Logic.Models;
+using MongoDB.Driver.GridFS;
 using NReco.VideoConverter;
 
 namespace MewPipe.VideoWorker.Helper
@@ -57,6 +59,27 @@ namespace MewPipe.VideoWorker.Helper
 		}
 
 		#endregion
+
+		public static void DoConversion(string inputFilePath, MimeType mimeType, QualityType qualityType,
+			MongoGridFSStream mongoStream)
+		{
+			if (mimeType.Name.Equals("MP4"))
+			{
+				if (qualityType.Name.Equals("1080")) To1080Mp4(inputFilePath, mongoStream);
+				else if (qualityType.Name.Equals("720")) To720Mp4(inputFilePath, mongoStream);
+				else if (qualityType.Name.Equals("480")) To480Mp4(inputFilePath, mongoStream);
+				else if (qualityType.Name.Equals("360")) To360Mp4(inputFilePath, mongoStream);
+			}
+			else if (mimeType.Name.Equals("OGG"))
+			{
+				/* TODO: Replace with ToXXXOgg when done 
+				if (qualityType.Name.Equals("1080")) To1080Mp4(inputFilePath, mongoStream);
+				else if (qualityType.Name.Equals("720")) To720Mp4(inputFilePath, mongoStream);
+				else if (qualityType.Name.Equals("480")) To480Mp4(inputFilePath, mongoStream);
+				else if (qualityType.Name.Equals("360")) To360Mp4(inputFilePath, mongoStream);
+				*/
+			}
+		}
 
 		#region Conversions: 1080p to 360p MP4
 
