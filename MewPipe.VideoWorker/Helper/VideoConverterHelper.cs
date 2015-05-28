@@ -52,7 +52,7 @@ namespace MewPipe.VideoWorker.Helper
 			using (var fileStream = File.OpenRead(filePath))
 			{
 				fileStream.Seek(0, SeekOrigin.Begin);
-				fileStream.CopyTo(outputStream, 255*1024);
+				fileStream.CopyTo(outputStream, 255*1024); // 255Ko buffer
 			}
 		}
 
