@@ -8,29 +8,17 @@ using MewPipe.Logic.RabbitMQ.Messages;
 using MewPipe.Logic.Services;
 using MewPipe.VideoWorker.Helper;
 using MewPipe.VideoWorker.Properties;
-using MongoDB.Driver.GridFS;
 
 namespace MewPipe.VideoWorker
 {
 	internal class Program
 	{
+		private static readonly VideoWorkerService VideoWorkerService = new VideoWorkerService();
+		private static readonly VideoMimeTypeService VideoMimeTypeService = new VideoMimeTypeService();
+		private static readonly VideoQualityTypeService VideoQualityTypeService = new VideoQualityTypeService();
+
 		private static void Main(string[] args)
 		{
-			//TODO: If you need to handle the args[] array you should do it here.
-
-			#region Testing conversions
-
-			/*
-			var inputVid = @"C:\Dropbox\Documents\projets\4PJT\Workspace\Conversions\input1080.wmv";
-
-			VideoConverterHelper.To1080Mp4(inputVid, null);
-			VideoConverterHelper.To720Mp4(inputVid, null);
-			VideoConverterHelper.To480Mp4(inputVid, null);
-			VideoConverterHelper.To360Mp4(inputVid, null);
-			*/
-
-			#endregion
-
 			Run();
 		}
 
@@ -83,54 +71,46 @@ namespace MewPipe.VideoWorker
 
 		private static void HandleMessage(NewVideoMessage message)
 		{
-			var service = new VideoWorkerService(); //TODO put it as a static field
-
-			Video video = service.GetVideoDetails(message.VideoId);
-			//DoTotalConversion(video);
-
-			service.MarkVideoAsPublished(video);
+			var video = VideoWorkerService.GetVideoDetails(message.VideoId);
+			DoTotalConversion(video);
+			VideoWorkerService.MarkVideoAsPublished(video);
 
 			Thread.Sleep(1000);
 		}
 
 		private static void DoTotalConversion(Video video)
 		{
-			var service = new VideoWorkerService(); //TODO put it as a static field
-		    var mimeTypeService = new VideoMimeTypeService();
-		    var qualityTypeService = new VideoQualityTypeService();
+			var oVideoStream = VideoWorkerService.GetVideoUploadedFile(video);
 
-			MongoGridFSStream oVideoStream = service.GetVideoUploadedFile(video);
-
-			string ext = ".mp4"; //TODO Need that info in Video or in the message
-
+			// Get and store the original video on the disk:
 			string workFolder = Settings.Default.VideoWorkerConversionsFolder;
-			string inputFilePath = workFolder + @"\input" + ext;
+			string inputFilePath = workFolder + @"\input.tmp";
 			StreamToFile(oVideoStream, inputFilePath);
 
-			string vidId = video.Id.ToString();
+			// Get the needed datas for the total conversion
+			var encodingMimeTypes = VideoMimeTypeService.GetEncodingMimeTypes();
+			var encodingQualityTypes = VideoQualityTypeService.GetEncodingQualityTypes();
+			var vidQuality = VideoInfosHelper.GuessVideoQualityType(inputFilePath);
+			var vidQualityResY = int.Parse(vidQuality.Name);
 
-		    var encodingMimeTypes = mimeTypeService.GetEncodingMimeTypes();
-		    var encodingQualityTypes = qualityTypeService.GetEncodingQualityTypes();
-
-            /**
-             * @JB : Supprime ce commentaire une fois utilisé stp
-             * Tu peux itérer sur les mime types d'encoding et sur les qualités prédéfinies afin d'obtenir directement des objets
-             * stockés en DB que je pourrais réutiliser aprés dans les services
-             * Ca va te poser soucis sur ton code par contre, je pense qu'une factory pour récupérer le bon converter peut régler le soucis
-             */
-            foreach (var mimeType in encodingMimeTypes)
-		    {
-                foreach (var qualityType in encodingQualityTypes)
-                {
-                    //TODO: Do something if the video is good enough
-                }
-		    }
-
-            //TODO: Code broken by refactoring the service (Alexis)
-			//VideoConverterHelper.To1080Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "1080"));
-			//VideoConverterHelper.To720Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "720"));
-			//VideoConverterHelper.To480Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "480"));
-			//VideoConverterHelper.To360Mp4(inputFilePath, service.GetStreamToAddConvertedVideo(vidId, "mp4", "360"));
+			foreach (var mimeType in encodingMimeTypes)
+			{
+				if (!mimeType.Name.Equals("MP4")) continue; // Only MP4 conversion is supported TODO: remove when ogg is supported
+				foreach (var qualityType in encodingQualityTypes)
+				{
+					try
+					{
+						var qualityResY = int.Parse(qualityType.Name);
+						if (qualityResY > vidQualityResY) continue; // We won't convert the vid to a higher resolution
+						var mongoStream = VideoWorkerService.GetStreamToAddConvertedVideo(video, mimeType, qualityType);
+						VideoConverterHelper.DoConversion(inputFilePath, mimeType, qualityType, mongoStream);
+					}
+					catch (Exception)
+					{
+						// Skip this qualityType of that mimeType if something went wrong
+					}
+				}
+			}
 
 			Console.WriteLine("All conversions done !");
 		}
