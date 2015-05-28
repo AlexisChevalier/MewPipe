@@ -107,14 +107,14 @@ namespace MewPipe.Logic.Services
 
             var videoFile = new VideoFile
             {
-                //GridFsId = result.Id.ToString(),
                 IsOriginalFile = false,
                 MimeType = dbMimeType,
                 QualityType = dbQualityType,
                 Video = dbVideo
             };
 
-            _unitOfWork.VideoFileRepository.Insert(videoFile);
+            dbVideo.VideoFiles.Add(videoFile);
+            _unitOfWork.VideoRepository.Update(dbVideo);
             _unitOfWork.Save();
 
 

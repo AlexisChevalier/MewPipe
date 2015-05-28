@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="VideoWorkerConversionsFolder" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">C:\Dropbox\Documents\projets\4PJT\Workspace\Conversions</Value>
+      <Value Profile="(Default)">D:\tmp\mewPipeConversions</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -204,7 +204,6 @@ namespace MewPipe.Logic.Services
 			video.VideoFiles.Add(new VideoFile
 			{
 				Video = video,
-				GridFsId = details.Id.ToString(),
 				IsOriginalFile = true,
 				MimeType = mimeTypeService.GetAllowedMimeTypeForDecoding(details.ContentType),
 				QualityType = qualityTypeService.GetUploadingQualityType()
@@ -461,8 +460,15 @@ namespace MewPipe.Logic.Services
                 videoGridFsClient.RemoveFile(video, videoFile.MimeType, videoFile.QualityType);
 	        }
 
-            //TODO: Not tested (impossible at the moment).
-            thumbnailGridFsClient.RemoveFile(new ObjectId(video.Id.ToBson()));
+	        try
+	        {
+	            //TODO: Not tested (impossible at the moment).
+	            thumbnailGridFsClient.RemoveFile(new ObjectId(video.Id.ToBson()));
+	        }
+	        catch (Exception)
+	        {
+	            
+	        }
 
 	        _unitOfWork.VideoRepository.Delete(video);
 	        _unitOfWork.Save();

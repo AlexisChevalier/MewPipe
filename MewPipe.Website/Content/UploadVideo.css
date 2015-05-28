@@ -45,6 +45,8 @@
 
 .body-content button {
   margin-top: 15px; }
+  .body-content button:active {
+    margin-top: 18px; }
 
 #fileView {
   text-align: center;

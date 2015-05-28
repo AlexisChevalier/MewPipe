@@ -112,6 +112,8 @@ namespace MewPipe.VideoWorker
 				}
 			}
 
+            VideoWorkerService.RemoveVideoUploadedFile(video);
+
 			Console.WriteLine("All conversions done !");
 		}
 	}

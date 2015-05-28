@@ -15,9 +15,12 @@ namespace MewPipe.Logic.Contracts
 
         public ImpressionContract(Impression impression)
         {
-            Type = impression.Type;
-            UserId = impression.User.Id;
-            PublicVideoId = impression.Video.PublicId;
+            if (impression != null)
+            {
+                Type = impression.Type;
+                UserId = impression.User.Id;
+                PublicVideoId = impression.Video.PublicId;
+            }
         }
 
         public Impression.ImpressionType Type { get; set; }

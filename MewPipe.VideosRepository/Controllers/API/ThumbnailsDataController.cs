@@ -40,7 +40,7 @@ namespace MewPipe.VideosRepository.Controllers.API
 
             try
             {
-                return videoApiService.GetVideoHttpResponseMessage(Request, publicVideoId, user);
+                return videoApiService.GetThumbnailHttpResponseMessage(Request, publicVideoId, user);
             }
             catch (InvalidByteRangeException byteRangeException)
             {
