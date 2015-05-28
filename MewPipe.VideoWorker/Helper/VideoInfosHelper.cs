@@ -8,6 +8,8 @@ namespace MewPipe.VideoWorker.Helper
 {
 	public static class VideoInfosHelper
 	{
+		private static readonly VideoQualityTypeService VideoQualityTypeService = new VideoQualityTypeService();
+
 		/// <summary>
 		/// Get and returns the number of frames a video on the disk contains.
 		/// </summary>
@@ -39,7 +41,7 @@ namespace MewPipe.VideoWorker.Helper
 		/// <example>GetClosestQualityType(544) will return the 480 QualityType instance.</example>
 		public static QualityType GetClosestQualityType(int resolutionY) // Supporting only 16:9 videos
 		{
-			var qualities = new VideoQualityTypeService().GetEncodingQualityTypes();
+			var qualities = VideoQualityTypeService.GetEncodingQualityTypes();
 
 			QualityType closestQuality = null;
 			var minDiff = 99999;
