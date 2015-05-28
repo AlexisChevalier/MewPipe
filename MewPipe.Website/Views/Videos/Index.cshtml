@@ -1,45 +1,79 @@
-﻿@{
+﻿@using MewPipe.Logic.Contracts
+@using MewPipe.Logic.Models
+@{
     ViewBag.Title = "title";
     ViewBag.BodyClass = "hasPlayer onTop";
-}
 
-@section scripts
+    var video = ViewBag.VideoDetails as VideoContract;
+    var notFound = ViewBag.NotFound is bool && (bool) ViewBag.NotFound;
+    var unauthorized = ViewBag.Unauthorized is bool && (bool) ViewBag.Unauthorized;
+
+}
+@if (notFound)
 {
-    @Scripts.Render("~/scripts/player")
-    <script type="text/javascript">
-        $(function () {
-            var videoData = @(Html.Raw(ViewBag.JsonVideoDetails));
-            window.playerModule.initPlayer(videoData, function(err, result) {
-                
+    <p>Video not found</p>
+}
+else if (unauthorized)
+{
+    <p>You are not allowed to see this video.</p>
+}
+else
+{
+    @section scripts
+    {
+        @Scripts.Render("~/scripts/player")
+        <script type="text/javascript">
+            $(function () {
+                var videoData = @(Html.Raw(ViewBag.JsonVideoDetails));
+                window.playerModule.initPlayer(videoData, function(err, result) {
+
+                });
             });
-        });
-</script>
-}
+        </script>
+    }
 
-@section styles
-{
-    @Styles.Render("~/styles/player")
-}
+    @section styles
+    {
+        @Styles.Render("~/styles/player")
+    }
 
-<div class="videoContainer">
-    <video id="mewPipePlayerElement"
-           width="854"
-           height="480"
-           autoplay
-           controls
-           poster="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/11/1397210130748/Spring-Lamb.-Image-shot-2-011.jpg"
-           class="video-js vjs-default-skin">
-        <!--<source src="http://videos-repository.mewpipe.local:44403/api/videosData/@ViewBag.VideoDetails.PublicId?encoding=video/mp4&quality=360" type="video/mp4" data-res="360">
-        <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@ViewBag.VideoDetails.PublicId?encoding=video/mp4&quality=480" type="video/mp4" data-res="480">
-        <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@ViewBag.VideoDetails.PublicId?encoding=video/mp4&quality=720" type="video/mp4" data-res="720">
-        <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@ViewBag.VideoDetails.PublicId?encoding=video/mp4&quality=1080" type="video/mp4" data-res="1080">-->
-    </video>
-</div>
-<div class="container">
-    <div class="row">
-            
+    <div class="videoContainer">
+        <video id="mewPipePlayerElement"
+               width="854"
+               height="480"
+               autoplay
+               controls
+               poster="http://videos-repository.mewpipe.local:44403/api/thumbnailsData/@video.PublicId"
+               class="video-js vjs-default-skin">
+            <!--<source src="http://videos-repository.mewpipe.local:44403/api/videosData/@video.PublicId?encoding=video/mp4&quality=360" type="video/mp4" data-res="360">
+            <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@video.PublicId?encoding=video/mp4&quality=480" type="video/mp4" data-res="480">
+            <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@video.PublicId?encoding=video/mp4&quality=720" type="video/mp4" data-res="720">
+            <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@video.PublicId?encoding=video/mp4&quality=1080" type="video/mp4" data-res="1080">-->
+        </video>
     </div>
-</div>
+    <div class="container">
+        <div class="row">
+            Views : @video.Views<br />
+            Like : @video.PositiveImpressions<br />
+            Dislikes : @video.NegativeImpressions<br />
+            Category : @video.Category.Name<br />
+            Your impression :
+            @if (video.UserImpression == null)
+            {
+                <text>No impression</text>
+            }
+            else if (video.UserImpression.Type == Impression.ImpressionType.Bad)
+            {
+                <text>Bad</text>
+            }
+            else
+            {
+                <text>Good</text>
+            }
+        </div>
+    </div>
 
-<!---->
-<!--<video id="mewPipePlayerElement" controls="controls" poster="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/11/1397210130748/Spring-Lamb.-Image-shot-2-011.jpg"></video>-->
+    <!---->
+    <!--<video id="mewPipePlayerElement" controls="controls" poster="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/11/1397210130748/Spring-Lamb.-Image-shot-2-011.jpg"></video>-->
+
+}

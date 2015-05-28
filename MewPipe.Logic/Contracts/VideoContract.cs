@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Repositories;
+using RabbitMQ.Client.Content;
 
 namespace MewPipe.Logic.Contracts
 {
@@ -11,8 +12,16 @@ namespace MewPipe.Logic.Contracts
         public VideoContract()
         {
         }
-        public VideoContract(Video video)
+
+        public VideoContract(Video video, string userId = null)
         {
+            var unitOfWork = new UnitOfWork();
+
+            if (userId != null)
+            {
+                UserImpression = new ImpressionContract(unitOfWork.ImpressionRepository.GetOne(i => i.User.Id == userId && i.Video.Id == video.Id, "User, Video"));
+            }
+
             PublicId = video.PublicId;
             Name = video.Name;
             Description = video.Description;
@@ -28,8 +37,6 @@ namespace MewPipe.Logic.Contracts
             {
                 VideoFiles.Add(new VideoFileContract(videoFile));
             }
-
-            var unitOfWork = new UnitOfWork();
 
             PositiveImpressions =
                 unitOfWork.ImpressionRepository.Count(
@@ -52,5 +59,6 @@ namespace MewPipe.Logic.Contracts
         public Video.StatusTypes Status { get; set; }
         public Video.PrivacyStatusTypes PrivacyStatus { get; set; }
         public List<VideoFileContract> VideoFiles { get; set; }
+        public ImpressionContract UserImpression { get; set; }
     }
 }

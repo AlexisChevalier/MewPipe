@@ -142,6 +142,8 @@ namespace MewPipe.Logic.Services
                 });
 			}
 
+	        var defaultCategory = _unitOfWork.CategoryRepository.GetOne(v => v.IsDefault);
+
             var video = new Video
             {
                 AllowedUsers = new List<User>(),
@@ -154,7 +156,7 @@ namespace MewPipe.Logic.Services
                 NotificationHookUri = token.NotificationHookUri,
                 UploadRedirectUri = token.UploadRedirectUri,
                 DateTimeUtc = DateTime.UtcNow,
-                Category = null,
+                Category = defaultCategory,
                 Impressions = new List<Impression>(),
                 Tags = new List<Tag>(),
                 Views = 0
@@ -276,6 +278,28 @@ namespace MewPipe.Logic.Services
 	    {
 	        var video = GetVideoDetails(videoId);
 
+	        var categoryGuid = Guid.Parse(contract.CategoryId);
+
+            var category = _unitOfWork.CategoryRepository.GetOne(c => c.Id == categoryGuid);
+
+	        if (video == null)
+	        {
+	            throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("Video not found")
+                });
+	        }
+
+            if (category == null)
+	        {
+	            throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("Category not found")
+                });
+	        }
+
 	        if (video.User.Id != user.Id)
 	        {
                 throw new HttpResponseException(new HttpResponseMessage
@@ -287,6 +311,7 @@ namespace MewPipe.Logic.Services
 
 	        video.Name = contract.Name;
 	        video.Description = contract.Description;
+	        video.Category = category;
 	        if (contract.PrivacyStatus != Video.PrivacyStatusTypes.Private)
 	        {
 	            video.AllowedUsers = new List<User>();

@@ -15,9 +15,9 @@ namespace MewPipe.ApiClient
 {
     public partial class MewPipeApiClient
     {
-        public async Task<ImpressionContract> GetVideoImpression(string userId, string publicVideoId)
+        public async Task<ImpressionContract> GetVideoImpression(string publicVideoId)
         {
-            return await _httpClient.SendGet<ImpressionContract>(String.Format("impressions/{0}/{1}", userId, publicVideoId));
+            return await _httpClient.SendGet<ImpressionContract>(String.Format("impressions/{0}", publicVideoId));
         }
 
         public async Task<VideoContract> SetVideoImpression(ImpressionContract contract)

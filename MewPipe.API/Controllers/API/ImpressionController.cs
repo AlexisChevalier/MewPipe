@@ -19,11 +19,13 @@ namespace MewPipe.API.Controllers.API
         [HttpGet]
         [Route("api/impressions/{userId}/{publicVideoId}")]
         [Oauth2AuthorizeFilter]
-        public ImpressionContract GetVideoImpression(string userId, string publicVideoId)
+        public ImpressionContract GetVideoImpression(string publicVideoId)
         {
             var uow = new UnitOfWork();
 
             var id = ShortGuid.Decode(publicVideoId);
+
+            var userId = ActionContext.GetUser().Id;
 
             var impression = uow.ImpressionRepository.GetOne(i => i.User.Id == userId && i.Video.Id == id, "User, Video");
 
@@ -43,7 +45,10 @@ namespace MewPipe.API.Controllers.API
         {
             var videoApiService = new VideoApiService();
 
-            return new VideoContract(videoApiService.SetImpression(impression));
+            var video = videoApiService.SetImpression(impression);
+            var user = ActionContext.GetUser();
+
+            return new VideoContract(video, user.Id);
         }
     }
 }

@@ -33,6 +33,11 @@ namespace MewPipe.Logic.Migrations
                 c => c.Name,
                 new Category
                 {
+                    Name = "Other",
+                    IsDefault = true
+                },
+                new Category
+                {
                     Name = "News and Politics"
                 },
                 new Category

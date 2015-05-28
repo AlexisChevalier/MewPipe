@@ -25,7 +25,9 @@ namespace MewPipe.API.Controllers.API
 
             var videoApiService = new VideoApiService();
 
-            return new VideoContract(videoApiService.GetVideo(publicVideoId, ActionContext.GetUser()));   
+            var user = ActionContext.GetUser();
+
+            return new VideoContract(videoApiService.GetVideo(publicVideoId, user), user == null ? null : user.Id);   
         }
 
 

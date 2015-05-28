@@ -43,8 +43,7 @@
       background-color: #a91020;
       background: #f26d6d; }
 
-button {
-  display: block;
+.body-content button {
   margin-top: 15px; }
 
 #fileView {

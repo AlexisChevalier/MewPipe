@@ -1,0 +1,11 @@
+﻿@model MewPipe.Website.ViewModels.SearchViewModel
+
+@using (Html.BeginForm("Search", "Videos", FormMethod.Get, new { @class = "navbar-form navbar-left search", @role = "search" }))
+{
+    <div class="input-group">
+        @Html.TextBoxFor(m => m.Term, new { @class = "form-control", @placeholder = "Search" })
+        <span class="input-group-btn">
+            <button class="btn btn-info appendedBtn" type="submit">SEARCH</button>
+        </span>
+    </div>
+}

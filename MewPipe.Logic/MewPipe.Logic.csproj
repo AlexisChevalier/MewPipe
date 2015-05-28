@@ -168,6 +168,10 @@
     <Compile Include="Migrations\201505182219164_AddedVideoInformations.Designer.cs">
       <DependentUpon>201505182219164_AddedVideoInformations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201505272308442_UpdatedCategoryDefault.cs" />
+    <Compile Include="Migrations\201505272308442_UpdatedCategoryDefault.Designer.cs">
+      <DependentUpon>201505272308442_UpdatedCategoryDefault.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Impression.cs" />
@@ -246,6 +250,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201505182219164_AddedVideoInformations.resx">
       <DependentUpon>201505182219164_AddedVideoInformations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505272308442_UpdatedCategoryDefault.resx">
+      <DependentUpon>201505272308442_UpdatedCategoryDefault.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
