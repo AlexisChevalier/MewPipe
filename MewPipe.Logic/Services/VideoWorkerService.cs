@@ -16,7 +16,7 @@ namespace MewPipe.Logic.Services
 		MongoGridFSStream GetVideoUploadedFile(Video video);
 		void MarkVideoAsPublished(Video video);
         void RemoveVideoUploadedFile(Video video); 
-        MongoGridFSStream GetStreamToAddVideoThumbnail(Video video);
+	    void AddThumbnail(Video video, FileStream fileStream);
 	    void AddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType, FileStream fileStream);
 	}
 
@@ -73,21 +73,14 @@ namespace MewPipe.Logic.Services
 			return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
 		}
 
-
-        /// <summary>
-        /// Retourne un MongoGridFSStream qui pointe sur le bon endroit de mongo ou stocker le thumbnail d'une video
-        /// </summary>
-        /// <param name="video">La video originale dont la video convertie provient</param>
-        /// <returns>un MongoGridFSStream qui pointe sur le bon endroit de mongo ou stocker le thumbnail d'une video</returns>
-        public MongoGridFSStream GetStreamToAddVideoThumbnail(Video video)
-        {
+	    public void AddThumbnail(Video video, FileStream fileStream)
+	    {
             var thumbnailService = new ThumbnailGridFsClient();
+	        thumbnailService.UploadThumbnailStream(video, fileStream);
+	    }
 
-            return thumbnailService.GetThumbnailWritingStream(video);
-        }
 
-
-        public void AddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType, FileStream fileStream)
+	    public void AddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType, FileStream fileStream)
         {
             var videoGridFsClient = new VideoGridFsClient();
 
