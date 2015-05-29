@@ -28,7 +28,7 @@
 		 */
         res_label: function (res) {
 
-            return (/^\d+$/.test(res)) ? res + 'p' : res;
+            return (/^\d+$/.test(res)) ? res + "p" : res;
         }
     };
 
@@ -56,10 +56,10 @@
             this.resolution = options.res;
 
             // Register our click and tap handlers
-            this.on(['click', 'tap'], this.onClick);
+            this.on(["click", "tap"], this.onClick);
 
             // Toggle the selected class whenever the resolution changes
-            player.on('changeRes', _V_.bind(this, function () {
+            player.on("changeRes", _V_.bind(this, function () {
 
                 if (this.resolution == player.getCurrentRes()) {
 
@@ -78,7 +78,7 @@
 
     // Handle clicks on the menu items
     _V_.ResolutionMenuItem.prototype.onClick = function () {
-
+        console.log("RES");
         // Check if this has already been called
         if (this.call_count > 0) { return; }
 
@@ -100,7 +100,7 @@
             _V_.MenuItem.call(this, player, options);
 
             // No click handler for the menu title
-            this.off('click');
+            this.off("click");
         }
     });
 
@@ -124,7 +124,7 @@
     });
 
     // Set class for resolution selector button
-    _V_.ResolutionSelector.prototype.className = 'vjs-res-button';
+    _V_.ResolutionSelector.prototype.className = "vjs-res-button";
 
     // Create a menu item for each available resolution
     _V_.ResolutionSelector.prototype.createItems = function () {
@@ -136,10 +136,10 @@
         // Add the menu title item
         items.push(new _V_.ResolutionTitleMenuItem(player, {
 
-            el: _V_.Component.prototype.createEl('li', {
+            el: _V_.Component.prototype.createEl("li", {
 
-                className: 'vjs-menu-title vjs-res-menu-title',
-                innerHTML: player.localize('Quality')
+                className: "vjs-menu-title vjs-res-menu-title",
+                innerHTML: player.localize("Quality")
             })
         }));
 
@@ -147,7 +147,7 @@
         for (current_res in player.availableRes) {
 
             // Don't add an item for the length attribute
-            if ('length' == current_res) { continue; }
+            if ("length" == current_res) { continue; }
 
             items.push(new _V_.ResolutionMenuItem(player, {
                 res: current_res
@@ -157,7 +157,7 @@
         // Sort the available resolutions in descending order
         items.sort(function (a, b) {
 
-            if (typeof a.resolution == 'undefined') {
+            if (typeof a.resolution == "undefined") {
 
                 return -1;
 
@@ -173,7 +173,7 @@
     /***********************************************************************************
 	 * Register the plugin with videojs, main plugin function
 	 ***********************************************************************************/
-    _V_.plugin('resolutionSelector', function (options) {
+    _V_.plugin("resolutionSelector", function (options) {
 
         // Only enable the plugin on HTML5 videos
         if (!this.el().firstChild.canPlayType) { return; }
@@ -190,7 +190,7 @@
 			// Override default options with those provided
 			settings = _V_.util.mergeOptions({
 
-			    default_res: '',		// (string)	The resolution that should be selected by default ( '480' or  '480,1080,240' )
+			    default_res: "",		// (string)	The resolution that should be selected by default ( '480' or  '480,1080,240' )
 			    force_types: false		// (array)	List of media types. If passed, we need to have source for each type in each resolution or that resolution will not be an option
 
 			}, options || {}),
@@ -200,7 +200,7 @@
 			resolutionSelector,
 
 			// Split default resolutions if set and valid, otherwise default to an empty array
-			default_resolutions = (settings.default_res && typeof settings.default_res == 'string') ? settings.default_res.split(',') : [];
+			default_resolutions = (settings.default_res && typeof settings.default_res == "string") ? settings.default_res.split(",") : [];
 
         // Get all of the available resoloutions
         while (i > 0) {
@@ -208,11 +208,11 @@
             i--;
 
             // Skip sources that don't have data-res attributes
-            if (!sources[i]['data-res']) { continue; }
+            if (!sources[i]["data-res"]) { continue; }
 
-            current_res = sources[i]['data-res'];
+            current_res = sources[i]["data-res"];
 
-            if (typeof available_res[current_res] !== 'object') {
+            if (typeof available_res[current_res] !== "object") {
 
                 available_res[current_res] = [];
                 available_res.length++;
@@ -228,7 +228,7 @@
             for (current_res in available_res) {
 
                 // Don't count the length property as a resolution
-                if ('length' == current_res) { continue; }
+                if ("length" == current_res) { continue; }
 
                 i = settings.force_types.length;
                 found_types = 0;
@@ -283,7 +283,7 @@
 		 *******************************************************************/
 
         // Make sure we have player.localize() if it's not defined by Video.js
-        if (typeof player.localize !== 'function') {
+        if (typeof player.localize !== "function") {
 
             player.localize = function (string) {
 
@@ -294,7 +294,7 @@
         // Helper function to get the current resolution
         player.getCurrentRes = function () {
 
-            if (typeof player.currentRes !== 'undefined') {
+            if (typeof player.currentRes !== "undefined") {
 
                 return player.currentRes;
 
@@ -302,11 +302,11 @@
 
                 try {
 
-                    return res = player.options().sources[0]['data-res'];
+                    return res = player.options().sources[0]["data-res"];
 
                 } catch (e) {
 
-                    return '';
+                    return "";
                 }
             }
         };
@@ -326,15 +326,15 @@
 				|| !player.availableRes[target_resolution]) { return; }
 
             // Make sure the loadedmetadata event will fire
-            if ('none' == video_el.preload) { video_el.preload = 'metadata'; }
+            if ("none" == video_el.preload) { video_el.preload = "metadata"; }
 
             // Change the source and make sure we don't start the video over		
-            player.src(player.availableRes[target_resolution]).one('loadedmetadata', function () {
+            player.src(player.availableRes[target_resolution]).one("loadedmetadata", function () {
 
                 player.currentTime(current_time);
 
                 // If the video was paused, don't show the poster image again
-                player.addClass('vjs-has-started');
+                player.addClass("vjs-has-started");
 
                 if (!is_paused) { player.play(); }
             });
@@ -353,7 +353,7 @@
 
                     button_node_count--;
 
-                    if ('vjs-control-text' == button_nodes[button_node_count].className) {
+                    if ("vjs-control-text" == button_nodes[button_node_count].className) {
 
                         button_nodes[button_node_count].innerHTML = methods.res_label(target_resolution);
                         break;
@@ -362,7 +362,7 @@
             }
 
             // Update the classes to reflect the currently selected resolution
-            player.trigger('changeRes');
+            player.trigger("changeRes");
         };
 
         /*******************************************************************
@@ -376,7 +376,7 @@
 
         // Add the resolution selector button
         resolutionSelector = new _V_.ResolutionSelector(player, {
-            buttonText: player.localize(current_res || 'Quality'),
+            buttonText: player.localize(current_res || "Quality"),
             available_res: available_res
         });
 

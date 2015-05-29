@@ -361,6 +361,7 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\Site\upload.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="swf\video-js.swf" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

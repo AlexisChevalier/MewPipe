@@ -37,19 +37,7 @@ else
         @Styles.Render("~/styles/player")
     }
 
-    <div class="videoContainer">
-        <video id="mewPipePlayerElement"
-               width="854"
-               height="480"
-               autoplay
-               controls
-               poster="http://videos-repository.mewpipe.local:44403/api/thumbnailsData/@video.PublicId"
-               class="video-js vjs-default-skin">
-            <!--<source src="http://videos-repository.mewpipe.local:44403/api/videosData/@video.PublicId?encoding=video/mp4&quality=360" type="video/mp4" data-res="360">
-            <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@video.PublicId?encoding=video/mp4&quality=480" type="video/mp4" data-res="480">
-            <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@video.PublicId?encoding=video/mp4&quality=720" type="video/mp4" data-res="720">
-            <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@video.PublicId?encoding=video/mp4&quality=1080" type="video/mp4" data-res="1080">-->
-        </video>
+    <div class="videoContainer" id="videoPlayerContainer">
     </div>
     <div class="container">
         <div class="row">
