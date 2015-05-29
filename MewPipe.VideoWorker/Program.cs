@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -7,7 +8,6 @@ using MewPipe.Logic.RabbitMQ;
 using MewPipe.Logic.RabbitMQ.Messages;
 using MewPipe.Logic.Services;
 using MewPipe.VideoWorker.Helper;
-using MewPipe.VideoWorker.Properties;
 
 namespace MewPipe.VideoWorker
 {
@@ -83,7 +83,7 @@ namespace MewPipe.VideoWorker
 			var oVideoStream = VideoWorkerService.GetVideoUploadedFile(video);
 
 			// Get and store the original video on the disk:
-			string workFolder = Settings.Default.VideoWorkerConversionsFolder;
+			string workFolder = ConfigurationManager.ConnectionStrings["MewPipeVideoWorkerConversionsFolder"].ConnectionString;
 			string inputFilePath = workFolder + @"\input.tmp";
 			StreamToFile(oVideoStream, inputFilePath);
 
@@ -111,7 +111,7 @@ namespace MewPipe.VideoWorker
 				}
 			}
 
-            VideoWorkerService.RemoveVideoUploadedFile(video);
+			VideoWorkerService.RemoveVideoUploadedFile(video);
 
 			Console.WriteLine("All conversions done !");
 		}
