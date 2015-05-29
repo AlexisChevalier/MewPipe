@@ -17,7 +17,7 @@ namespace MewPipe.Logic.Services
 		void MarkVideoAsPublished(Video video);
         void RemoveVideoUploadedFile(Video video); 
         MongoGridFSStream GetStreamToAddVideoThumbnail(Video video);
-        MongoGridFSStream GetStreamToAddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType);
+	    void AddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType, FileStream fileStream);
 	}
 
 	public class VideoWorkerService : IVideoWorkerService
@@ -86,40 +86,6 @@ namespace MewPipe.Logic.Services
             return thumbnailService.GetThumbnailWritingStream(video);
         }
 
-        /// <summary>
-        /// Retourne un MongoGridFSStream qui pointe sur le bon endroit de mongo en fonction de l'id de la video, le format et la qualité.
-        /// </summary>
-        /// <param name="video">La video originale dont la video covertit provient.</param>
-        /// <param name="mimeType">Le format de la video convertie (valeurs: "mp4" ou "ogg")</param>
-        /// <param name="qualityType">La qualité de la video convertie (valeurs: "1080" ou "720" ou "480"  ou "360")</param>
-        /// <returns>Un MongoGridFSStream qui pointe sur le bon endroit de mongo en fonction de l'id de la video, le format et la qualité.</returns>
-
-	    public MongoGridFSStream GetStreamToAddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType)
-	    {
-            var videoGridFsClient = new VideoGridFsClient();
-
-            var stream = videoGridFsClient.GetVideoWritingStream(video, mimeType, qualityType);
-
-            var dbVideo = GetVideoDetails(video.PublicId);
-
-            var dbMimeType = _unitOfWork.MimeTypeRepository.GetById(mimeType.Id);
-            var dbQualityType = _unitOfWork.QualityTypeRepository.GetById(qualityType.Id);
-
-            var videoFile = new VideoFile
-            {
-                IsOriginalFile = false,
-                MimeType = dbMimeType,
-                QualityType = dbQualityType,
-                Video = dbVideo
-            };
-
-            dbVideo.VideoFiles.Add(videoFile);
-            _unitOfWork.VideoRepository.Update(dbVideo);
-            _unitOfWork.Save();
-
-
-            return stream;
-	    }
 
         public void AddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType, FileStream fileStream)
         {

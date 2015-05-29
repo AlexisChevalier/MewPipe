@@ -70,20 +70,6 @@ namespace MewPipe.VideoWorker.Helper
 	        }
 	    }
 
-		private static void CopyToStream(string filePath, Stream outputStream)
-		{
-			if (outputStream == null) return;
-
-
-
-			using (var fileStream = File.OpenRead(filePath))
-			{
-                
-				fileStream.Seek(0, SeekOrigin.Begin);
-				fileStream.CopyTo(outputStream, 255*1024); // 255Ko buffer
-			}
-		}
-
 		#endregion
 
 		public static void DoConversion(string inputFilePath, MimeType mimeType, QualityType qualityType, Video video)
@@ -97,10 +83,10 @@ namespace MewPipe.VideoWorker.Helper
 			}
 			else if (mimeType.Name.Equals("OGG"))
 			{
-				if (qualityType.Name.Equals("1080")) To1080Ogg(inputFilePath, mongoStream);
-				else if (qualityType.Name.Equals("720")) To720Ogg(inputFilePath, mongoStream);
-				else if (qualityType.Name.Equals("480")) To480Ogg(inputFilePath, mongoStream);
-				else if (qualityType.Name.Equals("360")) To360Ogg(inputFilePath, mongoStream);
+                if (qualityType.Name.Equals("1080")) To1080Ogg(inputFilePath, video, mimeType, qualityType);
+                else if (qualityType.Name.Equals("720")) To720Ogg(inputFilePath, video, mimeType, qualityType);
+                else if (qualityType.Name.Equals("480")) To480Ogg(inputFilePath, video, mimeType, qualityType);
+                else if (qualityType.Name.Equals("360")) To360Ogg(inputFilePath, video, mimeType, qualityType);
 			}
 		}
 
@@ -137,7 +123,6 @@ namespace MewPipe.VideoWorker.Helper
 			Converter.ConvertMedia(inputPath, null, outputPath, Format.mp4, convertSettings);
 
             SaveVideoToStorage(outputPath, video, mimeType, qualityType);
-            //CopyToStream(outputPath, outputStream);
 		}
 
         public static void To480Mp4(string inputPath, Video video, MimeType mimeType, QualityType qualityType)
@@ -154,7 +139,6 @@ namespace MewPipe.VideoWorker.Helper
 			Converter.ConvertMedia(inputPath, null, outputPath, Format.mp4, convertSettings);
 
             SaveVideoToStorage(outputPath, video, mimeType, qualityType);
-            //CopyToStream(outputPath, outputStream);
 		}
 
 		public static void To360Mp4(string inputPath, Video video, MimeType mimeType, QualityType qualityType)
@@ -171,14 +155,13 @@ namespace MewPipe.VideoWorker.Helper
 			Converter.ConvertMedia(inputPath, null, outputPath, Format.mp4, convertSettings);
 
 		    SaveVideoToStorage(outputPath, video, mimeType, qualityType);
-			//CopyToStream(outputPath, outputStream);
 		}
 
 		#endregion
 
 		#region Conversions: 1080p to 360p OGG
 
-		public static void To1080Ogg(string inputPath, Stream outputStream)
+        public static void To1080Ogg(string inputPath, Video video, MimeType mimeType, QualityType qualityType)
 		{
 			EnsureShowingProgress();
 
@@ -188,10 +171,10 @@ namespace MewPipe.VideoWorker.Helper
 			Console.WriteLine("Converting to 1080p OGG ...");
 			Converter.ConvertMedia(inputPath, null, outputPath, Format.ogg, cSettings);
 
-			CopyToStream(outputPath, outputStream);
+            SaveVideoToStorage(outputPath, video, mimeType, qualityType);
 		}
 
-		public static void To720Ogg(string inputPath, Stream outputStream)
+        public static void To720Ogg(string inputPath, Video video, MimeType mimeType, QualityType qualityType)
 		{
 			EnsureShowingProgress();
 
@@ -202,10 +185,10 @@ namespace MewPipe.VideoWorker.Helper
 			Console.WriteLine("Converting to 720p OGG ...");
 			Converter.ConvertMedia(inputPath, null, outputPath, Format.ogg, convertSettings);
 
-			CopyToStream(outputPath, outputStream);
+            SaveVideoToStorage(outputPath, video, mimeType, qualityType);
 		}
 
-		public static void To480Ogg(string inputPath, Stream outputStream)
+        public static void To480Ogg(string inputPath, Video video, MimeType mimeType, QualityType qualityType)
 		{
 			EnsureShowingProgress();
 
@@ -216,10 +199,10 @@ namespace MewPipe.VideoWorker.Helper
 			Console.WriteLine("Converting to 480p OGG ...");
 			Converter.ConvertMedia(inputPath, null, outputPath, Format.ogg, convertSettings);
 
-			CopyToStream(outputPath, outputStream);
+            SaveVideoToStorage(outputPath, video, mimeType, qualityType);
 		}
 
-		public static void To360Ogg(string inputPath, Stream outputStream)
+        public static void To360Ogg(string inputPath, Video video, MimeType mimeType, QualityType qualityType)
 		{
 			EnsureShowingProgress();
 
@@ -230,7 +213,7 @@ namespace MewPipe.VideoWorker.Helper
 			Console.WriteLine("Converting to 360p OGG ...");
 			Converter.ConvertMedia(inputPath, null, outputPath, Format.ogg, convertSettings);
 
-			CopyToStream(outputPath, outputStream);
+            SaveVideoToStorage(outputPath, video, mimeType, qualityType);
 		}
 
 		#endregion
