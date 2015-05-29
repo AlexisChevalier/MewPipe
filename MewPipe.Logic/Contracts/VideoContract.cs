@@ -19,7 +19,18 @@ namespace MewPipe.Logic.Contracts
 
             if (userId != null)
             {
-                UserImpression = new ImpressionContract(unitOfWork.ImpressionRepository.GetOne(i => i.User.Id == userId && i.Video.Id == video.Id, "User, Video"));
+                var impression =
+                    unitOfWork.ImpressionRepository.GetOne(i => i.User.Id == userId && i.Video.Id == video.Id,
+                        "User, Video");
+                if (impression != null)
+                {
+                    UserImpression = new ImpressionContract(impression);   
+                }
+            }
+
+            if (video.User != null)
+            {
+                User = new UserContract(video.User);
             }
 
             PublicId = video.PublicId;
@@ -54,6 +65,7 @@ namespace MewPipe.Logic.Contracts
         public decimal Views { get; set; }
         public decimal PositiveImpressions { get; set; }
         public decimal NegativeImpressions { get; set; }
+        public UserContract User { get; set; }
         public CategoryContract Category { get; set; }
         public DateTime DateTimeUtc { get; set; }
         public Video.StatusTypes Status { get; set; }

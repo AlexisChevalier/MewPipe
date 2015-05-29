@@ -170,6 +170,13 @@ namespace MewPipe.Logic.Services
 			try
 			{
 				await request.Content.ReadAsMultipartAsync(streamProvider);
+
+			    if (!String.IsNullOrWhiteSpace(streamProvider.VideoFileName))
+			    {
+                    video.Name = streamProvider.VideoFileName;
+                    _unitOfWork.VideoRepository.Update(video);
+                    _unitOfWork.Save();   
+			    }
 			}
 			catch (IOException e)
 			{

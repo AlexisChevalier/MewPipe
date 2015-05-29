@@ -6,8 +6,13 @@ window.playerModule = window.playerModule || {};
 
     var $elements = {
         player: $("#mewPipePlayerElement"),
-        playerContainer: $("#videoPlayerContainer")
-    },
+        playerContainer: $("#videoPlayerContainer"),
+        impressionButton: $(".impressionButton"),
+        goodImpressionsElement: $("#goodImpression"),
+        badImpressionsElement: $("#badImpression"),
+        goodImpressionsNumber: $("#goodImpression .number"),
+        badImpressionsNumber: $("#badImpression .number")
+},
     playerObject = null,
     videoDetails = null,
     videoEndpointUri = "http://videos-repository.mewpipe.local:44403/api/videosData/",
@@ -22,8 +27,10 @@ window.playerModule = window.playerModule || {};
             } else if (Modernizr.video.ogg) {
                 format = "video/ogg";
             }
+        } else {
+            format = "video/mp4";
         }
-        format = "video/mp4";
+        
         return format;
     }
 
@@ -51,8 +58,8 @@ window.playerModule = window.playerModule || {};
 
         //Init html player
         var playerElement = "<video id='mewPipePlayerElement'" +
-                " width='854' " +
-                "height='480' " + 
+                " width='auto' " +
+                "height='auto' " + 
                 "autoplay " + 
                 "controls " + 
                 "poster='" + thumbnailEndpointUri + videoDetails.PublicId + "' " + 
@@ -83,10 +90,41 @@ window.playerModule = window.playerModule || {};
         });
     }
 
+    function onImpressionButtonClick(event) {
+        if ($(this).hasClass("selected")) {
+            return;
+        }
+        var url = $(this).attr("data-link");
+        $.ajax({
+            method: "POST",
+            url: url
+        })
+        .done(function (data) {
+
+            if (data.UserImpression !== null) {
+                if (data.UserImpression.Type === 0) {
+                    $elements.badImpressionsElement.removeClass("selected");
+                    $elements.goodImpressionsElement.addClass("selected");
+                } else {
+                    $elements.goodImpressionsElement.removeClass("selected");
+                    $elements.badImpressionsElement.addClass("selected");
+                }
+            } else {
+                $elements.badImpressionsElement.removeClass("selected");
+                $elements.goodImpressionsElement.removeClass("selected");
+                
+            }
+            $elements.goodImpressionsNumber.text(data.PositiveImpressions);
+            $elements.badImpressionsNumber.text(data.NegativeImpressions);
+        });
+    }
+
     videojs.options.flash.swf = "/swf/video-js.swf";
 
     //THIS DISABLES THE HTML5 PLAYER
     //document.createElement("video").constructor.prototype.canPlayType = function(type){return ""};
+
+    $elements.impressionButton.click(onImpressionButtonClick);
 
     module.initPlayer = initPlayer;
 

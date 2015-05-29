@@ -23,7 +23,6 @@ namespace MewPipe.Website.ViewModels
         [Required(ErrorMessage = "Please type a valid name")]
         public string Name { get; set; }
         [Display(Name = "Video Description")]
-        [Required(ErrorMessage = "Please type a valid description")]
         public string Description { get; set; }
         [Display(Name = "Video Category")]
         [Required(ErrorMessage = "Please type a valid category")]

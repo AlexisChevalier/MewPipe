@@ -6,8 +6,12 @@ namespace MewPipe.Accounts.ViewModels
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
+        [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+        [Required]
+        [Display(Name = "Username")]
+        public string Username { get; set; }
     }
 
     public class ExternalLoginListViewModel
@@ -49,9 +53,9 @@ namespace MewPipe.Accounts.ViewModels
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Email")]
+        [Display(Name = "Username")]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Username { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -75,6 +79,10 @@ namespace MewPipe.Accounts.ViewModels
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "Username")]
+        public string Username { get; set; }
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
@@ -95,8 +103,8 @@ namespace MewPipe.Accounts.ViewModels
     {
         [Required]
         [EmailAddress]
-        [Display(Name = "Account email")]
-        public string Email { get; set; }
+        [Display(Name = "Account Username")]
+        public string Username { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 1)]
@@ -116,7 +124,7 @@ namespace MewPipe.Accounts.ViewModels
     {
         [Required]
         [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
+        [Display(Name = "Username")]
+        public string Username { get; set; }
     }
 }

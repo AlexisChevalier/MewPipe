@@ -1,12 +1,13 @@
 ﻿@using MewPipe.Logic.Contracts
 @using MewPipe.Logic.Models
 @{
-    ViewBag.Title = "title";
     ViewBag.BodyClass = "hasPlayer onTop";
 
     var video = ViewBag.VideoDetails as VideoContract;
-    var notFound = ViewBag.NotFound is bool && (bool) ViewBag.NotFound;
-    var unauthorized = ViewBag.Unauthorized is bool && (bool) ViewBag.Unauthorized;
+    var notFound = ViewBag.NotFound is bool && (bool)ViewBag.NotFound;
+    var unauthorized = ViewBag.Unauthorized is bool && (bool)ViewBag.Unauthorized;
+
+    ViewBag.Title = notFound ? "Video not found" : unauthorized ? "Private video" : video.Name;
 
 }
 @if (notFound)
@@ -36,28 +37,91 @@ else
     {
         @Styles.Render("~/styles/player")
     }
-
-    <div class="videoContainer" id="videoPlayerContainer">
+    <div class="playerWrapper">
+        <div class="videoContainer" id="videoPlayerContainer">
+        </div>
     </div>
-    <div class="container">
+    <div class="container infosWrapper">
         <div class="row">
-            Views : @video.Views<br />
-            Like : @video.PositiveImpressions<br />
-            Dislikes : @video.NegativeImpressions<br />
-            Category : @video.Category.Name<br />
-            Your impression :
-            @if (video.UserImpression == null)
-            {
-                <text>No impression</text>
-            }
-            else if (video.UserImpression.Type == Impression.ImpressionType.Bad)
-            {
-                <text>Bad</text>
-            }
-            else
-            {
-                <text>Good</text>
-            }
+            <div class="col-sm-8 details">
+                <div class="boxWrapper">
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="title">
+                                <h1>@video.Name</h1>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="metadata">
+                                Added the <strong>@video.DateTimeUtc.ToLocalTime().ToShortDateString()</strong> by <strong>@video.User.Username</strong>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 text-right">
+                            <div class="views">
+                                <strong>
+                                    @String.Format("{0:n0}", video.Views)
+                                </strong>
+                                @if (video.Views == 1)
+                                {
+                                    <text>view</text>
+                                }
+                                else
+                                {
+
+                                    <text>views</text>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div class="col-xs-12 actions">
+                            @{
+                                var goodClass = video.UserImpression != null && video.UserImpression.Type == Impression.ImpressionType.Good ? "selected" : "";
+                                var badClass = video.UserImpression != null && video.UserImpression.Type == Impression.ImpressionType.Bad ? "selected" : "";
+                            }
+                            <div class="impressions">
+                                <span data-link="@Url.Action("SetVideoImpression", new {videoId = video.PublicId, good = true})" id="goodImpression" class="impressionButton good @goodClass">
+                                    <i class="glyphicon glyphicon-thumbs-up"></i>
+                                    <span class="number">
+                                        @String.Format("{0:n0}", video.PositiveImpressions)
+                                    </span>
+                                </span>
+                                <span data-link="@Url.Action("SetVideoImpression", new {videoId = video.PublicId, good = false})" id="badImpression" class="impressionButton bad @badClass">
+                                    <i class="glyphicon glyphicon-thumbs-down"></i>
+                                    <span class="number">
+                                        @String.Format("{0:n0}", video.NegativeImpressions)
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="boxWrapper marged">
+                    <div class="row">
+                        <div class="col-sm-12">
+
+                            <p>
+                                @video.Description
+                            </p>
+                            <hr />
+                            Category : @video.Category.Name
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 suggestions">
+                <div class="boxWrapper">
+                    SUGGESTIONS HERE
+                </div>
+            </div>
         </div>
     </div>
 

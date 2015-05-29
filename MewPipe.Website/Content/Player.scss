@@ -8,17 +8,37 @@
     .body-content {
         max-width: none;
         padding: 0;
-        .videoContainer {
-            background-color: #1b1b1b;
+        .playerWrapper {
+            background-color: black;
+            position: relative;
             overflow: hidden;
-            .video-js {
+            .videoContainer {
+                max-width:1170px;
+                //max-height:720px;
                 margin: auto;
-                #mewPipePlayerElement {
+                .video-js {
+                    position: relative;
+                    padding-top: 56.25%;
+                }
+                .vjs-fullscreen {
+                    position: relative;
+                    padding-top: 0px;
+                    max-width:none;
+                    max-height:none;
                 }
             }
         }
     }
 }
+
+@media only screen and (max-width:599px) {
+    .vjs-default-skin .vjs-big-play-button {left:25%;top:25%;width:50%;height:50%;}
+}
+@media only screen and (min-width:600px) and (max-width:768px) {
+    .vjs-default-skin .vjs-big-play-button {left:25%;top:25%;width:50%;height:50%;font-size:5em;}
+}
+
+
 
 
 .vjs-default-skin {
@@ -87,6 +107,10 @@
             margin-bottom: 1em;
             border: none;
             .vjs-menu-content {
+                padding-bottom: 14px;
+                -moz-background-clip: content-box;
+                -webkit-background-clip: content-box;
+                background-clip: content-box;
                 box-shadow: none;
                 left: -2em;
                 background-color: rgba(27, 27, 27, 0.80);
@@ -154,6 +178,69 @@
             .vjs-progress-control {
                 font-size: 0.5em;
             }
+        }
+    }
+}
+hr {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.infosWrapper {
+    margin-top: 20px;
+    .details {
+        h1 {
+            margin: 0;
+            font-family: Calibri, Arial;
+        }
+        .title {
+        }
+        
+        .views {
+            font-size: 1.2em;
+        }
+        .actions {
+            .impressions {
+                float: right;
+                font-size: 1.4em;
+                span {
+                    cursor: pointer;
+                    color: black;
+                    &.good {
+                        margin-right: 15px;
+                    }
+                    &:hover, &.selected {
+                        text-decoration: none;
+                        &.good {
+                            color: #1d9d13;
+                            .number {
+                                color: #1d9d13;
+                            }
+                        }
+                        &.bad {
+                            color: #e1172c;
+                            .number {
+                                color: #e1172c;
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    .suggestions {
+
+    }
+
+    .boxWrapper {
+        padding: 15px;
+        background-color: white;
+        -webkit-box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75);
+        box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75);
+        &.marged {
+            margin-top: 15px;
         }
     }
 }
