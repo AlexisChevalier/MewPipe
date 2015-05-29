@@ -89,5 +89,23 @@ namespace MewPipe.VideoWorker.Helper
 			if (resolutionXStr == null || resolutionYStr == null) return null;
 			return GetClosestQualityType(int.Parse(resolutionYStr));
 		}
+
+		public static void ShowFFmpegHeader()
+		{
+			var ffMpeg = new FFMpegConverter();
+			ffMpeg.LogReceived += delegate(object sender, FFMpegLogEventArgs args)
+			{
+				var ffmpegOutput = args.Data;
+				if (ffmpegOutput.Contains("usage: ffmpeg") || ffmpegOutput.Contains("Use -h")) return;
+				Console.WriteLine(ffmpegOutput);
+			};
+			try
+			{
+				ffMpeg.Invoke("");
+			}
+			catch (Exception)
+			{
+			}
+		}
 	}
 }
