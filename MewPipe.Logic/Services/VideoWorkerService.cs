@@ -120,5 +120,29 @@ namespace MewPipe.Logic.Services
 
             return stream;
 	    }
+
+        public void AddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType, FileStream fileStream)
+        {
+            var videoGridFsClient = new VideoGridFsClient();
+
+            videoGridFsClient.UploadVideoStream(video, mimeType, qualityType, fileStream);
+
+            var dbVideo = GetVideoDetails(video.PublicId);
+
+            var dbMimeType = _unitOfWork.MimeTypeRepository.GetById(mimeType.Id);
+            var dbQualityType = _unitOfWork.QualityTypeRepository.GetById(qualityType.Id);
+
+            var videoFile = new VideoFile
+            {
+                IsOriginalFile = false,
+                MimeType = dbMimeType,
+                QualityType = dbQualityType,
+                Video = dbVideo
+            };
+
+            dbVideo.VideoFiles.Add(videoFile);
+            _unitOfWork.VideoRepository.Update(dbVideo);
+            _unitOfWork.Save();
+        }
 	}
 }

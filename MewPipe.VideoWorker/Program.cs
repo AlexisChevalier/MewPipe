@@ -103,7 +103,7 @@ namespace MewPipe.VideoWorker
 						var qualityResY = int.Parse(qualityType.Name);
 						if (qualityResY > vidQualityResY) continue; // We won't convert the vid to a higher resolution
 						var mongoStream = VideoWorkerService.GetStreamToAddConvertedVideo(video, mimeType, qualityType);
-						VideoConverterHelper.DoConversion(inputFilePath, mimeType, qualityType, mongoStream);
+						VideoConverterHelper.DoConversion(inputFilePath, mimeType, qualityType, video);
 					}
 					catch (Exception)
 					{
