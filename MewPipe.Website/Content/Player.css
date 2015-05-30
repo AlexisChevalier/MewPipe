@@ -18,31 +18,27 @@
         padding-top: 0px;
         max-width: none;
         max-height: none; }
-
 @media only screen and (max-height: 800px) {
   .hasPlayer .body-content .playerWrapper .videoContainer {
     max-width: 854px;
     margin: auto; }
  }
-
 @media only screen and (max-width: 599px) {
-  .vjs-default-skin .vjs-big-play-button {
+  .hasPlayer .vjs-default-skin .vjs-big-play-button {
     left: 25%;
     top: 25%;
     width: 50%;
     height: 50%; }
  }
-
 @media only screen and (min-width: 600px) and (max-width: 768px) {
-  .vjs-default-skin .vjs-big-play-button {
+  .hasPlayer .vjs-default-skin .vjs-big-play-button {
     left: 25%;
     top: 25%;
     width: 50%;
     height: 50%;
     font-size: 5em; }
  }
-
-.vjs-default-skin .vjs-control-bar {
+.hasPlayer .vjs-default-skin .vjs-control-bar {
   padding-top: 3px;
   padding-left: 10px;
   padding-right: 20px;
@@ -64,37 +60,37 @@
   /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a3000000',GradientType=0 );
   /* IE6-9 */ }
-  .vjs-default-skin .vjs-control-bar .vjs-control {
+  .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-control {
     font-size: 1.1em; }
-    .vjs-default-skin .vjs-control-bar .vjs-control:before {
+    .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-control:before {
       text-shadow: none; }
-  .vjs-default-skin .vjs-control-bar .vjs-time-divider {
+  .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-time-divider {
     font-size: 1.1em; }
-  .vjs-default-skin .vjs-control-bar .vjs-play-progress {
+  .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-play-progress {
     background: #E1172C; }
-  .vjs-default-skin .vjs-control-bar .vjs-volume-control .vjs-volume-bar {
+  .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-volume-control .vjs-volume-bar {
     width: 5em;
     height: 0.35em;
     margin: 1.4em auto 0; }
-  .vjs-default-skin .vjs-control-bar .vjs-volume-control .vjs-volume-level {
+  .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-volume-control .vjs-volume-level {
     height: 100%;
     background: #E1172C; }
-  .vjs-default-skin .vjs-control-bar .vjs-volume-control .vjs-volume-handle:before {
+  .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-volume-control .vjs-volume-handle:before {
     font-size: 0.7em;
     top: -2px; }
-  .vjs-default-skin .vjs-control-bar .vjs-progress-control {
+  .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-progress-control {
     height: 0.7em;
     font-size: 0.5em;
     left: 20px;
     right: 20px; }
-    .vjs-default-skin .vjs-control-bar .vjs-progress-control .vjs-seek-handle:before {
+    .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-progress-control .vjs-seek-handle:before {
       font-size: 1.5em;
       top: -3px; }
-  .vjs-default-skin .vjs-control-bar .vjs-menu {
+  .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-menu {
     box-shadow: none;
     margin-bottom: 1em;
     border: none; }
-    .vjs-default-skin .vjs-control-bar .vjs-menu .vjs-menu-content {
+    .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-menu .vjs-menu-content {
       padding-bottom: 14px;
       -moz-background-clip: content-box;
       -webkit-background-clip: content-box;
@@ -102,21 +98,21 @@
       box-shadow: none;
       left: -2em;
       background-color: rgba(27, 27, 27, 0.8); }
-      .vjs-default-skin .vjs-control-bar .vjs-menu .vjs-menu-content .vjs-menu-item {
+      .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-menu .vjs-menu-content .vjs-menu-item {
         box-shadow: none;
         color: white; }
-        .vjs-default-skin .vjs-control-bar .vjs-menu .vjs-menu-content .vjs-menu-item:hover {
+        .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-menu .vjs-menu-content .vjs-menu-item:hover {
           background-color: rgba(225, 23, 44, 0.6);
           box-shadow: none; }
-        .vjs-default-skin .vjs-control-bar .vjs-menu .vjs-menu-content .vjs-menu-item.vjs-selected {
+        .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-menu .vjs-menu-content .vjs-menu-item.vjs-selected {
           background-color: rgba(27, 27, 27, 0.8);
           font-weight: bold;
           background: none;
           color: #E1172C;
           box-shadow: none; }
-      .vjs-default-skin .vjs-control-bar .vjs-menu .vjs-menu-content .vjs-menu-title:hover {
+      .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-menu .vjs-menu-content .vjs-menu-title:hover {
         color: white; }
-.vjs-default-skin .vjs-big-play-button {
+.hasPlayer .vjs-default-skin .vjs-big-play-button {
   border: 3px solid white;
   border: none;
   border-radius: 10px;
@@ -131,84 +127,94 @@
   margin-left: -30px;
   width: 60px;
   height: 60px; }
-  .vjs-default-skin .vjs-big-play-button:before {
+  .hasPlayer .vjs-default-skin .vjs-big-play-button:before {
     line-height: 60px;
     text-shadow: 1px 1px 1px #808080;
     line-height: 55px;
     margin-left: 3px; }
-.vjs-default-skin:hover .vjs-big-play-button {
+.hasPlayer .vjs-default-skin:hover .vjs-big-play-button {
   background: none;
   box-shadow: none;
   color: #E1172C;
   border-color: #E1172C; }
-.vjs-default-skin:hover .vjs-control-bar .vjs-progress-control {
+.hasPlayer .vjs-default-skin:hover .vjs-control-bar .vjs-progress-control {
   font-size: 0.5em; }
-
-hr {
+.hasPlayer hr {
   margin-top: 15px;
   margin-bottom: 15px; }
-
-.infosWrapper {
+.hasPlayer .infosWrapper {
   margin-top: 20px; }
-  .infosWrapper .details h1 {
+  .hasPlayer .infosWrapper .details h1 {
     margin: 0;
     font-family: Calibri, Arial; }
-  .infosWrapper .details .title h1 {
+  .hasPlayer .infosWrapper .details .title h1 {
     display: inline-block;
     vertical-align: middle;
     margin-right: 10px; }
-  .infosWrapper .details .title .editButton {
+  .hasPlayer .infosWrapper .details .title .editButton {
     display: inline-block;
     font-size: 1.1em;
     vertical-align: middle;
     text-decoration: none;
     color: white; }
-    .infosWrapper .details .title .editButton:hover span {
+    .hasPlayer .infosWrapper .details .title .editButton:hover span {
       background-color: #356fa1; }
-  .infosWrapper .details .views {
+  .hasPlayer .infosWrapper .details .views {
     font-size: 1.2em; }
-  .infosWrapper .details .actions .share {
+  .hasPlayer .infosWrapper .details .actions .share {
     float: left; }
-  .infosWrapper .details .actions .impressions {
+  .hasPlayer .infosWrapper .details .actions .impressions {
     float: right;
     font-size: 1.4em; }
-    .infosWrapper .details .actions .impressions span {
+    .hasPlayer .infosWrapper .details .actions .impressions span {
       cursor: pointer;
       color: black; }
-      .infosWrapper .details .actions .impressions span.good {
+      .hasPlayer .infosWrapper .details .actions .impressions span.good {
         margin-right: 15px; }
-      .infosWrapper .details .actions .impressions span:hover, .infosWrapper .details .actions .impressions span.selected {
+      .hasPlayer .infosWrapper .details .actions .impressions span:hover, .hasPlayer .infosWrapper .details .actions .impressions span.selected {
         text-decoration: none; }
-        .infosWrapper .details .actions .impressions span:hover.good, .infosWrapper .details .actions .impressions span.selected.good {
+        .hasPlayer .infosWrapper .details .actions .impressions span:hover.good, .hasPlayer .infosWrapper .details .actions .impressions span.selected.good {
           color: #1d9d13; }
-          .infosWrapper .details .actions .impressions span:hover.good .number, .infosWrapper .details .actions .impressions span.selected.good .number {
+          .hasPlayer .infosWrapper .details .actions .impressions span:hover.good .number, .hasPlayer .infosWrapper .details .actions .impressions span.selected.good .number {
             color: #1d9d13; }
-        .infosWrapper .details .actions .impressions span:hover.bad, .infosWrapper .details .actions .impressions span.selected.bad {
+        .hasPlayer .infosWrapper .details .actions .impressions span:hover.bad, .hasPlayer .infosWrapper .details .actions .impressions span.selected.bad {
           color: #e1172c; }
-          .infosWrapper .details .actions .impressions span:hover.bad .number, .infosWrapper .details .actions .impressions span.selected.bad .number {
+          .hasPlayer .infosWrapper .details .actions .impressions span:hover.bad .number, .hasPlayer .infosWrapper .details .actions .impressions span.selected.bad .number {
             color: #e1172c; }
-  .infosWrapper .boxWrapper {
+  .hasPlayer .infosWrapper .boxWrapper {
     padding: 15px;
     background-color: white;
     -webkit-box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75);
     box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75); }
-    .infosWrapper .boxWrapper.marged {
+    .hasPlayer .infosWrapper .boxWrapper.marged {
       margin-top: 15px; }
-
-ul.share-buttons {
+.hasPlayer ul.share-buttons {
   list-style: none;
   padding: 0; }
-
-ul.share-buttons li {
+.hasPlayer ul.share-buttons li {
   display: inline; }
-
-.embed .playerWrapper {
+.hasPlayer .embed .playerWrapper {
   height: 100%;
   width: 100%; }
-  .embed .playerWrapper .videoContainer {
+  .hasPlayer .embed .playerWrapper .videoContainer {
     height: 100%; }
-    .embed .playerWrapper .videoContainer .video-js {
+    .hasPlayer .embed .playerWrapper .videoContainer .video-js {
       height: 100%; }
+.hasPlayer .errorWrapper {
+  position: relative;
+  text-align: center;
+  height: 100px;
+  top: 50%;
+  margin-top: -50px; }
+  .hasPlayer .errorWrapper i {
+    font-size: 3em; }
+  .hasPlayer .errorWrapper p {
+    font-size: 2em; }
+  .hasPlayer .errorWrapper.notEmbed {
+    top: 0;
+    margin-top: 50px; }
+.hasPlayer textarea {
+  width: 100%; }
 
 /*# sourceMappingURL=Player.css.map */

@@ -11,13 +11,32 @@
     ViewBag.Title = notFound ? "Video not found" : unauthorized ? "Private video" : video.Name;
 
 }
+
+@section styles
+{
+    @Styles.Render("~/styles/player")
+}
+
 @if (notFound)
 {
-    <p>Video not found</p>
+    <div class="errorWrapper notEmbed">
+        <i class="errorIcon glyphicon glyphicon-ban-circle">
+        </i>
+        <p class="error">Video not found</p>
+        <br />
+        <a href="/">Go back to the home page</a>
+    </div>
 }
 else if (unauthorized)
 {
-    <p>You are not allowed to see this video.</p>
+    <div class="errorWrapper notEmbed">
+        <i class="errorIcon glyphicon glyphicon-ban-circle">
+        </i>
+        <br />
+        <p class="error">You are not allowed to see this video</p>
+        <br />
+        <a href="/">Go back to the home page</a>
+    </div>
 }
 else
 {
@@ -32,11 +51,6 @@ else
                 });
             });
         </script>
-    }
-
-    @section styles
-    {
-        @Styles.Render("~/styles/player")
     }
     <div class="playerWrapper">
         <div class="videoContainer" id="videoPlayerContainer">
@@ -143,9 +157,8 @@ else
                     <div class="row">
                         <div class="col-sm-12">
                             <h3>Integrate this video</h3>
-                            <textarea readonly="readonly">
-                                <iframe width='560' height='315' src='http://mewpipe.local:44402/embed/@video.PublicId' frameborder='0' allowfullscreen></iframe>
-                            </textarea>
+                            <p>To integrate this video on another website, juste copy and paste the following code.</p>
+                            <textarea readonly="readonly"><iframe width='560' height='315' src='http://mewpipe.local:44402/embed/@video.PublicId' frameborder='0' allowfullscreen></iframe></textarea>
                         </div>
                     </div>
                 </div>
