@@ -190,7 +190,9 @@
   <ItemGroup>
     <None Include="App.Config" />
     <None Include="Configuration\connectionstrings.default.config" />
-    <None Include="Configuration\connectionstrings.config" />
+    <None Include="Configuration\connectionstrings.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
