@@ -1,5 +1,5 @@
 ﻿@using MewPipe.Logic.Migrations
-@model MewPipe.Website.ViewModels.SearchViewModel
+@using MewPipe.Website.ViewModels
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,15 +28,7 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     @if (ViewBag.HideSearchBar == null || !ViewBag.HideSearchBar)
                     {
-                        using (Html.BeginForm("Search", "Videos", FormMethod.Get, new { @class = "navbar-form navbar-left search", @role = "search" }))
-                        {
-                            <div class="input-group">
-                                @Html.TextBoxFor(m => m.Term, new { @class = "form-control", @placeholder = "Search" })
-                                <span class="input-group-btn">
-                                    <button class="btn btn-info appendedBtn" type="submit">SEARCH</button>
-                                </span>
-                            </div>
-                        }
+                        @Html.Partial("_SearchForm", new SearchViewModel())
                     }
                     @Html.Partial("_LoginPartial")
                 </div>

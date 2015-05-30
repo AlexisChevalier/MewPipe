@@ -16,8 +16,8 @@ namespace MewPipe.Logic.Services
 		MongoGridFSStream GetVideoUploadedFile(Video video);
 		void MarkVideoAsPublished(Video video);
         void RemoveVideoUploadedFile(Video video); 
-        MongoGridFSStream GetStreamToAddVideoThumbnail(Video video);
-        MongoGridFSStream GetStreamToAddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType);
+	    void AddThumbnail(Video video, FileStream fileStream);
+	    void AddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType, FileStream fileStream);
 	}
 
 	public class VideoWorkerService : IVideoWorkerService
@@ -73,32 +73,18 @@ namespace MewPipe.Logic.Services
 			return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
 		}
 
-
-        /// <summary>
-        /// Retourne un MongoGridFSStream qui pointe sur le bon endroit de mongo ou stocker le thumbnail d'une video
-        /// </summary>
-        /// <param name="video">La video originale dont la video convertie provient</param>
-        /// <returns>un MongoGridFSStream qui pointe sur le bon endroit de mongo ou stocker le thumbnail d'une video</returns>
-        public MongoGridFSStream GetStreamToAddVideoThumbnail(Video video)
-        {
-            var thumbnailService = new ThumbnailGridFsClient();
-
-            return thumbnailService.GetThumbnailWritingStream(video);
-        }
-
-        /// <summary>
-        /// Retourne un MongoGridFSStream qui pointe sur le bon endroit de mongo en fonction de l'id de la video, le format et la qualité.
-        /// </summary>
-        /// <param name="video">La video originale dont la video covertit provient.</param>
-        /// <param name="mimeType">Le format de la video convertie (valeurs: "mp4" ou "ogg")</param>
-        /// <param name="qualityType">La qualité de la video convertie (valeurs: "1080" ou "720" ou "480"  ou "360")</param>
-        /// <returns>Un MongoGridFSStream qui pointe sur le bon endroit de mongo en fonction de l'id de la video, le format et la qualité.</returns>
-
-	    public MongoGridFSStream GetStreamToAddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType)
+	    public void AddThumbnail(Video video, FileStream fileStream)
 	    {
+            var thumbnailService = new ThumbnailGridFsClient();
+	        thumbnailService.UploadThumbnailStream(video, fileStream);
+	    }
+
+
+	    public void AddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType, FileStream fileStream)
+        {
             var videoGridFsClient = new VideoGridFsClient();
 
-            var stream = videoGridFsClient.GetVideoWritingStream(video, mimeType, qualityType);
+            videoGridFsClient.UploadVideoStream(video, mimeType, qualityType, fileStream);
 
             var dbVideo = GetVideoDetails(video.PublicId);
 
@@ -107,18 +93,15 @@ namespace MewPipe.Logic.Services
 
             var videoFile = new VideoFile
             {
-                //GridFsId = result.Id.ToString(),
                 IsOriginalFile = false,
                 MimeType = dbMimeType,
                 QualityType = dbQualityType,
                 Video = dbVideo
             };
 
-            _unitOfWork.VideoFileRepository.Insert(videoFile);
+            dbVideo.VideoFiles.Add(videoFile);
+            _unitOfWork.VideoRepository.Update(dbVideo);
             _unitOfWork.Save();
-
-
-            return stream;
-	    }
+        }
 	}
 }

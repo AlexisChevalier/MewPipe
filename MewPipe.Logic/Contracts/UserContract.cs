@@ -13,9 +13,11 @@ namespace MewPipe.Logic.Contracts
         {
             Id = user.Id;
             Email = user.Email;
+            Username = user.UserName;
         }
 
         public string Id { get; set; }
         public string Email { get; set; }
+        public string Username { get; set; }
     }
 }

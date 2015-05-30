@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Repositories;
+using RabbitMQ.Client.Content;
 
 namespace MewPipe.Logic.Contracts
 {
@@ -11,8 +12,27 @@ namespace MewPipe.Logic.Contracts
         public VideoContract()
         {
         }
-        public VideoContract(Video video)
+
+        public VideoContract(Video video, string userId = null)
         {
+            var unitOfWork = new UnitOfWork();
+
+            if (userId != null)
+            {
+                var impression =
+                    unitOfWork.ImpressionRepository.GetOne(i => i.User.Id == userId && i.Video.Id == video.Id,
+                        "User, Video");
+                if (impression != null)
+                {
+                    UserImpression = new ImpressionContract(impression);   
+                }
+            }
+
+            if (video.User != null)
+            {
+                User = new UserContract(video.User);
+            }
+
             PublicId = video.PublicId;
             Name = video.Name;
             Description = video.Description;
@@ -28,8 +48,6 @@ namespace MewPipe.Logic.Contracts
             {
                 VideoFiles.Add(new VideoFileContract(videoFile));
             }
-
-            var unitOfWork = new UnitOfWork();
 
             PositiveImpressions =
                 unitOfWork.ImpressionRepository.Count(
@@ -47,10 +65,12 @@ namespace MewPipe.Logic.Contracts
         public decimal Views { get; set; }
         public decimal PositiveImpressions { get; set; }
         public decimal NegativeImpressions { get; set; }
+        public UserContract User { get; set; }
         public CategoryContract Category { get; set; }
         public DateTime DateTimeUtc { get; set; }
         public Video.StatusTypes Status { get; set; }
         public Video.PrivacyStatusTypes PrivacyStatus { get; set; }
         public List<VideoFileContract> VideoFiles { get; set; }
+        public ImpressionContract UserImpression { get; set; }
     }
 }

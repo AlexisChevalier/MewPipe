@@ -5,11 +5,18 @@ window.playerModule = window.playerModule || {};
 (function (module) {
 
     var $elements = {
-        player: $("#mewPipePlayerElement")
-    },
+        player: $("#mewPipePlayerElement"),
+        playerContainer: $("#videoPlayerContainer"),
+        impressionButton: $(".impressionButton"),
+        goodImpressionsElement: $("#goodImpression"),
+        badImpressionsElement: $("#badImpression"),
+        goodImpressionsNumber: $("#goodImpression .number"),
+        badImpressionsNumber: $("#badImpression .number")
+},
     playerObject = null,
     videoDetails = null,
-    videoEndpointUri = "http://videos-repository.mewpipe.local:44403/api/videosData/";
+    videoEndpointUri = "http://videos-repository.mewpipe.local:44403/api/videosData/",
+    thumbnailEndpointUri = "http://videos-repository.mewpipe.local:44403/api/thumbnailsData/";
 
     function detectVideoFormat() {
         var format = null;
@@ -20,8 +27,10 @@ window.playerModule = window.playerModule || {};
             } else if (Modernizr.video.ogg) {
                 format = "video/ogg";
             }
+        } else {
+            format = "video/mp4";
         }
-        format = "video/mp4";
+        
         return format;
     }
 
@@ -35,12 +44,7 @@ window.playerModule = window.playerModule || {};
                 sources.push({
                     type: format,
                     src: source,
-                    "data-res": "720"
-                });
-                sources.push({
-                    type: format,
-                    src: source,
-                    "data-res": "360"
+                    "data-res": qualityType
                 });
             }
         }
@@ -52,6 +56,23 @@ window.playerModule = window.playerModule || {};
         var format = detectVideoFormat();
         var sources = getVideoSources(format);
 
+        //Init html player
+        var playerElement = "<video id='mewPipePlayerElement'" +
+                " width='auto' " +
+                "height='auto' " + 
+                "autoplay " + 
+                "controls " + 
+                "poster='" + thumbnailEndpointUri + videoDetails.PublicId + "' " + 
+                "class='video-js vjs-default-skin'>";
+
+        for (var i = 0; i < sources.length; i++) {
+            playerElement += "<source src='" + sources[i].src + "' type='" + sources[i].type + "' data-res='" + sources[i]["data-res"] + "' />";
+        }
+
+        playerElement += "</video>";
+
+        $elements.playerContainer.html(playerElement);
+
         videojs("mewPipePlayerElement", {
             plugins: {
                 resolutionSelector: {
@@ -60,43 +81,50 @@ window.playerModule = window.playerModule || {};
             }
         }, function () {
             playerObject = this;
-            console.log(sources);
             playerObject.src(sources);
-            playerObject.on("changeRes", function () {
-                console.log("Current Res is: " + player.getCurrentRes());
-            });
+            playerObject.on("changeRes", function () {});
 
             playerObject.play();
 
-            this.on("ended", function () {
-                console.log("awww...over so soon?");
-            });
+            this.on("ended", function () {});
         });
-
-        /*$elements.player.mediaelementplayer({
-            type: format,
-            plugins: ["flash", "silverlight"],
-            features: ["playpause", "progress", "current", "duration", "volume", "fullscreen", "sourcechooser"],
-            pluginPath: "/flash/",
-            flashName: "flashmediaelement.swf",
-            success: function (player, node) {
-                playerObject = player;
-
-                //playerObject.setSrc("http://videos-repository.mewpipe.local:44403/api/videosData/" + videoId);
-                playerObject.setSrc([
-                    { src: "http://videos-repository.mewpipe.local:44403/api/videosData/" + videoId + "?encoding=video/mp4&quality=low", type: 'video/mp4' },
-                    { src: "http://videos-repository.mewpipe.local:44403/api/videosData/" + videoId + "?encoding=video/mp4&quality=high", type: 'video/mp4' },
-                ]);
-
-                if (typeof done === "function") {
-                    done();
-                }
-            },
-            error: function () {
-                console.log("ERROR");
-            }
-        });*/
     }
+
+    function onImpressionButtonClick(event) {
+        if ($(this).hasClass("selected")) {
+            return;
+        }
+        var url = $(this).attr("data-link");
+        $.ajax({
+            method: "POST",
+            url: url
+        })
+        .done(function (data) {
+
+            if (data.UserImpression !== null) {
+                if (data.UserImpression.Type === 0) {
+                    $elements.badImpressionsElement.removeClass("selected");
+                    $elements.goodImpressionsElement.addClass("selected");
+                } else {
+                    $elements.goodImpressionsElement.removeClass("selected");
+                    $elements.badImpressionsElement.addClass("selected");
+                }
+            } else {
+                $elements.badImpressionsElement.removeClass("selected");
+                $elements.goodImpressionsElement.removeClass("selected");
+                
+            }
+            $elements.goodImpressionsNumber.text(data.PositiveImpressions);
+            $elements.badImpressionsNumber.text(data.NegativeImpressions);
+        });
+    }
+
+    videojs.options.flash.swf = "/swf/video-js.swf";
+
+    //THIS DISABLES THE HTML5 PLAYER
+    //document.createElement("video").constructor.prototype.canPlayType = function(type){return ""};
+
+    $elements.impressionButton.click(onImpressionButtonClick);
 
     module.initPlayer = initPlayer;
 

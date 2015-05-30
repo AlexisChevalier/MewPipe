@@ -26,6 +26,7 @@ namespace MewPipe.Website
 
 			routes.MapRoute("VideoPage", "v/{videoId}", new {controller = "Videos", action = "Index"}
 				);
+
             routes.MapRoute("SearchVideosPage", "search", new { controller = "Videos", action = "Search" }
                 );
 
@@ -40,7 +41,10 @@ namespace MewPipe.Website
                 new { controller = "Videos", action = "DeleteVideo", videoId = UrlParameter.Optional }
                 );
 
-            routes.MapRoute("UserVideoWhiteListAdd", "myVideos/whiteList/add/{videoId}",
+            routes.MapRoute("VideoSetImpression", "video/impression/set/{videoId}",
+                new { controller = "Videos", action = "SetVideoImpression", videoId = UrlParameter.Optional }
+
+                );routes.MapRoute("UserVideoWhiteListAdd", "myVideos/whiteList/add/{videoId}",
                 new { controller = "Videos", action = "AddUserToVideoWhitelist", videoId = UrlParameter.Optional }
                 );
 

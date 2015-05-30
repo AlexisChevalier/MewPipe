@@ -16,6 +16,7 @@ namespace MewPipe.Logic.MongoDB
         void RemoveFile(Video video, MimeType mimeType, QualityType qualityType);
         string GetFileName(Video video, MimeType mimeType, QualityType qualityType);
         string GetFileName(Guid videoId, MimeType mimeType, QualityType qualityType);
+        void UploadVideoStream(Video video, MimeType mimeType, QualityType qualityType, FileStream stream);
         MongoDatabase GetDatabase();
     }
 
@@ -35,14 +36,22 @@ namespace MewPipe.Logic.MongoDB
             }
         }
 
+        public void UploadVideoStream(Video video, MimeType mimeType, QualityType qualityType, FileStream stream)
+        {
+            _mongoDatabase.GridFS.Upload(stream, GetFileName(video, mimeType, qualityType), new MongoGridFSCreateOptions
+            {
+                ContentType = mimeType.HttpMimeType
+            });
+        }
+
         public MongoGridFSStream GetVideoWritingStream(Video video, MimeType mimeType, QualityType qualityType)
         {
-            var stream = _mongoDatabase.GridFS.Create(GetFileName(video, mimeType, qualityType), new MongoGridFSCreateOptions
+            _mongoDatabase.GridFS.Create(GetFileName(video, mimeType, qualityType), new MongoGridFSCreateOptions
             {
                 ContentType = mimeType.HttpMimeType
             });
 
-            return stream;
+            return _mongoDatabase.GridFS.OpenWrite(GetFileName(video, mimeType, qualityType));
         }
 
         public MongoGridFSStream GetVideoStream(Video video, MimeType mimeType, QualityType qualityType)

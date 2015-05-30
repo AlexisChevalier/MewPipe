@@ -62,19 +62,38 @@
         <div class="col-md-6">
             <div class="control">
                 @Html.LabelFor(m => m.Description)
-                <br />
+                <br/>
                 @Html.TextAreaFor(m => m.Description)
-                <br />
+                <br/>
                 @Html.ValidationMessageFor(m => m.Description)
             </div>
         </div>
         <div class="col-md-6">
             <div class="help">
                 <strong>The description</strong> of your video is here to add a textual description to your video.
-                <br />
+                <br/>
                 You can add some details, links, transaltions, summary or anything that you want here.
-                <br />
+                <br/>
                 Depending on the relevancy of the description, it may be used in the Search Engine.
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="control">
+                @Html.LabelFor(m => m.CategoryId)
+                <br />
+                @Html.DropDownListFor(m => m.CategoryId, Model.CategoryList)
+                <br />
+                @Html.ValidationMessageFor(m => m.CategoryId)
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="help">
+                <strong>The category</strong> of your video will other users to find your video.
+                <br />
+                It will also improve the way your video is suggested to other users.
             </div>
         </div>
     </div>

@@ -30,6 +30,7 @@ namespace MewPipe.Logic.MongoDB
         public MongoGridFSCreateOptions VideoOptions { get; private set; }
         public MimeType VideoMimeType { get; private set; }
         public QualityType VideoQualityType { get; private set; }
+        public string VideoFileName { get; private set; }
 
         public MongoDbMultipartStreamProvider(Video video, int maximumUploadTentatives = 3)
         {
@@ -68,6 +69,16 @@ namespace MewPipe.Logic.MongoDB
             if (string.IsNullOrEmpty(contentDisposition.FileName))
             {
                 throw new MongoDbMultipartStreamProviderException(HttpStatusCode.BadRequest, "'Content-Disposition' header field in MIME multipart body part doesn't precise the filename, this request must only contains one single file and nothing else.");
+            }
+            VideoFileName = contentDisposition.FileName;
+            if (VideoFileName.StartsWith("\""))
+            {
+                VideoFileName = VideoFileName.Substring(1, VideoFileName.Length - 1);
+            }
+
+            if (VideoFileName.EndsWith("\""))
+            {
+                VideoFileName = VideoFileName.Substring(0, VideoFileName.Length - 1);
             }
 
             var contentType = headers.ContentType;

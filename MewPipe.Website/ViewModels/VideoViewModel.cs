@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
+using System.Web.UI.WebControls;
+using MewPipe.Logic.Contracts;
 using MewPipe.Logic.Models;
 
 namespace MewPipe.Website.ViewModels
@@ -20,11 +23,15 @@ namespace MewPipe.Website.ViewModels
         [Required(ErrorMessage = "Please type a valid name")]
         public string Name { get; set; }
         [Display(Name = "Video Description")]
-        [Required(ErrorMessage = "Please type a valid description")]
         public string Description { get; set; }
+        [Display(Name = "Video Category")]
+        [Required(ErrorMessage = "Please type a valid category")]
+        public string CategoryId { get; set; }
         [Display(Name = "Privacy Mode")]
         [Required(ErrorMessage = "Please select a valid privacy mode")]
         public Video.PrivacyStatusTypes PrivacyStatus { get; set; }
+
+        public List<SelectListItem> CategoryList { get; set; }
     }
     public class DeleteVideoViewModel
     {

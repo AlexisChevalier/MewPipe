@@ -84,7 +84,7 @@ namespace MewPipe.Accounts.Controllers
                 return View(model);
             }
 
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, shouldLockout: false);
 
             switch (result)
             {
@@ -122,7 +122,7 @@ namespace MewPipe.Accounts.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.Email, Email = model.Email };
+                var user = new User { UserName = model.Username, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -161,10 +161,10 @@ namespace MewPipe.Accounts.Controllers
             ViewBag.ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
+                var user = await UserManager.FindByNameAsync(model.Username);
                 if (user == null)
                 {
-                    HttpContext.SetInformationMessage("If the email you provided exists, we sent you an email to reset your password !");
+                    HttpContext.SetInformationMessage("If the username you provided exists, we sent you an email to reset your password !");
                     return RedirectToAction("ForgotPassword", "Account", new {ReturnUrl = returnUrl});
                 }
 
@@ -173,7 +173,7 @@ namespace MewPipe.Accounts.Controllers
                 var code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
                 await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                HttpContext.SetInformationMessage("If the email you provided exists, we sent you an email to reset your password !");
+                HttpContext.SetInformationMessage("If the username you provided exists, we sent you an email to reset your password !");
                 return RedirectToAction("ForgotPassword", "Account", new { ReturnUrl = returnUrl });
             }
 
@@ -200,7 +200,7 @@ namespace MewPipe.Accounts.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = await UserManager.FindByNameAsync(model.Username);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
@@ -312,7 +312,7 @@ namespace MewPipe.Accounts.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new User { UserName = model.Email, Email = model.Email };
+                var user = new User { UserName = model.Username, Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

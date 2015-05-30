@@ -9,7 +9,7 @@ namespace MewPipe.Logic.MongoDB
 {
     public interface IThumbnailGridFsClient
     {
-        MongoGridFSStream GetThumbnailWritingStream(Video video);
+        void UploadThumbnailStream(Video video, FileStream stream);
         MongoGridFSStream GetThumbnailReadingStream(Video video);
         void RemoveFile(ObjectId objectId);
         MongoDatabase GetDatabase();
@@ -38,15 +38,13 @@ namespace MewPipe.Logic.MongoDB
             return _mongoDatabase.GridFS.FindOneById(video.Id.ToBson()).OpenRead();
         }
 
-        public MongoGridFSStream GetThumbnailWritingStream(Video video)
+        public void UploadThumbnailStream(Video video, FileStream stream)
         {
-            var stream = _mongoDatabase.GridFS.Create(video.PublicId + "_thumbnail.jpeg", new MongoGridFSCreateOptions
+            _mongoDatabase.GridFS.Upload(stream, video.PublicId + "_thumbnail.jpeg", new MongoGridFSCreateOptions
             {
                 Id = video.Id.ToBson(),
                 ContentType = "image/jpeg"
             });
-
-            return stream;
         }
 
         public void RemoveFile(ObjectId objectId)

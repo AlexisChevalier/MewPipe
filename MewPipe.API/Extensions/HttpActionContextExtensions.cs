@@ -12,7 +12,7 @@ namespace MewPipe.API.Extensions
     {
         public static void SetUser(this HttpActionContext httpActionContext, User user)
         {
-            httpActionContext.Request.GetRouteData().Values.Add("USER", user);
+            httpActionContext.Request.GetRouteData().Values["USER"] = user;
         }
 
         public static User GetUser(this HttpActionContext httpActionContext)

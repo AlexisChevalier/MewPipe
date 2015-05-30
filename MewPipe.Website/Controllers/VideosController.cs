@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MewPipe.ApiClient;
 using MewPipe.Logic;
 using MewPipe.Logic.Contracts;
+using MewPipe.Logic.Helpers;
 using MewPipe.Logic.Models;
+using MewPipe.Logic.Repositories;
 using MewPipe.Logic.Services;
 using MewPipe.Website.Extensions;
 using MewPipe.Website.Security;
@@ -25,20 +31,52 @@ namespace MewPipe.Website.Controllers
 
 		public async Task<ActionResult> Index(string videoId)
 		{
-            var video = await _apiClient.GetVideoDetails(videoId);
+		    VideoContract video = null;
+		    try
+		    {
+                if (HttpContext.GetIdentity().IsAuthenticated())
+		        {
+                    video = await OauthHelper.TryAuthenticatedMethod(_apiClient, 
+                        Request.GetIdentity().AccessToken.ToAccessTokenContract(),
+                        () => _apiClient.GetVideoDetails(videoId));
+		        }
+		        else
+                {
+                    video = await _apiClient.GetVideoDetails(videoId);
+		        }
+		    }
+		    catch (HttpException e)
+		    {
+		        if (e.GetHttpCode() == (int) HttpStatusCode.Unauthorized)
+		        {
+		            ViewBag.Unauthorized = true;
+		        }
+		        else
+		        {
+                    ViewBag.NotFound = true;
+                }
+                return View();
+		    }
+		    catch (Exception e)
+		    {
+                ViewBag.NotFound = true;
+                return View();
+		    }
 
-            if (video == null)
-            {
-                //TODO: 404
-            }
+		    if (video == null)
+		    {
+                ViewBag.NotFound = true;
+                return View();
+		    }
 
-		    var videoService = new VideoApiService();
+            var videoService = new VideoApiService();
 
-		    var updatedVideo = videoService.AddView(video.PublicId);
-		    video.Views = updatedVideo.Views;
+            var updatedVideo = videoService.AddView(video.PublicId);
+            video.Views = updatedVideo.Views;
 
             ViewBag.VideoDetails = video;
-		    ViewBag.JsonVideoDetails = JsonConvert.SerializeObject(video);
+            ViewBag.JsonVideoDetails = JsonConvert.SerializeObject(video);
+
 			return View();
 		}
 
@@ -97,6 +135,10 @@ namespace MewPipe.Website.Controllers
                     Request.GetIdentity().AccessToken.ToAccessTokenContract(),
                     () => _apiClient.GetVideoDetails(videoId));
 
+                var categories = await OauthHelper.TryAuthenticatedMethod(_apiClient,
+                    Request.GetIdentity().AccessToken.ToAccessTokenContract(),
+                    () => _apiClient.GetVideoCategories());
+
                 if (video == null)
                 {
                     return RedirectToAction("UserVideos").Error("Can't find a video with this ID");
@@ -115,7 +157,13 @@ namespace MewPipe.Website.Controllers
                     Description = video.Description,
                     Name = video.Name,
                     PrivacyStatus = video.PrivacyStatus,
-                    PublicId = video.PublicId
+                    PublicId = video.PublicId,
+                    CategoryId = video.Category.Id,
+                    CategoryList = categories.Select(c => new SelectListItem
+                    {
+                        Value = c.Id,
+                        Text = c.Name
+                    }).ToList()
                 };
 
                 return View(viewModel);
@@ -146,7 +194,8 @@ namespace MewPipe.Website.Controllers
                         {
                             Description = viewModel.Description,
                             Name = viewModel.Name,
-                            PrivacyStatus = viewModel.PrivacyStatus
+                            PrivacyStatus = viewModel.PrivacyStatus,
+                            CategoryId = viewModel.CategoryId
                         }));
 
                 return RedirectToAction("EditVideo", new {videoId = viewModel.PublicId}).Success("Video successfully updated !");
@@ -235,6 +284,61 @@ namespace MewPipe.Website.Controllers
             {
                 if (e is OauthExpiredTokenException) throw;
                 return RedirectToAction("EditVideo", new { videoId = videoId }).Error("There was an error deleting your video.");
+            }
+        }
+
+        [HttpPost]
+        [SiteAuthorize(ReturnJsonError = true)]
+        public async Task<ActionResult> SetVideoImpression(string videoId, bool good)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("UserVideos", "Videos").Error("Invalid request");
+            }
+
+            _apiClient.SetBearerToken(Request.GetIdentity().AccessToken.access_token);
+
+            try
+            {
+                var video = await OauthHelper.TryAuthenticatedMethod(_apiClient,
+                    Request.GetIdentity().AccessToken.ToAccessTokenContract(),
+                    () => _apiClient.SetVideoImpression(new ImpressionContract
+                    {
+                        PublicVideoId = videoId,
+                        Type = good ? Impression.ImpressionType.Good : Impression.ImpressionType.Bad,
+                        UserId = Request.GetIdentity().User.Id
+                    }));
+
+                return new JsonResult
+                {
+                    ContentEncoding = Encoding.UTF8,
+                    ContentType = "application/json",
+                    Data = video
+                };
+            }
+            catch (Exception e)
+            {
+                if (e is OauthExpiredTokenException)
+                {
+                    return new JsonResult
+                    {
+                        ContentEncoding = Encoding.UTF8,
+                        ContentType = "application/json",
+                        Data = new
+                        {
+                            Error = "NEED_LOGIN"
+                        }
+                    };
+                }
+                return new JsonResult
+                {
+                    ContentEncoding = Encoding.UTF8,
+                    ContentType = "application/json",
+                    Data = new
+                    {
+                        Error = "UNKNOWN_ERROR"
+                    }
+                };
             }
         }
 	}

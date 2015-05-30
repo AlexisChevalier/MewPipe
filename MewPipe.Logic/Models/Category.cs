@@ -13,7 +13,7 @@ namespace MewPipe.Logic.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public Guid Id { get; set; }
-
+        public bool IsDefault { get; set; }
         public string Name { get; set; }
         public ICollection<Video> Videos { get; set; }
     }

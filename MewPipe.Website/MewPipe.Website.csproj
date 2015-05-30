@@ -361,6 +361,7 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\Site\upload.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="swf\video-js.swf" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -391,6 +392,7 @@
     <Content Include="Views\Videos\_AddUserToVideoWhiteListForm.cshtml" />
     <Content Include="Views\Shared\_Player.cshtml" />
     <Content Include="Views\Videos\Search.cshtml" />
+    <Content Include="Views\Shared\_SearchForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
