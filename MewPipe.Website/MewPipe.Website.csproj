@@ -278,6 +278,17 @@
     <Content Include="fonts\VideoJS-Resolutions.svg" />
     <Content Include="fonts\vjs.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Images\share\Email.png" />
+    <Content Include="Images\share\Facebook.png" />
+    <Content Include="Images\share\Googleplus.png" />
+    <Content Include="Images\share\LinkedIn.png" />
+    <Content Include="Images\share\Pinboard.png" />
+    <Content Include="Images\share\Pinterest.png" />
+    <Content Include="Images\share\Pocket.png" />
+    <Content Include="Images\share\Reddit.png" />
+    <Content Include="Images\share\Tumblr.png" />
+    <Content Include="Images\share\Twitter.png" />
+    <Content Include="Images\share\Wordpress.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Configuration\connectionstrings.default.config" />
@@ -393,10 +404,10 @@
     <Content Include="Views\Shared\_Player.cshtml" />
     <Content Include="Views\Videos\Search.cshtml" />
     <Content Include="Views\Shared\_SearchForm.cshtml" />
+    <Content Include="Views\Videos\Embed.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\" />
     <Folder Include="Views\Auth\" />
   </ItemGroup>
   <ItemGroup>

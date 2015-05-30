@@ -14,7 +14,7 @@ namespace MewPipe.Logic.Services
 	{
 		Video GetVideoDetails(string videoId);
 		MongoGridFSStream GetVideoUploadedFile(Video video);
-		void MarkVideoAsPublished(Video video);
+		void MarkVideoAsPublished(Video video, long seconds);
         void RemoveVideoUploadedFile(Video video); 
 	    void AddThumbnail(Video video, FileStream fileStream);
 	    void AddConvertedVideo(Video video, MimeType mimeType, QualityType qualityType, FileStream fileStream);
@@ -43,12 +43,12 @@ namespace MewPipe.Logic.Services
 			return videoService.GetVideoStream(video, originalFile.MimeType, originalFile.QualityType);
 		}
 
-		public void MarkVideoAsPublished(Video video)
+		public void MarkVideoAsPublished(Video video, long seconds)
 		{
 			var dbVideo = GetVideoDetails(video.PublicId);
 
 			dbVideo.Status = Video.StatusTypes.Published;
-
+		    dbVideo.Seconds = seconds;
 			_unitOfWork.VideoRepository.Update(dbVideo);
 			_unitOfWork.Save();
 		}

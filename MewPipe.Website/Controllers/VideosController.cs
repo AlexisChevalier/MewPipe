@@ -80,6 +80,48 @@ namespace MewPipe.Website.Controllers
 			return View();
 		}
 
+        public async Task<ActionResult> Embed(string videoId)
+        {
+            VideoContract video = null;
+            try
+            {
+                video = await _apiClient.GetVideoDetails(videoId);
+            }
+            catch (HttpException e)
+            {
+                if (e.GetHttpCode() == (int)HttpStatusCode.Unauthorized)
+                {
+                    ViewBag.Unauthorized = true;
+                }
+                else
+                {
+                    ViewBag.NotFound = true;
+                }
+                return View();
+            }
+            catch (Exception e)
+            {
+                ViewBag.NotFound = true;
+                return View();
+            }
+
+            if (video == null)
+            {
+                ViewBag.NotFound = true;
+                return View();
+            }
+
+            var videoService = new VideoApiService();
+
+            var updatedVideo = videoService.AddView(video.PublicId);
+            video.Views = updatedVideo.Views;
+
+            ViewBag.VideoDetails = video;
+            ViewBag.JsonVideoDetails = JsonConvert.SerializeObject(video);
+
+            return View();
+        }
+
         public async Task<ActionResult> Search(SearchViewModel viewModel)
         {
             ViewBag.HideSearchBar = true;

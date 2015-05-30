@@ -73,7 +73,7 @@ namespace MewPipe.VideoWorker
 		{
 			var video = VideoWorkerService.GetVideoDetails(message.VideoId);
 			DoTotalConversion(video);
-			VideoWorkerService.MarkVideoAsPublished(video);
+			VideoWorkerService.MarkVideoAsPublished(video, 0);
 
 			Thread.Sleep(1000);
 		}
