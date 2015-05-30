@@ -34,8 +34,13 @@ namespace MewPipe.Logic.MongoDB
         public MongoGridFSStream GetThumbnailReadingStream(Video video)
         {
             Debug.Assert(video != null);
+            var file = _mongoDatabase.GridFS.FindOne(video.PublicId + "_thumbnail.jpeg");
 
-            return _mongoDatabase.GridFS.FindOneById(video.Id.ToBson()).OpenRead();
+            if (file != null)
+            {
+                return file.OpenRead();
+            }
+            return null;
         }
 
         public void UploadThumbnailStream(Video video, FileStream stream)

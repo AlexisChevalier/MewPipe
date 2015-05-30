@@ -19,6 +19,12 @@
         max-width: none;
         max-height: none; }
 
+@media only screen and (max-height: 800px) {
+  .hasPlayer .body-content .playerWrapper .videoContainer {
+    max-width: 854px;
+    margin: auto; }
+ }
+
 @media only screen and (max-width: 599px) {
   .vjs-default-skin .vjs-big-play-button {
     left: 25%;
@@ -147,6 +153,18 @@ hr {
   .infosWrapper .details h1 {
     margin: 0;
     font-family: Calibri, Arial; }
+  .infosWrapper .details .title h1 {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px; }
+  .infosWrapper .details .title .editButton {
+    display: inline-block;
+    font-size: 1.1em;
+    vertical-align: middle;
+    text-decoration: none;
+    color: white; }
+    .infosWrapper .details .title .editButton:hover span {
+      background-color: #356fa1; }
   .infosWrapper .details .views {
     font-size: 1.2em; }
   .infosWrapper .details .actions .impressions {

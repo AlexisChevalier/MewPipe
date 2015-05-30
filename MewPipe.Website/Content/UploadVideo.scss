@@ -5,6 +5,11 @@
         margin-top: 0;
     }
 }
+.spacer {
+    height: 50px;
+    width: 100%;
+}
+
 
 .uploader {
     padding: 30px 10px 30px 10px;
@@ -53,12 +58,6 @@
             background-color: #a91020;
             background: #f26d6d;
         }
-    }
-}
-.body-content button {
-    margin-top: 15px;
-    &:active {
-      margin-top: 18px;
     }
 }
 #fileView {

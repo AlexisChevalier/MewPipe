@@ -1,5 +1,6 @@
 ﻿@using MewPipe.Logic.Contracts
 @using MewPipe.Logic.Models
+@using MewPipe.Website.Security
 @{
     ViewBag.BodyClass = "hasPlayer onTop";
 
@@ -49,7 +50,17 @@ else
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="title">
-                                <h1>@video.Name</h1>
+                                <h1>
+                                    @video.Name
+                                </h1>
+                                @if (Request.GetIdentity().User != null && video.User.Id == Request.GetIdentity().User.Id)
+                                {
+                                    <a href="/myVideos/edit/@video.PublicId" class="editButton">
+                                        <span class="label label-primary">
+                                            Edit video
+                                        </span>
+                                    </a>
+                                }
                             </div>
                         </div>
 
@@ -107,11 +118,13 @@ else
                 <div class="boxWrapper marged">
                     <div class="row">
                         <div class="col-sm-12">
-
-                            <p>
-                                @video.Description
-                            </p>
-                            <hr />
+                            @if (!String.IsNullOrWhiteSpace(video.Description))
+                            {
+                                <p>
+                                    @video.Description
+                                </p>
+                                <hr/>
+                            }
                             Category : @video.Category.Name
                         </div>
                     </div>

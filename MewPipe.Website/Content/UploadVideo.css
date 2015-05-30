@@ -4,6 +4,10 @@
   .upload h2 {
     margin-top: 0; }
 
+.spacer {
+  height: 50px;
+  width: 100%; }
+
 .uploader {
   padding: 30px 10px 30px 10px;
   position: relative;
@@ -42,11 +46,6 @@
     .uploader:hover .fakeButton {
       background-color: #a91020;
       background: #f26d6d; }
-
-.body-content button {
-  margin-top: 15px; }
-  .body-content button:active {
-    margin-top: 18px; }
 
 #fileView {
   text-align: center;

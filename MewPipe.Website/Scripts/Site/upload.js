@@ -55,20 +55,25 @@ window.uploadVideoModule = window.uploadVideoModule || {};
         $elements.progressBarText.text(percentStr);
     }
 
-    function onUploadSuccess(id, data) {
-        $elements.progressBarInner.width("100%");
+    function onUploadError(id, message) {
+        $elements.dropZone.hide();
+        $elements.errorView.show();
         $elements.fileView.hide();
-        $elements.doneView.show();
-        uploadedVideoId = data.VideoId;
+        $elements.doneView.hide();
         window.onbeforeunload = null;
     }
 
-    function onUploadError(id, message) {
-        $elements.dropZone.hide();
-        $elements.errorView.hide();
-        $elements.fileView.hide();
-        $elements.doneView.show();
-        window.onbeforeunload = null;
+    function onUploadSuccess(id, data) {
+        uploadedVideoId = data.VideoId;
+        if (!uploadedVideoId || uploadedVideoId === null || uploadedVideoId === "") {
+            onUploadError(null, null);
+        } else {
+            $elements.progressBarInner.width("100%");
+            $elements.fileView.hide();
+            $elements.doneView.show();
+            $elements.editVideoButton.attr("href", "/myVideos/edit/" + uploadedVideoId);
+            window.onbeforeunload = null;
+        }
     }
 
     function onFileTypeError(file) {
@@ -111,20 +116,9 @@ window.uploadVideoModule = window.uploadVideoModule || {};
         $elements.dropZone.dmUploader(getDmUploaderOptions());
     };
 
-    function goToEditPage() {
-        if (uploadedVideoId === null) {
-
-            FlashMessages.setMessage("danger", "An unknown error occured. Please navigate manually to your videos to continue with the edition.");
-            return;
-        }
-        window.location = "/myVideos/edit/" + uploadedVideoId;
-    }
 
     module.init = init;
     module.setUploadUrl = setUploadUrl;
-
-    $elements.editVideoButton.click(goToEditPage);
-
 }(window.uploadVideoModule, window));
 
 $(function () {

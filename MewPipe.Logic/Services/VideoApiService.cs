@@ -99,7 +99,7 @@ namespace MewPipe.Logic.Services
                 throw new HttpResponseException(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.NotFound,
-                    Content = new StringContent("Video Not Found")
+                    Content = new StringContent("Thumbnail Not Found")
                 });
             }
 
@@ -594,10 +594,21 @@ namespace MewPipe.Logic.Services
 
         private HttpResponseMessage GetThumbnailFileSimpleResponse(HttpRequestMessage request, Stream stream)
         {
-            var fullResponse = request.CreateResponse(HttpStatusCode.OK);
-            fullResponse.Content = new StreamContent(stream);
-            fullResponse.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-            return fullResponse;
+            HttpResponseMessage res;
+
+            if (stream == null)
+            {
+                res = request.CreateResponse(HttpStatusCode.NotFound);
+                return null;
+            }
+            else
+            {
+                res = request.CreateResponse(HttpStatusCode.OK);
+                res.Content = new StreamContent(stream);
+                res.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            }
+
+            return res;
         }
 
 		private bool IsRangeRequest(HttpRequestMessage request)

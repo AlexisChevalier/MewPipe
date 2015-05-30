@@ -9,11 +9,10 @@ hr {
   border-color: #BBBBBB; }
 
 .contentZone {
-  padding: 15px;
-  margin-top: 20px; }
+  padding: 15px; }
   .contentZone .darken {
     padding: 10px;
-    background-color: grey; }
+    background-color: #ff9041; }
   .contentZone .notReady {
     text-align: center;
     color: white;

@@ -14,8 +14,27 @@
     @Styles.Render("~/styles/editVideo")
 }
 
-<h2>@video.Name - Edition</h2>
+<div class="row contentZone">
+    @if (video.Status != Video.StatusTypes.Published)
+    {
+        <div class="darken notReady">
+            <p>
+                This video is currently being converted by our servers. It is not visible yet but you will receive a mail when you video will be available.
+            </p>
+        </div>
+    }
+</div>
 
+<h2 class="float-left">@video.Name - Edition</h2>
+@if (video.Status == Video.StatusTypes.Published)
+{
+    <p class="float-right">
+        @Html.ActionLink("View the video", "Index", new { videoId = video.PublicId }, new { @class = "btn btn-primary raised" })
+    </p>
+}
+
+<div class="clearfix"></div>
+<br/>
 @using (Html.BeginForm("EditVideo", "Videos", FormMethod.Post))
 {
     @Html.HiddenFor(m => m.PublicId)
@@ -36,26 +55,6 @@
                 It will be used in our Search Engine to give the best suggestions for our users.
             </div>
         </div>
-    </div>
-    <hr />
-    <div class="contentZone">
-        <label>Preview</label>
-        @if (video.Status != Video.StatusTypes.Published)
-        {
-            <div class="darken notReady">
-                <p>
-                    This video is currently being converted by our servers. It is not visible yet but you will receive a mail when you video will be available.
-                </p>
-            </div>
-        }
-        else
-        {
-            <div class="darken player">
-                <video width="320" height="240" controls autoplay="autoplay">
-                    <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@video.PublicId" type="video/mp4">
-                </video>
-            </div>
-        }
     </div>
     <hr />
     <div class="row">
@@ -91,7 +90,7 @@
         </div>
         <div class="col-md-6">
             <div class="help">
-                <strong>The category</strong> of your video will other users to find your video.
+                <strong>The category</strong> of your video will help other users to find your video.
                 <br />
                 It will also improve the way your video is suggested to other users.
             </div>
@@ -112,7 +111,7 @@
             <div class="help">
                 <strong>Public</strong> will put your video in our Search Engine and it will be available publicly and in the search module.
                 <br />
-                <strong>Link Only</strong> won't index your video in our Search Engine and it will be available only to the people that have the link.
+                <strong>Link Only</strong> won't index your video in our Search Engine and it will be available only to the people who has the link.
                 <br />
                 <strong>Private</strong> will give the access to your video through a White-List (if this option is selected you can modify this white list below).
             </div>
@@ -179,7 +178,7 @@
             <div class="help">
                 <strong>Your video is currently in private mode. </strong>
                 <br />
-                This means that only you and the persons in the list on the left can access your video.
+                This means that only you and the persons in the list on the left can see this video.
             </div>
         </div>
     </div>

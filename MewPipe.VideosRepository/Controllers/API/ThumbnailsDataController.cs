@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -40,7 +41,14 @@ namespace MewPipe.VideosRepository.Controllers.API
 
             try
             {
-                return videoApiService.GetThumbnailHttpResponseMessage(Request, publicVideoId, user);
+                var res = videoApiService.GetThumbnailHttpResponseMessage(Request, publicVideoId, user);
+                if (res == null)
+                {
+                    res = Request.CreateResponse(HttpStatusCode.OK);
+                    res.Content = new StreamContent(ImagePlaceholderStore.GetImageStream());
+                    res.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+                }
+                return res;
             }
             catch (InvalidByteRangeException byteRangeException)
             {

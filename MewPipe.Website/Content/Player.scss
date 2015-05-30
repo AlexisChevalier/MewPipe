@@ -31,6 +31,23 @@
     }
 }
 
+@media only screen and (max-height:800px) {
+    .hasPlayer {
+        .body-content {
+            .playerWrapper {
+                .videoContainer {
+                    max-width:854px;
+                    margin: auto;
+                    .video-js {
+                    }
+                    .vjs-fullscreen {
+                    }
+                }
+            }
+        }
+    }
+}
+
 @media only screen and (max-width:599px) {
     .vjs-default-skin .vjs-big-play-button {left:25%;top:25%;width:50%;height:50%;}
 }
@@ -193,6 +210,23 @@ hr {
             font-family: Calibri, Arial;
         }
         .title {
+            h1 {
+                display: inline-block;
+                vertical-align: middle;
+                margin-right: 10px;
+            }
+            .editButton {
+                display: inline-block;
+                font-size: 1.1em;
+                vertical-align: middle;
+                text-decoration: none;
+                color: white;
+                &:hover {
+                    span {
+                        background-color: #356fa1;
+                    }   
+                }
+            }
         }
         
         .views {
