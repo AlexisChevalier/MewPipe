@@ -37,6 +37,7 @@ namespace MewPipe.Logic.Services
 	    Video DeleteVideo(string videoId, User user);
 	    Video AddView(string videoId);
 	    Video SetImpression(ImpressionContract contract);
+	    bool IsUserAllowedToSeeVideo(string videoId, User user);
 	}
 
 	public class VideoApiService : IVideoApiService
@@ -313,6 +314,34 @@ namespace MewPipe.Logic.Services
                     StatusCode = HttpStatusCode.Unauthorized,
                     Content = new StringContent("Unauthorized")
                 });
+	        }
+
+            video.Tags.Clear();
+	        if (!String.IsNullOrWhiteSpace(contract.Tags))
+	        {
+	            var tags = contract.Tags.Split(' ');
+	            var tagsCount = 0;
+	            foreach (var tag in tags)
+	            {
+	                if (video.Tags.Any(t => t.Name == tag))
+	                {
+	                    continue;
+	                }
+
+	                var tagObject = new Tag
+	                {
+	                    Name = tag
+	                };
+
+	                var dbTag = _unitOfWork.TagRepository.GetOne(t => t.Name == tagObject.Name);
+	                video.Tags.Add(dbTag ?? tagObject);
+	                tagsCount++;
+
+	                if (tagsCount >= 10)
+	                {
+	                    break;
+	                }
+	            }
 	        }
 
 	        video.Name = contract.Name;
@@ -598,15 +627,13 @@ namespace MewPipe.Logic.Services
 
             if (stream == null)
             {
-                res = request.CreateResponse(HttpStatusCode.NotFound);
+                //res = request.CreateResponse(HttpStatusCode.NotFound);
                 return null;
             }
-            else
-            {
-                res = request.CreateResponse(HttpStatusCode.OK);
-                res.Content = new StreamContent(stream);
-                res.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-            }
+            
+            res = request.CreateResponse(HttpStatusCode.OK);
+            res.Content = new StreamContent(stream);
+            res.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
 
             return res;
         }
@@ -641,7 +668,7 @@ namespace MewPipe.Logic.Services
         {
             Debug.Assert(userId != null);
 
-            return _unitOfWork.VideoRepository.Get(v => v.User.Id == userId, q => q.OrderBy(v => v.DateTimeUtc), "VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType").ToArray();
+            return _unitOfWork.VideoRepository.Get(v => v.User.Id == userId, q => q.OrderBy(v => v.DateTimeUtc), "Impressions, Tags, Category, VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType").ToArray();
         }
 
 		private Video GetVideoDetails(string videoId)
@@ -653,7 +680,7 @@ namespace MewPipe.Logic.Services
             return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "Impressions, Tags, Category, AllowedUsers, User, VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
 		}
 
-		private bool IsUserAllowedToSeeVideo(string videoId, User user)
+		public bool IsUserAllowedToSeeVideo(string videoId, User user)
 		{
 			Debug.Assert(videoId != null);
 

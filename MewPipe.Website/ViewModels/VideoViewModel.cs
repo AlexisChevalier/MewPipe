@@ -24,6 +24,8 @@ namespace MewPipe.Website.ViewModels
         public string Name { get; set; }
         [Display(Name = "Video Description")]
         public string Description { get; set; }
+        [Display(Name = "Video Tags (separated by a space)")]
+        public string Tags { get; set; }
         [Display(Name = "Video Category")]
         [Required(ErrorMessage = "Please type a valid category")]
         public string CategoryId { get; set; }

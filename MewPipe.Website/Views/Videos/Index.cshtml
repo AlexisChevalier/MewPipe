@@ -149,7 +149,15 @@ else
                                 </p>
                                 <hr/>
                             }
-                            Category : @video.Category.Name
+                            <p>
+                                Category : @video.Category.Name
+                            </p>
+                            @if (!String.IsNullOrWhiteSpace(video.Tags))
+                            {
+                                <p>
+                                    Tags : @video.Tags
+                                </p>
+                            }
                         </div>
                     </div>
                 </div>
