@@ -499,7 +499,7 @@ namespace MewPipe.Logic.Services
 	        try
 	        {
 	            //TODO: Not tested (impossible at the moment).
-	            thumbnailGridFsClient.RemoveFile(new ObjectId(video.Id.ToBson()));
+	            thumbnailGridFsClient.RemoveFile(video);
 	        }
 	        catch (Exception)
 	        {

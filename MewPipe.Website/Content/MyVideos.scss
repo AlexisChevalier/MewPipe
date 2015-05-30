@@ -1,0 +1,31 @@
+﻿.video {
+    .leftContent {
+        position: relative;
+        max-height: 80px;
+        img {
+            max-height: 80px;
+            border: 1px solid rgb(231, 231, 231);
+        }
+        .duration {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            padding:1px 3px;
+            background-color: rgba(0, 0, 0, 0.52);
+            color: white;
+        }
+        display: inline-block;
+    }
+    .rightContent {
+        margin-left: 10px;
+        display: inline-block;
+        vertical-align: top;
+        h3 {
+            a {
+                color: #e1172c;
+            }
+            margin: 0;
+            margin-bottom: 5px;
+        }
+    }
+}
