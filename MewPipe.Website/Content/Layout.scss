@@ -58,6 +58,9 @@ html, body {
     right: 0;
 	background-color: $bgDefaultAffix;
 	border-color: $bgHighlightAffix;
+    .navbar-form {
+        border: none;
+    }
     .navbar-brand {
         display: block;
         font-family: 'Noteworthy', cursive;
@@ -74,22 +77,18 @@ html, body {
         }
     }
     .search {
-        display: block;
-        .form-group {
-            margin: 0;
-            margin-top: 8px;
-            position: relative;
-            i.glyphicon {
-                font-size: 20px;
-                position: absolute;
-                left: 10px;
-                top: 7px;
-            }
-            input {
-                padding-left: 35px;
-                text-align: left;
-            }
-        } 
+        max-width: 220px;
+        .appendedBtn {
+            padding: 0;
+            padding: 6px 12px;
+            border-width: 1px;
+            background-color: rgb(225,23,44);
+            border-radius: 0;
+        }
+        input {
+            height: 32px;
+            border-radius: 0;
+        }
     }
    
     font-weight: bold;
@@ -111,8 +110,12 @@ html, body {
 			> a {
                 text-transform: uppercase;
                 font-size: 15px;
+                font-size: 14px;
+
+                font-weight: 600;
                 padding-top: 15px;
                 padding-bottom: 15px;
+                padding: 15px 9px;
 				color: $colDefault;
 				&:hover,  &:focus {
 					color: $colHighlight;
@@ -159,6 +162,19 @@ html, body {
 
     .navbar-right {
         float: right!important;
+    }
+}
+
+.navbar-collapse {
+    &.in, &.collapsing {
+        .search {
+            max-width: none;
+
+        }
+        .navbar-right {
+            clear: both;
+            float: none!important;
+        }
     }
 }
 
@@ -221,5 +237,25 @@ footer {
 
     hr {
         border-top: 1px solid #616161;
+    }
+}
+
+@media (min-width:992px) {
+    .navbar-default .search {
+        max-width: 320px;
+    }
+    .navbar-default .navbar-nav > li > a {
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 15px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        color: #e1172c;
+    }
+}
+
+@media (min-width:1200px) {
+    .navbar-default .search {
+        max-width: 420px;
     }
 }

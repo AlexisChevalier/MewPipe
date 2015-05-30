@@ -43,13 +43,15 @@ namespace MewPipe.Logic.Models
         public string Description { get; set; }
         public StatusTypes Status { get; set; }
         public PrivacyStatusTypes PrivacyStatus { get; set; }
-        [InverseProperty("VideosSharedWithMe")]
         public ICollection<User> AllowedUsers { get; set; }
-        //[InverseProperty("Video")]
         public ICollection<VideoFile> VideoFiles { get; set; }
+        public ICollection<Tag> Tags { get; set; }
+        public ICollection<Impression> Impressions { get; set; }
+        public Category Category { get; set; }
 
         public DateTime DateTimeUtc { get; set; }
         public long Seconds { get; set; }
+        public decimal Views { get; set; }
 
         public string UploadRedirectUri { get; set; }
         public string NotificationHookUri { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -47,7 +48,7 @@ namespace MewPipe.API.Filters
 
                 actionContext.Response = new HttpResponseMessage
                 {
-                    StatusCode = HttpStatusCode.Forbidden,
+                    StatusCode = (HttpStatusCode)480,
                     RequestMessage = actionContext.ControllerContext.Request,
                     ReasonPhrase = "Missing authentication header"
                 };
@@ -62,7 +63,7 @@ namespace MewPipe.API.Filters
                 {
                     actionContext.Response = new HttpResponseMessage
                     {
-                        StatusCode = HttpStatusCode.Forbidden,
+                        StatusCode = (HttpStatusCode)481,
                         RequestMessage = actionContext.ControllerContext.Request,
                         ReasonPhrase = "Invalid access token"
                     };
@@ -73,7 +74,7 @@ namespace MewPipe.API.Filters
             {
                 actionContext.Response = new HttpResponseMessage
                 {
-                    StatusCode = HttpStatusCode.Forbidden,
+                    StatusCode = (HttpStatusCode)482,
                     RequestMessage = actionContext.ControllerContext.Request,
                     ReasonPhrase = "Unsupported authentication scheme"
                 };
@@ -89,7 +90,7 @@ namespace MewPipe.API.Filters
                 {
                     actionContext.Response = new HttpResponseMessage
                     {
-                        StatusCode = HttpStatusCode.Forbidden,
+                        StatusCode = (HttpStatusCode)483,
                         RequestMessage = actionContext.ControllerContext.Request,
                         ReasonPhrase = "Insufficient scope"
                     };

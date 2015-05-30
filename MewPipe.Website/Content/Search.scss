@@ -1,0 +1,57 @@
+﻿.searchPage {
+    .searchPanel {
+        background-color: white;
+        //border: 1px solid #d5d5d5;
+        -webkit-box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.75);
+        box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.75);
+        .appendedBtn {
+            padding: 0;
+            padding: 6px 12px;
+            border-width: 1px;
+            background-color: rgb(225,23,44);
+            border-radius: 0;
+        }
+        .input-group {
+            padding: 10px;
+        }
+        input[type=text] {
+            vertical-align: middle;
+            height: 32px;
+            border-radius: 0;
+        }
+        .criteriaLabel {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        .title, .orderLabel {
+            display: block;
+            color: rgb(225,23,44);
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            vertical-align: middle;
+        }
+        label {
+            vertical-align: middle;
+            margin-bottom: 0;
+        }
+        input[type=radio] {  
+            vertical-align: sub;
+        }
+        .options {
+            padding: 10px;
+            background-color:rgb(228, 228, 228);
+            border-top: 1px solid #d5d5d5;
+        }
+    }
+
+    .results {
+        margin-top: 20px;
+    }
+    .noresults {
+        margin-top: 40px;
+        font-size: 20px;
+        text-align: center;
+    }
+}

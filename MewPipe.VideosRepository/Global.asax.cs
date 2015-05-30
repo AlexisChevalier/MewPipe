@@ -17,6 +17,8 @@ namespace MewPipe.VideosRepository
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            ImagePlaceholderStore.Initialize();
         }
     }
 }

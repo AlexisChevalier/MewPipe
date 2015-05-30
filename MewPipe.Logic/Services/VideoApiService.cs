@@ -23,7 +23,8 @@ namespace MewPipe.Logic.Services
 {
 	public interface IVideoApiService
 	{
-		HttpResponseMessage GetVideoHttpResponseMessage(HttpRequestMessage request, string videoId, User user);
+        HttpResponseMessage GetVideoHttpResponseMessage(HttpRequestMessage request, string videoId, User user, MimeType mimeType = null, QualityType qualityType = null);
+		HttpResponseMessage GetThumbnailHttpResponseMessage(HttpRequestMessage request, string videoId, User user);
 		Task<Video> UploadVideoFromMultipartRequest(HttpRequestMessage request, string tokenId);
 		VideoUploadToken GenerateVideoUploadToken(VideoUploadTokenRequestContract request, User user);
 		VideoUploadToken GetVideoUploadToken(string tokenId, User user);
@@ -34,13 +35,15 @@ namespace MewPipe.Logic.Services
         UserContract[] AddUserToWhiteList(string videoId, string usertoAddEmail, User user);
         UserContract[] RemoveUserFromWhiteList(string videoId, string usertoAddId, User user);
 	    Video DeleteVideo(string videoId, User user);
+	    Video AddView(string videoId);
+	    Video SetImpression(ImpressionContract contract);
 	}
 
 	public class VideoApiService : IVideoApiService
 	{
 		private readonly UnitOfWork _unitOfWork = new UnitOfWork();
 
-		public HttpResponseMessage GetVideoHttpResponseMessage(HttpRequestMessage request, string videoId, User user)
+		public HttpResponseMessage GetVideoHttpResponseMessage(HttpRequestMessage request, string videoId, User user, MimeType mimeType = null, QualityType qualityType = null)
 		{
 			Debug.Assert(videoId != null);
 
@@ -50,8 +53,8 @@ namespace MewPipe.Logic.Services
             {
                 throw new HttpResponseException(new HttpResponseMessage
                 {
-                    StatusCode = HttpStatusCode.Unauthorized,
-                    Content = new StringContent("Unauthorized")
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("Video Not Found")
                 });
 			}
 
@@ -64,19 +67,57 @@ namespace MewPipe.Logic.Services
                 });
 			}
 
-			var file = videoDetails.GetVideoFile();
+            var file = videoDetails.GetVideoFile(mimeType, qualityType);
 
-			var videoStream = GetVideoStream(new ObjectId(file.GridFsId));
+            if (file == null)
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("Video file Not Found")
+                });
+            }
+
+			var videoStream = GetVideoStream(videoDetails, mimeType, qualityType);
 
 			if (IsRangeRequest(request))
 			{
-				return GetRangeResponse(request, videoStream, file);
+				return GetVideoFileRangeResponse(request, videoStream, file);
 			}
 
-			return GetSimpleResponse(request, videoStream, file);
+			return GetVideoFileSimpleResponse(request, videoStream, file);
 		}
 
-		public async Task<Video> UploadVideoFromMultipartRequest(HttpRequestMessage request, string tokenId)
+	    public HttpResponseMessage GetThumbnailHttpResponseMessage(HttpRequestMessage request, string videoId, User user)
+	    {
+            Debug.Assert(videoId != null);
+
+            var videoDetails = GetVideoDetails(videoId);
+
+            if (videoDetails == null)
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("Thumbnail Not Found")
+                });
+            }
+
+            if (!IsUserAllowedToSeeVideo(videoId, user))
+            {
+                throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Unauthorized,
+                    Content = new StringContent("Unauthorized")
+                });
+            }
+
+            var thumbnailStream = GetThumbnailStream(videoDetails);
+
+            return GetThumbnailFileSimpleResponse(request, thumbnailStream);
+	    }
+
+	    public async Task<Video> UploadVideoFromMultipartRequest(HttpRequestMessage request, string tokenId)
 		{
 			//Test token
 			var token = GetVideoUploadTokenAndUserForId(tokenId);
@@ -101,14 +142,45 @@ namespace MewPipe.Logic.Services
                 });
 			}
 
-			var streamProvider = new MongoDbMultipartStreamProvider();
+	        var defaultCategory = _unitOfWork.CategoryRepository.GetOne(v => v.IsDefault);
+
+            var video = new Video
+            {
+                AllowedUsers = new List<User>(),
+                Description = "",
+                Name = "New Video",
+                PrivacyStatus = Video.PrivacyStatusTypes.Private,
+                Status = Video.StatusTypes.Processing,
+                User = token.User,
+                VideoFiles = new List<VideoFile>(),
+                NotificationHookUri = token.NotificationHookUri,
+                UploadRedirectUri = token.UploadRedirectUri,
+                DateTimeUtc = DateTime.UtcNow,
+                Category = defaultCategory,
+                Impressions = new List<Impression>(),
+                Tags = new List<Tag>(),
+                Views = 0
+            };
+
+            _unitOfWork.VideoRepository.Insert(video);
+            _unitOfWork.Save();
+
+			var streamProvider = new MongoDbMultipartStreamProvider(video);
 
 			try
 			{
 				await request.Content.ReadAsMultipartAsync(streamProvider);
+
+			    if (!String.IsNullOrWhiteSpace(streamProvider.VideoFileName))
+			    {
+                    video.Name = streamProvider.VideoFileName;
+                    _unitOfWork.VideoRepository.Update(video);
+                    _unitOfWork.Save();   
+			    }
 			}
 			catch (IOException e)
 			{
+                _unitOfWork.VideoRepository.Delete(video);
 				var httpException = e.InnerException.InnerException as MongoDbMultipartStreamProviderException;
 			    if (httpException == null)
 			    {
@@ -123,6 +195,7 @@ namespace MewPipe.Logic.Services
 			}
 			catch (Exception)
 			{
+                _unitOfWork.VideoRepository.Delete(video);
                 throw new HttpResponseException(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
@@ -131,19 +204,6 @@ namespace MewPipe.Logic.Services
 			}
 
 			var details = streamProvider.VideoOptions;
-			var video = new Video
-			{
-				AllowedUsers = new List<User>(),
-				Description = "",
-				Name = "New Video",
-				PrivacyStatus = Video.PrivacyStatusTypes.Private,
-				Status = Video.StatusTypes.Processing,
-				User = token.User,
-				VideoFiles = new List<VideoFile>(),
-				NotificationHookUri = token.NotificationHookUri,
-				UploadRedirectUri = token.UploadRedirectUri,
-                DateTimeUtc = DateTime.UtcNow
-			};
 
 			var mimeTypeService = new VideoMimeTypeService(_unitOfWork);
 			var qualityTypeService = new VideoQualityTypeService(_unitOfWork);
@@ -151,13 +211,12 @@ namespace MewPipe.Logic.Services
 			video.VideoFiles.Add(new VideoFile
 			{
 				Video = video,
-				GridFsId = details.Id.ToString(),
 				IsOriginalFile = true,
 				MimeType = mimeTypeService.GetAllowedMimeTypeForDecoding(details.ContentType),
 				QualityType = qualityTypeService.GetUploadingQualityType()
 			});
 
-			_unitOfWork.VideoRepository.Insert(video);
+			_unitOfWork.VideoRepository.Update(video);
 			_unitOfWork.Save();
 
 			RemoveVideoUploadToken(token);
@@ -189,7 +248,7 @@ namespace MewPipe.Logic.Services
 			return token;
 		}
 
-		public Video GetVideo(string videoId, User user)
+		public Video GetVideo(string videoId, User user = null)
 		{
 			Debug.Assert(videoId != null);
 
@@ -225,6 +284,28 @@ namespace MewPipe.Logic.Services
 	    {
 	        var video = GetVideoDetails(videoId);
 
+	        var categoryGuid = Guid.Parse(contract.CategoryId);
+
+            var category = _unitOfWork.CategoryRepository.GetOne(c => c.Id == categoryGuid);
+
+	        if (video == null)
+	        {
+	            throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("Video not found")
+                });
+	        }
+
+            if (category == null)
+	        {
+	            throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("Category not found")
+                });
+	        }
+
 	        if (video.User.Id != user.Id)
 	        {
                 throw new HttpResponseException(new HttpResponseMessage
@@ -236,6 +317,7 @@ namespace MewPipe.Logic.Services
 
 	        video.Name = contract.Name;
 	        video.Description = contract.Description;
+	        video.Category = category;
 	        if (contract.PrivacyStatus != Video.PrivacyStatusTypes.Private)
 	        {
 	            video.AllowedUsers = new List<User>();
@@ -362,6 +444,7 @@ namespace MewPipe.Logic.Services
 	    {
             var video = GetVideoDetails(videoId);
 	        var videoGridFsClient = new VideoGridFsClient();
+	        var thumbnailGridFsClient = new ThumbnailGridFsClient();
 
             if (video.User.Id != user.Id)
             {
@@ -381,7 +464,17 @@ namespace MewPipe.Logic.Services
 
 	        foreach (var videoFile in video.VideoFiles)
 	        {
-                videoGridFsClient.RemoveFile(new ObjectId(videoFile.GridFsId));
+                videoGridFsClient.RemoveFile(video, videoFile.MimeType, videoFile.QualityType);
+	        }
+
+	        try
+	        {
+	            //TODO: Not tested (impossible at the moment).
+	            thumbnailGridFsClient.RemoveFile(new ObjectId(video.Id.ToBson()));
+	        }
+	        catch (Exception)
+	        {
+	            
 	        }
 
 	        _unitOfWork.VideoRepository.Delete(video);
@@ -389,6 +482,64 @@ namespace MewPipe.Logic.Services
 
             //TODO: This has probably failed because i'm a noob with the constraints in Entity Framework.
             //TODO: We will need to check this
+
+	        return video;
+	    }
+
+	    public Video AddView(string videoId)
+	    {
+            var video = GetVideoDetails(videoId);
+
+	        video.Views += 1;
+
+            _unitOfWork.VideoRepository.Update(video);
+            _unitOfWork.Save();
+            return video;
+	    }
+
+	    public Video SetImpression(ImpressionContract contract)
+	    {
+	        var video = GetVideoDetails(contract.PublicVideoId);
+
+	        if (video == null)
+	        {
+	            throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("Video Not Found")
+                });
+	        }
+
+	        var user = _unitOfWork.UserRepository.GetById(contract.UserId);
+
+            if (user == null)
+	        {
+	            throw new HttpResponseException(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("User Not Found")
+                });
+	        }
+
+	        var impression = _unitOfWork.ImpressionRepository.GetOne(i => i.Video.Id == video.Id && i.User.Id == user.Id);
+
+	        if (impression == null)
+	        {
+	            impression = new Impression
+	            {
+	                Type = contract.Type,
+	                User = user,
+	                Video = video
+	            };
+            
+                _unitOfWork.ImpressionRepository.Insert(impression);
+            }
+	        else
+	        {
+	            impression.Type = contract.Type;
+                _unitOfWork.ImpressionRepository.Update(impression);
+	        }
+            _unitOfWork.Save();
 
 	        return video;
 	    }
@@ -426,20 +577,39 @@ namespace MewPipe.Logic.Services
 
 		#region helpers
 
-		private HttpResponseMessage GetRangeResponse(HttpRequestMessage request, Stream stream, VideoFile videoFile)
+		private HttpResponseMessage GetVideoFileRangeResponse(HttpRequestMessage request, Stream stream, VideoFile videoFile)
 		{
 			var partialResponse = request.CreateResponse(HttpStatusCode.PartialContent);
 			partialResponse.Content = new ByteRangeStreamContent(stream, request.Headers.Range, videoFile.MimeType.HttpMimeType);
 			return partialResponse;
 		}
 
-		private HttpResponseMessage GetSimpleResponse(HttpRequestMessage request, Stream stream, VideoFile videoFile)
+		private HttpResponseMessage GetVideoFileSimpleResponse(HttpRequestMessage request, Stream stream, VideoFile videoFile)
 		{
 			var fullResponse = request.CreateResponse(HttpStatusCode.OK);
 			fullResponse.Content = new StreamContent(stream);
 			fullResponse.Content.Headers.ContentType = new MediaTypeHeaderValue(videoFile.MimeType.HttpMimeType);
 			return fullResponse;
 		}
+
+        private HttpResponseMessage GetThumbnailFileSimpleResponse(HttpRequestMessage request, Stream stream)
+        {
+            HttpResponseMessage res;
+
+            if (stream == null)
+            {
+                res = request.CreateResponse(HttpStatusCode.NotFound);
+                return null;
+            }
+            else
+            {
+                res = request.CreateResponse(HttpStatusCode.OK);
+                res.Content = new StreamContent(stream);
+                res.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            }
+
+            return res;
+        }
 
 		private bool IsRangeRequest(HttpRequestMessage request)
 		{
@@ -453,13 +623,19 @@ namespace MewPipe.Logic.Services
 			return false;
 		}
 
-		private MongoGridFSStream GetVideoStream(ObjectId gridVideoId)
+		private MongoGridFSStream GetVideoStream(Video video, MimeType mimeType, QualityType qualityType)
 		{
-			Debug.Assert(gridVideoId != null);
-
 			var videoService = new VideoGridFsClient();
-			return videoService.GetVideoStream(gridVideoId);
+            return videoService.GetVideoStream(video, mimeType, qualityType);
 		}
+
+        private MongoGridFSStream GetThumbnailStream(Video video)
+        {
+            Debug.Assert(video != null);
+
+            var thumbnailService = new ThumbnailGridFsClient();
+            return thumbnailService.GetThumbnailReadingStream(video);
+        }
 
         private Video[] GetUserVideos(string userId)
         {
@@ -474,38 +650,52 @@ namespace MewPipe.Logic.Services
 
 			var id = ShortGuid.Decode(videoId);
 
-            return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "AllowedUsers, User, VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
+            return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "Impressions, Tags, Category, AllowedUsers, User, VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
 		}
 
 		private bool IsUserAllowedToSeeVideo(string videoId, User user)
 		{
 			Debug.Assert(videoId != null);
 
-			var videoGuid = ShortGuid.Decode(videoId);
+		    var video = GetVideoDetails(videoId);
 
-			var videos = _unitOfWork.VideoRepository.Get(v =>
-				v.Id == videoGuid &&
-				v.Status == Video.StatusTypes.Published &&
-				(
-					v.PrivacyStatus == Video.PrivacyStatusTypes.Public ||
-					v.PrivacyStatus == Video.PrivacyStatusTypes.LinkOnly ||
-					v.User.Id == user.Id ||
-					v.AllowedUsers.Any(u => u.Id == user.Id)
-					)
-				).ToArray();
+		    if (user != null && video.User.Id == user.Id)
+		    {
+		        return true;
+		    }
 
-			if (!videos.Any())
-			{
-				return false;
-			}
+		    if (video.Status != Video.StatusTypes.Published)
+		    {
+		        return false;
+		    }
 
-			if (videos.First().PublicId == videoId)
-			{
-				return true;
-			}
+		    if (video.PrivacyStatus == Video.PrivacyStatusTypes.Public)
+		    {
+		        return true;
+		    }
 
-			return false;
+            if (video.PrivacyStatus == Video.PrivacyStatusTypes.LinkOnly)
+            {
+                return true;
+            }
+
+            if (video.PrivacyStatus == Video.PrivacyStatusTypes.Private)
+            {
+                if (user == null)
+                {
+                    return false;
+                }
+
+                if (video.AllowedUsers.Any(au => au.Id == user.Id))
+                {
+                    return true;
+                }
+            }
+
+		    return false;
 		}
+
+        
 
 		private VideoUploadToken GetVideoUploadTokenAndUserForId(string tokenId)
 		{

@@ -1,9 +1,164 @@
-﻿@{
-    ViewBag.Title = "title";
+﻿@using MewPipe.Logic.Contracts
+@using MewPipe.Logic.Models
+@using MewPipe.Website.Security
+@{
+    ViewBag.BodyClass = "hasPlayer onTop";
+
+    var video = ViewBag.VideoDetails as VideoContract;
+    var notFound = ViewBag.NotFound is bool && (bool)ViewBag.NotFound;
+    var unauthorized = ViewBag.Unauthorized is bool && (bool)ViewBag.Unauthorized;
+
+    ViewBag.Title = notFound ? "Video not found" : unauthorized ? "Private video" : video.Name;
+
 }
+@if (notFound)
+{
+    <p>Video not found</p>
+}
+else if (unauthorized)
+{
+    <p>You are not allowed to see this video.</p>
+}
+else
+{
+    @section scripts
+    {
+        @Scripts.Render("~/scripts/player")
+        <script type="text/javascript">
+            $(function () {
+                var videoData = @(Html.Raw(ViewBag.JsonVideoDetails));
+                window.playerModule.initPlayer(videoData, function(err, result) {
 
-<h2>FUTURE PAGE DE VIDEO</h2>
+                });
+            });
+        </script>
+    }
 
-<video width="320" height="240" controls autoplay="autoplay">
-    <source src="http://videos-repository.mewpipe.local:44403/api/videosData/@ViewBag.VideoId" type="video/mp4">
-</video>
+    @section styles
+    {
+        @Styles.Render("~/styles/player")
+    }
+    <div class="playerWrapper">
+        <div class="videoContainer" id="videoPlayerContainer">
+        </div>
+    </div>
+    <div class="container infosWrapper">
+        <div class="row">
+            <div class="col-sm-8 details">
+                <div class="boxWrapper">
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="title">
+                                <h1>
+                                    @video.Name
+                                </h1>
+                                @if (Request.GetIdentity().User != null && video.User.Id == Request.GetIdentity().User.Id)
+                                {
+                                    <a href="/myVideos/edit/@video.PublicId" class="editButton">
+                                        <span class="label label-primary">
+                                            Edit video
+                                        </span>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="metadata">
+                                Added the <strong>@video.DateTimeUtc.ToLocalTime().ToShortDateString()</strong> by <strong>@video.User.Username</strong>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 text-right">
+                            <div class="views">
+                                <strong>
+                                    @String.Format("{0:n0}", video.Views)
+                                </strong>
+                                @if (video.Views == 1)
+                                {
+                                    <text>view</text>
+                                }
+                                else
+                                {
+
+                                    <text>views</text>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div class="col-xs-12 actions">
+                            <div class="share">
+                                <ul class="share-buttons">
+                                    <li><a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fmewpipe.local%3A44402%2F&t=" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&t=' + encodeURIComponent(document.URL), '_blank', 'width=400'); return false;"><img src="/Images/share/Facebook.png"></a></li>
+                                    <li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fmewpipe.local%3A44402%2F&text=:%20http%3A%2F%2Fmewpipe.local%3A44402%2F" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.title) + ':%20'  + encodeURIComponent(document.URL), '_blank', 'width=400'); return false;"><img src="/Images/share/Twitter.png"></a></li>
+                                    <li><a href="https://plus.google.com/share?url=http%3A%2F%2Fmewpipe.local%3A44402%2F" target="_blank" title="Share on Google+" onclick="window.open('https://plus.google.com/share?url=' + encodeURIComponent(document.URL), '_blank', 'width=400'); return false;"><img src="/Images/share/Googleplus.png"></a></li>
+                                    <li><a href="http://www.tumblr.com/share?v=3&u=http%3A%2F%2Fmewpipe.local%3A44402%2F&t=&s=" target="_blank" title="Post to Tumblr" onclick="window.open('http://www.tumblr.com/share?v=3&u=' + encodeURIComponent(document.URL) + '&t=' +  encodeURIComponent(document.title), '_blank', 'width=400'); return false;"><img src="/Images/share/Tumblr.png"></a></li>
+                                    <li><a href="http://pinterest.com/pin/create/button/?url=http%3A%2F%2Fmewpipe.local%3A44402%2F&description=" target="_blank" title="Pin it" onclick="window.open('http://pinterest.com/pin/create/button/?url=' + encodeURIComponent(document.URL) + '&description=' +  encodeURIComponent(document.title), '_blank', 'width=400'); return false;"><img src="/Images/share/Pinterest.png"></a></li>
+                                    <li><a href="mailto:?subject=&body=:%20http%3A%2F%2Fmewpipe.local%3A44402%2F" target="_blank" title="Email" onclick="window.open('mailto:?subject=' + encodeURIComponent(document.title) + '&body=' +  encodeURIComponent(document.URL)); return false;"><img src="/Images/share/Email.png"></a></li>
+                                </ul>
+                            </div>
+                            @{
+                                var goodClass = video.UserImpression != null && video.UserImpression.Type == Impression.ImpressionType.Good ? "selected" : "";
+                                var badClass = video.UserImpression != null && video.UserImpression.Type == Impression.ImpressionType.Bad ? "selected" : "";
+                            }
+                            <div class="impressions">
+                                <span data-link="@Url.Action("SetVideoImpression", new {videoId = video.PublicId, good = true})" id="goodImpression" class="impressionButton good @goodClass">
+                                    <i class="glyphicon glyphicon-thumbs-up"></i>
+                                    <span class="number">
+                                        @String.Format("{0:n0}", video.PositiveImpressions)
+                                    </span>
+                                </span>
+                                <span data-link="@Url.Action("SetVideoImpression", new {videoId = video.PublicId, good = false})" id="badImpression" class="impressionButton bad @badClass">
+                                    <i class="glyphicon glyphicon-thumbs-down"></i>
+                                    <span class="number">
+                                        @String.Format("{0:n0}", video.NegativeImpressions)
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="boxWrapper marged">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @if (!String.IsNullOrWhiteSpace(video.Description))
+                            {
+                                <p>
+                                    @video.Description
+                                </p>
+                                <hr/>
+                            }
+                            Category : @video.Category.Name
+                        </div>
+                    </div>
+                </div>
+                <div class="boxWrapper marged">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h3>Integrate this video</h3>
+                            <textarea readonly="readonly">
+                                <iframe width='560' height='315' src='http://mewpipe.local:44402/embed/@video.PublicId' frameborder='0' allowfullscreen></iframe>
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 suggestions">
+                <div class="boxWrapper">
+                    SUGGESTIONS HERE
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!---->
+    <!--<video id="mewPipePlayerElement" controls="controls" poster="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/11/1397210130748/Spring-Lamb.-Image-shot-2-011.jpg"></video>-->
+
+}

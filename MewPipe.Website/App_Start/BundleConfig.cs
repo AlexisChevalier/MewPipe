@@ -23,6 +23,12 @@ namespace MewPipe.Website
                     "~/Scripts/Site/upload.js"
                     ));
 
+            bundles.Add(new ScriptBundle("~/scripts/player").Include(
+                    "~/Scripts/videojs.js",
+                    "~/Scripts/video-js-resolutions.js",
+                    "~/Scripts/Site/player.js"
+                    ));
+
             bundles.Add(new StyleBundle("~/styles").Include(
                       "~/Content/Libs/bootstrap.css",
                       "~/Content/Libs/bootstrap-social.css",
@@ -34,6 +40,14 @@ namespace MewPipe.Website
 
             bundles.Add(new StyleBundle("~/styles/editVideo").Include(
                       "~/Content/EditVideo.css"));
+
+            bundles.Add(new StyleBundle("~/styles/player").Include(
+                      "~/Content/Libs/videojs.css",
+                      "~/Content/Libs/video-js-resolutions.css",
+                      "~/Content/Player.css"));
+
+            bundles.Add(new StyleBundle("~/styles/search").Include(
+                      "~/Content/Search.css"));
         }
     }
 }

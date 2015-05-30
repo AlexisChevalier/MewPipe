@@ -43,22 +43,22 @@ namespace MewPipe.Logic
 
         public void SetBearerToken(string bearerToken)
         {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + bearerToken);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
         }
 
         public async Task<T> SendGet<T>(string relativeUri, string endpointOverrider = null)
         {
             var result = await _httpClient.GetAsync((endpointOverrider ?? _endpoint) + relativeUri);
 
-            if (result.StatusCode == HttpStatusCode.Forbidden)
+            if ((int)result.StatusCode == 481)
             {
-                throw new AuthenticationException();
+                throw new OauthExpiredTokenException();
             }
             var stringContent = await result.Content.ReadAsStringAsync();
 
             if (!result.IsSuccessStatusCode)
             {
-                throw new HttpResponseException(result);
+                throw new HttpException((int)result.StatusCode, stringContent);
             }
 
             return JsonConvert.DeserializeObject<T>(stringContent);
@@ -68,15 +68,15 @@ namespace MewPipe.Logic
         {
             var result = await _httpClient.DeleteAsync((endpointOverrider ?? _endpoint) + relativeUri);
 
-            if (result.StatusCode == HttpStatusCode.Forbidden)
+            if ((int)result.StatusCode == 481)
             {
-                throw new AuthenticationException();
+                throw new OauthExpiredTokenException();
             }
             var stringContent = await result.Content.ReadAsStringAsync();
 
             if (!result.IsSuccessStatusCode)
             {
-                throw new HttpResponseException(result);
+                throw new HttpException((int)result.StatusCode, stringContent);
             }
             return JsonConvert.DeserializeObject<T>(stringContent);
         }
@@ -85,17 +85,17 @@ namespace MewPipe.Logic
         {
             var result = await _httpClient.PostAsync((endpointOverrider ?? _endpoint) + relativeUri, data);
 
-            if (result.StatusCode == HttpStatusCode.Forbidden)
+            if ((int)result.StatusCode == 481)
             {
-                throw new AuthenticationException();
+                throw new OauthExpiredTokenException();
             }
+            
+            var stringContent = await result.Content.ReadAsStringAsync();
 
             if (!result.IsSuccessStatusCode)
             {
-                throw new HttpResponseException(result);
+                throw new HttpException((int)result.StatusCode, stringContent);
             }
-
-            var stringContent = await result.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<T>(stringContent);
         }
@@ -103,20 +103,36 @@ namespace MewPipe.Logic
         {
             var result = await _httpClient.PutAsync((endpointOverrider ?? _endpoint) + relativeUri, data);
 
-            if (result.StatusCode == HttpStatusCode.Forbidden)
+            if ((int)result.StatusCode == 481)
             {
-                throw new AuthenticationException();
-            }
-
-            if (!result.IsSuccessStatusCode)
-            {
-                throw new HttpResponseException(result);
+                throw new OauthExpiredTokenException();
             }
 
             var stringContent = await result.Content.ReadAsStringAsync();
 
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new HttpException((int)result.StatusCode, stringContent);
+            }
+
+
             return JsonConvert.DeserializeObject<T>(stringContent);
         }
 
+    }
+
+    public class OauthExpiredTokenException : Exception
+    {
+        public OauthExpiredTokenException()
+        {
+        }
+
+        public OauthExpiredTokenException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        public OauthExpiredTokenException(string message) : base(message)
+        {
+        }
     }
 }

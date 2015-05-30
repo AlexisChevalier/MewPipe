@@ -124,6 +124,10 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -194,6 +198,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\OauthHelper.cs" />
     <Compile Include="Security\SiteAuthorizeAttribute.cs" />
     <Compile Include="Security\RequestExtensions.cs" />
     <Compile Include="ViewModels\VideoViewModel.cs" />
@@ -233,11 +238,25 @@
     <Content Include="Content\Libs\bootstrap-social.css" />
     <Content Include="Content\Libs\bootstrap.css" />
     <Content Include="Content\Libs\font-awesome.css" />
+    <Content Include="Content\Libs\video-js-resolutions.css" />
+    <Content Include="Content\Libs\videojs.css" />
     <Content Include="Content\Main.css">
       <DependentUpon>Main.scss</DependentUpon>
     </Content>
     <Content Include="Content\Main.min.css">
       <DependentUpon>Main.css</DependentUpon>
+    </Content>
+    <Content Include="Content\Player.css">
+      <DependentUpon>Player.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\Player.min.css">
+      <DependentUpon>Player.css</DependentUpon>
+    </Content>
+    <Content Include="Content\Search.css">
+      <DependentUpon>Search.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\Search.min.css">
+      <DependentUpon>Search.css</DependentUpon>
     </Content>
     <Content Include="Content\UploadVideo.css">
       <DependentUpon>UploadVideo.scss</DependentUpon>
@@ -255,7 +274,21 @@
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\noteworthy.svg" />
+    <Content Include="fonts\VideoJS-Resolutions.dev.svg" />
+    <Content Include="fonts\VideoJS-Resolutions.svg" />
+    <Content Include="fonts\vjs.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Images\share\Email.png" />
+    <Content Include="Images\share\Facebook.png" />
+    <Content Include="Images\share\Googleplus.png" />
+    <Content Include="Images\share\LinkedIn.png" />
+    <Content Include="Images\share\Pinboard.png" />
+    <Content Include="Images\share\Pinterest.png" />
+    <Content Include="Images\share\Pocket.png" />
+    <Content Include="Images\share\Reddit.png" />
+    <Content Include="Images\share\Tumblr.png" />
+    <Content Include="Images\share\Twitter.png" />
+    <Content Include="Images\share\Wordpress.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Configuration\connectionstrings.default.config" />
@@ -306,7 +339,24 @@
     <Content Include="Content\EditVideo.css.map">
       <DependentUpon>EditVideo.css</DependentUpon>
     </Content>
+    <Content Include="Content\Player.scss" />
+    <Content Include="Content\Player.css.map">
+      <DependentUpon>Player.css</DependentUpon>
+    </Content>
+    <Content Include="fonts\vjs.eot" />
+    <Content Include="fonts\vjs.ttf" />
+    <Content Include="fonts\vjs.woff" />
+    <Content Include="fonts\VideoJS-Resolutions.eot" />
+    <Content Include="fonts\VideoJS-Resolutions.ttf" />
+    <Content Include="fonts\VideoJS-Resolutions.woff" />
+    <Content Include="Content\Search.scss" />
+    <Content Include="Content\Search.css.map">
+      <DependentUpon>Search.css</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\video-js-resolutions.js" />
+    <Content Include="Scripts\videojs.js" />
+    <Content Include="Scripts\Site\player.js" />
     <Content Include="Scripts\uploader.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -322,6 +372,7 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\Site\upload.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="swf\video-js.swf" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -350,6 +401,10 @@
     <Content Include="Views\Videos\ValidateUploadedVideo.cshtml" />
     <Content Include="Views\Videos\_DeleteVideoForm.cshtml" />
     <Content Include="Views\Videos\_AddUserToVideoWhiteListForm.cshtml" />
+    <Content Include="Views\Shared\_Player.cshtml" />
+    <Content Include="Views\Videos\Search.cshtml" />
+    <Content Include="Views\Shared\_SearchForm.cshtml" />
+    <Content Include="Views\Videos\Embed.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -21,24 +21,29 @@
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                         <div class="form-body">
                             <p>
+                                @Html.LabelFor(m => m.Username, new { @class = "" })
+                                @Html.TextBoxFor(m => m.Username, new { @class = "form-control", @placeholder = "Username" })
+                                @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                            </p>
+                            <p>
                                 @Html.LabelFor(m => m.Email, new {@class = ""})
-                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email adress" })
-                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(m => m.Email, new {@class = "form-control", @placeholder = "Email adress"})
+                                @Html.ValidationMessageFor(m => m.Email, "", new {@class = "text-danger"})
                             </p>
                             <p>
                                 @Html.LabelFor(m => m.Password, new {@class = ""})
-                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password" })
-                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                @Html.PasswordFor(m => m.Password, new {@class = "form-control", @placeholder = "Password"})
+                                @Html.ValidationMessageFor(m => m.Password, "", new {@class = "text-danger"})
                             </p>
                             <p>
-                                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "" })
-                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Confirm password" })
-                                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                                @Html.LabelFor(m => m.ConfirmPassword, new {@class = ""})
+                                @Html.PasswordFor(m => m.ConfirmPassword, new {@class = "form-control", @placeholder = "Confirm password"})
+                                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new {@class = "text-danger"})
                             </p>
                         </div>
                         <button class="btn btn-primary raised btn-block " type="submit">Register</button>
                         <p class="text-center">
-                            @Html.ActionLink("Already have an account ?", "Login")
+                            @Html.ActionLink("Already have an account ?", "Login", new { ReturnUrl = ViewBag.ReturnUrl })
                         </p>
                     }
                 </div>
@@ -49,6 +54,11 @@
                         You can also sign in using those services
                     </p>
                     @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+                    <hr />
+                    <p>
+                        To register with your OpenID account, please enter your information below :
+                    </p>
+                    @Html.Partial("_OpenIdPartial", new OpenIdViewModel { ReturnUrl = ViewBag.ReturnUrl })
                 </div>
             </div>
         </div>

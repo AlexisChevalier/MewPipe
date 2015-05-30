@@ -202,3 +202,5 @@ FakesAssemblies/
 */Configuration/*
 !*/Configuration/*.default.config
 /MewPipe.Accounts/MewPipe.Accounts.idc
+/packages/*
+/Packages.dgml

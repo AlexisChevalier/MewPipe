@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using MewPipe.Logic.Contracts;
@@ -41,6 +42,14 @@ namespace MewPipe.ApiClient
         public async Task<VideoContract> DeleteVideo(string publicVideoId)
         {
             return await _httpClient.SendDelete<VideoContract>("videos" + "/" + publicVideoId);
+        }
+
+        public async Task<SearchContract> SearchVideos(string term, string orderCriteria, bool orderDesc, int page, int limit)
+        {
+            var url = String.Format("search/videos?term={0}&orderCriteria={1}&orderDesc={2}&page={3}&limit={4}", term,
+                orderCriteria, orderDesc, page, limit);
+
+            return await _httpClient.SendGet<SearchContract>(url);
         }
 
         public async Task<UserContract[]> RemoveUserFromWhiteList(string publicVideoId, string userId)

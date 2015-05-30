@@ -23,16 +23,22 @@ namespace MewPipe.Logic.MongoDB
         private readonly int _maximumUploadTentatives;
         private readonly IVideoGridFsClient _videoGridFsClient;
         private readonly IVideoMimeTypeService _videoMimeTypeService;
+        private readonly IVideoQualityTypeService _videoQualityTypeService;
         private const int MaxRequestSizeInBytes = 524296192; //500 MB + 8KB for request
+        private Video _videoDetails;
 
         public MongoGridFSCreateOptions VideoOptions { get; private set; }
         public MimeType VideoMimeType { get; private set; }
+        public QualityType VideoQualityType { get; private set; }
+        public string VideoFileName { get; private set; }
 
-        public MongoDbMultipartStreamProvider(int maximumUploadTentatives = 3)
+        public MongoDbMultipartStreamProvider(Video video, int maximumUploadTentatives = 3)
         {
+            _videoDetails = video;
             _maximumUploadTentatives = maximumUploadTentatives;
             _videoGridFsClient = new VideoGridFsClient();
             _videoMimeTypeService = new VideoMimeTypeService();
+            _videoQualityTypeService = new VideoQualityTypeService();
         }
 
         public override Stream GetStream(HttpContent parent, HttpContentHeaders headers)
@@ -64,6 +70,16 @@ namespace MewPipe.Logic.MongoDB
             {
                 throw new MongoDbMultipartStreamProviderException(HttpStatusCode.BadRequest, "'Content-Disposition' header field in MIME multipart body part doesn't precise the filename, this request must only contains one single file and nothing else.");
             }
+            VideoFileName = contentDisposition.FileName;
+            if (VideoFileName.StartsWith("\""))
+            {
+                VideoFileName = VideoFileName.Substring(1, VideoFileName.Length - 1);
+            }
+
+            if (VideoFileName.EndsWith("\""))
+            {
+                VideoFileName = VideoFileName.Substring(0, VideoFileName.Length - 1);
+            }
 
             var contentType = headers.ContentType;
 
@@ -79,6 +95,8 @@ namespace MewPipe.Logic.MongoDB
                 throw new MongoDbMultipartStreamProviderException(HttpStatusCode.BadRequest, "Mime type " + contentType.MediaType + " is not allowed on our service");
             }
 
+            VideoQualityType = _videoQualityTypeService.GetUploadingQualityType();
+
             VideoOptions = new MongoGridFSCreateOptions
             {
                 Id = ObjectId.GenerateNewId(),
@@ -88,7 +106,8 @@ namespace MewPipe.Logic.MongoDB
 
             try
             {
-                return TryGetStream(contentDisposition.FileName, VideoOptions);
+                var fileName = _videoGridFsClient.GetFileName(_videoDetails.Id, VideoMimeType, VideoQualityType);
+                return TryGetStream(fileName, VideoOptions);
             }
             catch (Exception)
             {

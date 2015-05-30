@@ -1,0 +1,62 @@
+﻿@using MewPipe.Logic.Contracts
+@using MewPipe.Logic.Models
+@using MewPipe.Website.Security
+@{
+    Layout = null;
+    var video = ViewBag.VideoDetails as VideoContract;
+    var notFound = ViewBag.NotFound is bool && (bool)ViewBag.NotFound;
+    var unauthorized = ViewBag.Unauthorized is bool && (bool)ViewBag.Unauthorized;
+
+    ViewBag.Title = notFound ? "Video not found" : unauthorized ? "Private video" : video.Name;
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - MewPipe</title>
+        @Styles.Render("~/styles")
+        @Styles.Render("~/styles/player")
+
+</head>
+<body class="hasPlayer embed">
+    @if (notFound)
+    {
+        <p class="error">Video not found</p>
+        <div class="errorWrapper">
+            <i class="errorIcon glyphicon glyphicon-ban-circle">
+            </i>
+            <p class="error">Video not found</p>
+        </div>
+    }
+    else if (unauthorized)
+    {
+        <div class="errorWrapper">
+            <i class="errorIcon glyphicon glyphicon-ban-circle">
+            </i>
+            <p class="error">You are not allowed to see this video.</p>
+        </div>
+    }
+    else
+    {
+        <div class="playerWrapper">
+            <div class="videoContainer" id="videoPlayerContainer">
+            </div>
+        </div>
+        @Scripts.Render("~/scripts")
+        @Scripts.Render("~/scripts/player")
+        <script type="text/javascript">
+            $(function() {
+                var videoData = @(Html.Raw(ViewBag.JsonVideoDetails));
+                window.playerModule.initPlayer(videoData, function(err, result) {
+
+                });
+            });
+        </script>
+    }
+</body>
+</html>
+
+
+

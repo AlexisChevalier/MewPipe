@@ -36,10 +36,19 @@ namespace MewPipe.VideosRepository.Controllers.API
             }
 
             var videoApiService = new VideoApiService();
+            var videoQualityService = new VideoQualityTypeService();
+            var videoMimeTypeService = new VideoMimeTypeService();
 
             try
             {
-                return videoApiService.GetVideoHttpResponseMessage(Request, publicVideoId, user);
+                var mimeType = videoMimeTypeService.GetEncodingMimeType(encoding);
+                var qualityType = videoQualityService.GetQualityType(quality);
+
+                if (mimeType == null || qualityType == null)
+                {
+                    return new HttpResponseMessage(HttpStatusCode.NotFound);
+                }
+                return videoApiService.GetVideoHttpResponseMessage(Request, publicVideoId, user, mimeType, qualityType);
             }
             catch (InvalidByteRangeException byteRangeException)
             {

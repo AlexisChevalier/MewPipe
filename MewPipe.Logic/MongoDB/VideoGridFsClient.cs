@@ -1,5 +1,8 @@
+using System;
 using System.Diagnostics;
 using System.IO;
+using MewPipe.Logic.Helpers;
+using MewPipe.Logic.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
@@ -8,9 +11,12 @@ namespace MewPipe.Logic.MongoDB
 {
     public interface IVideoGridFsClient
     {
-        MongoGridFSFileInfo CreateVideoWithStream(Stream fileInputStream, string fileName);
-        MongoGridFSStream GetVideoStream(ObjectId objectId);
-        void RemoveFile(ObjectId objectId);
+        MongoGridFSStream GetVideoWritingStream(Video video, MimeType mimeType, QualityType qualityType);
+        MongoGridFSStream GetVideoStream(Video video, MimeType mimeType, QualityType qualityType);
+        void RemoveFile(Video video, MimeType mimeType, QualityType qualityType);
+        string GetFileName(Video video, MimeType mimeType, QualityType qualityType);
+        string GetFileName(Guid videoId, MimeType mimeType, QualityType qualityType);
+        void UploadVideoStream(Video video, MimeType mimeType, QualityType qualityType, FileStream stream);
         MongoDatabase GetDatabase();
     }
 
@@ -30,31 +36,52 @@ namespace MewPipe.Logic.MongoDB
             }
         }
 
-        public MongoGridFSFileInfo CreateVideoWithStream(Stream fileInputStream, string fileName)
+        public void UploadVideoStream(Video video, MimeType mimeType, QualityType qualityType, FileStream stream)
         {
-            Debug.Assert(fileInputStream != null);
-            Debug.Assert(fileName != null);
-
-            return _mongoDatabase.GridFS.Upload(fileInputStream, fileName);
+            _mongoDatabase.GridFS.Upload(stream, GetFileName(video, mimeType, qualityType), new MongoGridFSCreateOptions
+            {
+                ContentType = mimeType.HttpMimeType
+            });
         }
 
-        public MongoGridFSStream GetVideoStream(ObjectId objectId)
+        public MongoGridFSStream GetVideoWritingStream(Video video, MimeType mimeType, QualityType qualityType)
         {
-            Debug.Assert(objectId != null);
+            _mongoDatabase.GridFS.Create(GetFileName(video, mimeType, qualityType), new MongoGridFSCreateOptions
+            {
+                ContentType = mimeType.HttpMimeType
+            });
 
-            return _mongoDatabase.GridFS.FindOneById(objectId).OpenRead();
+            return _mongoDatabase.GridFS.OpenWrite(GetFileName(video, mimeType, qualityType));
         }
 
-        public void RemoveFile(ObjectId objectId)
+        public MongoGridFSStream GetVideoStream(Video video, MimeType mimeType, QualityType qualityType)
         {
-            Debug.Assert(objectId != null);
 
-            _mongoDatabase.GridFS.DeleteById(objectId);
+            return _mongoDatabase.GridFS.FindOne(GetFileName(video, mimeType, qualityType)).OpenRead();
+        }
+
+        public void RemoveFile(Video video, MimeType mimeType, QualityType qualityType)
+        {
+            _mongoDatabase.GridFS.Delete(GetFileName(video, mimeType, qualityType));
         }
 
         public MongoDatabase GetDatabase()
         {
             return _mongoDatabase;
+        }
+
+        public string GetFileName(Video video, MimeType mimeType, QualityType qualityType)
+        {
+            return GetFileName(video.Id, mimeType, qualityType);
+        }
+
+        public string GetFileName(Guid videoId, MimeType mimeType, QualityType qualityType)
+        {
+            var name = String.Format("{0}-VideoFile-{1}-{2}", new ShortGuid(videoId), mimeType.HttpMimeType, qualityType.Name);
+
+            name = name.Replace("/", "_");
+
+            return name;
         }
     }
 }

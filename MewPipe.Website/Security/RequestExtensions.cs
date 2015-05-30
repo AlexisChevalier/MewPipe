@@ -26,6 +26,18 @@ namespace MewPipe.Website.Security
             return identityValue;
         }
 
+        public static Identity GetIdentityValueFromState(this HttpSessionState session)
+        {
+            return session[IDENTITY_SESSION_KEY] as Identity ?? session.SaveIdentityValueFromState(new Identity());
+        }
+
+        public static Identity SaveIdentityValueFromState(this HttpSessionState session, Identity identityValue)
+        {
+            session[IDENTITY_SESSION_KEY] = identityValue;
+
+            return identityValue;
+        }
+
         public static Identity GetIdentity(this HttpContextBase context)
         {
             return context.Session.GetIdentityValue();      
@@ -34,6 +46,16 @@ namespace MewPipe.Website.Security
         public static Identity SaveIdentity(this HttpContextBase context, Identity identityValue)
         {
             return context.Session.SaveIdentityValue(identityValue);
+        }
+
+        public static Identity GetIdentityFromContext(this HttpContext context)
+        {
+            return context.Session.GetIdentityValueFromState();
+        }
+
+        public static Identity SaveIdentityFromContext(this HttpContext context, Identity identityValue)
+        {
+            return context.Session.SaveIdentityValueFromState(identityValue);
         }
 
         public static Identity GetIdentity(this HttpRequestBase context)

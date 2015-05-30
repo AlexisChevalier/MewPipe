@@ -43,10 +43,11 @@
         <h2>Your video is being converted by our servers ...</h2>
         <p>
             It could take some time. While we are busy with your video, you can start to edit its properties.
-            <br/>
-            <button id="editVideo" class="btn btn-danger raised" onclick=" location.reload() ">
+            <div class="spacer"></div>
+
+            <a id="editVideo" class="btn btn-danger raised" href="#">
                  Edit my video's parameters
-            </button>
+            </a>
         </p>
     </div>
 
@@ -54,10 +55,10 @@
         <h2>An unexpected error occured</h2>
         <p>
             There was an error uploading your video. Please verify that your file is conform to MewPipe requirements and reload the page to try again.
-            <br />
-            <button class="btn btn-danger raised" onclick="location.reload()">
+            <div class="spacer"></div>
+            <a class="btn btn-danger raised" href="@Url.Action("UploadVideo")">
                 Reload the page
-            </button>
+            </a>
         </p>
     </div>
 </div>
