@@ -19,7 +19,10 @@ namespace MewPipe.VideoWorker
 
 		private static void Main(string[] args)
 		{
-			Run();
+            var inputVid = @"C:\Conversions\input.tmp";
+            var outputThumb = @"C:\Conversions\thumb.jpg";
+            VideoThumbnailHelper.GetVideoThumbnail(inputVid, outputThumb);
+            //Run();
 		}
 
 		private static void Run()
@@ -86,6 +89,14 @@ namespace MewPipe.VideoWorker
 			string workFolder = ConfigurationManager.ConnectionStrings["MewPipeVideoWorkerConversionsFolder"].ConnectionString;
 			string inputFilePath = workFolder + @"\input.tmp";
 			StreamToFile(oVideoStream, inputFilePath);
+
+            string thumbnailPath = workFolder + @"\thumbnail.jpg";
+            VideoThumbnailHelper.GetVideoThumbnail(inputFilePath, thumbnailPath);
+
+            using (var fileStream = File.OpenRead(inputFilePath))
+            {
+                VideoWorkerService.AddThumbnail(video, fileStream); 
+            }
 
 			// Get the needed datas for the total conversion
 			var encodingMimeTypes = VideoMimeTypeService.GetEncodingMimeTypes();
