@@ -47,7 +47,7 @@ namespace MewPipe.Logic.MongoDB
         {
             _mongoDatabase.GridFS.Upload(stream, video.PublicId + "_thumbnail.jpeg", new MongoGridFSCreateOptions
             {
-                Id = video.Id.ToBson(),
+                //Id = video.Id.ToBson(),
                 ContentType = "image/jpeg"
             });
         }

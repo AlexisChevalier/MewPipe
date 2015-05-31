@@ -15,14 +15,15 @@ namespace MewPipe.VideoWorker.Helper
         public static void GetVideoThumbnail(string inputPath, string outputThumb)
         {
             // on récupère le nombre de frames de la vidéo
-            int framesCount = VideoInfosHelper.GetFramesCount(inputPath);
+            double miliSecondsCount = VideoInfosHelper.GetVideoDuration(inputPath);
 
-            // on choisit une frame à 25% du total de frames, puis conversion en float
-            double d = Math.Floor((double)framesCount / 4);
-            //float frame = (float)d;
-            int frame = 1;
+            double seconds = miliSecondsCount / 1000;
 
-            Converter.GetVideoThumbnail(inputPath, outputThumb, frame);
+            // on choisit une seconde à 25% du total de la video, puis conversion en float
+            double d = Math.Floor((double)seconds / 4);
+            float second = (float)d;
+
+            Converter.GetVideoThumbnail(inputPath, outputThumb, second);
         }
     }
 }

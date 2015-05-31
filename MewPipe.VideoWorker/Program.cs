@@ -21,10 +21,7 @@ namespace MewPipe.VideoWorker
 
 		private static void Main(string[] args)
 		{
-            var inputVid = @"C:\Conversions\input.tmp";
-            var outputThumb = @"C:\Conversions\thumb.jpg";
-            VideoThumbnailHelper.GetVideoThumbnail(inputVid, outputThumb);
-            //Run();
+            Run();
 		}
 
 		private static void Run()
