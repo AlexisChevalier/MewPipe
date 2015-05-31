@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Authentication;
 using System.Web.Http;
 using MewPipe.API.Extensions;
 using MewPipe.API.Filters;
@@ -21,6 +22,13 @@ namespace MewPipe.API.Controllers.API
         [Oauth2AuthorizeFilter]
         public ImpressionContract GetVideoImpression(string publicVideoId)
         {
+            var service = new VideoApiService();
+
+            if (!service.IsUserAllowedToSeeVideo(publicVideoId, ActionContext.GetUser()))
+            {
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            }
+
             var uow = new UnitOfWork();
 
             var id = ShortGuid.Decode(publicVideoId);
@@ -43,6 +51,13 @@ namespace MewPipe.API.Controllers.API
         [Oauth2AuthorizeFilter]
         public VideoContract SetVideoImpression(ImpressionContract impression)
         {
+            var service = new VideoApiService();
+
+            if (!service.IsUserAllowedToSeeVideo(impression.PublicVideoId, ActionContext.GetUser()))
+            {
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            }
+
             var videoApiService = new VideoApiService();
 
             var video = videoApiService.SetImpression(impression);

@@ -205,7 +205,8 @@ namespace MewPipe.Website.Controllers
                     {
                         Value = c.Id,
                         Text = c.Name
-                    }).ToList()
+                    }).ToList(),
+                    Tags = video.Tags
                 };
 
                 return View(viewModel);
@@ -237,7 +238,8 @@ namespace MewPipe.Website.Controllers
                             Description = viewModel.Description,
                             Name = viewModel.Name,
                             PrivacyStatus = viewModel.PrivacyStatus,
-                            CategoryId = viewModel.CategoryId
+                            CategoryId = viewModel.CategoryId,
+                            Tags = viewModel.Tags
                         }));
 
                 return RedirectToAction("EditVideo", new {videoId = viewModel.PublicId}).Success("Video successfully updated !");

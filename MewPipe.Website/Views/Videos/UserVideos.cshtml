@@ -3,18 +3,38 @@
     ViewBag.Title = "Your Videos";
 }
 
+@section styles
+{
+    @Styles.Render("~/styles/myvideos")
+}
+
 <h2>Your Videos</h2>
 
 <ul class="list-group">
     @foreach (var video in ViewBag.videos)
     {
         var name = String.IsNullOrWhiteSpace(video.Name) ? "Unnamed video" : video.Name;
-        var description = String.IsNullOrWhiteSpace(video.Description) ? "No description" : video.Description;
+        var duration = TimeSpan.FromSeconds(video.Seconds);
 
-        <li class="list-group-item">
-            <a href="/v/@video.PublicId">@name</a> - <a href="/myVideos/edit/@video.PublicId">Edit</a>
-            <br/>
-            @description
+        <li class="list-group-item video">
+            <div class="leftContent">
+                <a href="/v/@video.PublicId">
+                    <img src="http://videos-repository.mewpipe.local:44403/api/thumbnailsData/@video.PublicId" />
+                    <div class="duration">
+                        @duration.ToString(@"mm\:ss")
+                    </div>
+                </a>
+            </div>
+            <div class="rightContent">
+                <h3>
+                    <a href="/v/@video.PublicId">@name</a>
+                </h3>
+                <p>
+                    @String.Format("{0:n0}", video.Views) views - 
+                    <a href="/myVideos/edit/@video.PublicId">Edit video settings</a>
+                </p>
+            </div>
+            <div class="clearfix"></div>
         </li>
     }
 </ul>

@@ -100,6 +100,25 @@
     <div class="row">
         <div class="col-md-6">
             <div class="control">
+                @Html.LabelFor(m => m.Tags)
+                <br />
+                @Html.TextBoxFor(m => m.Tags, new { @placeholder = "Video Tags" })
+                <br />
+                @Html.ValidationMessageFor(m => m.Tags)
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="help">
+                <strong>The tags</strong> are keywords you can use to describe your video.
+                <br />
+                They are not the most important point, but if you choose them wisely they will help us to promote your video. (Maximum 10 tags per video)
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="control">
                 @Html.LabelFor(m => m.PrivacyStatus)
                 <br />
                 @Html.EnumDropDownListFor(m => m.PrivacyStatus)

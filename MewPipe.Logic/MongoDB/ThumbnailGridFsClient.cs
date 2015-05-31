@@ -11,7 +11,7 @@ namespace MewPipe.Logic.MongoDB
     {
         void UploadThumbnailStream(Video video, FileStream stream);
         MongoGridFSStream GetThumbnailReadingStream(Video video);
-        void RemoveFile(ObjectId objectId);
+        void RemoveFile(Video video);
         MongoDatabase GetDatabase();
     }
 
@@ -52,11 +52,11 @@ namespace MewPipe.Logic.MongoDB
             });
         }
 
-        public void RemoveFile(ObjectId objectId)
+        public void RemoveFile(Video video)
         {
-            Debug.Assert(objectId != null);
+            Debug.Assert(video != null);
 
-            _mongoDatabase.GridFS.DeleteById(objectId);
+            _mongoDatabase.GridFS.Delete(video.PublicId + "_thumbnail.jpeg");
         }
 
         public MongoDatabase GetDatabase()

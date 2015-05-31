@@ -48,6 +48,9 @@ namespace MewPipe.Website
 
             bundles.Add(new StyleBundle("~/styles/search").Include(
                       "~/Content/Search.css"));
+
+            bundles.Add(new StyleBundle("~/styles/myvideos").Include(
+                      "~/Content/MyVideos.css"));
         }
     }
 }

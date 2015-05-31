@@ -211,6 +211,12 @@
     <Content Include="Content\Accounting.min.css">
       <DependentUpon>Accounting.css</DependentUpon>
     </Content>
+    <Content Include="Content\MyVideos.css">
+      <DependentUpon>MyVideos.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\MyVideos.min.css">
+      <DependentUpon>MyVideos.css</DependentUpon>
+    </Content>
     <Content Include="Content\EditVideo.css">
       <DependentUpon>EditVideo.scss</DependentUpon>
     </Content>
@@ -352,6 +358,10 @@
     <Content Include="Content\Search.scss" />
     <Content Include="Content\Search.css.map">
       <DependentUpon>Search.css</DependentUpon>
+    </Content>
+    <Content Include="Content\MyVideos.scss" />
+    <Content Include="Content\MyVideos.css.map">
+      <DependentUpon>MyVideos.css</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\video-js-resolutions.js" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Repositories;
@@ -43,6 +44,7 @@ namespace MewPipe.Logic.Contracts
             Views = video.Views;
             Category = new CategoryContract(video.Category);
             VideoFiles = new List<VideoFileContract>();
+            Tags = String.Join(" ", video.Tags.Select(t => t.Name).ToArray());
 
             foreach (var videoFile in video.VideoFiles)
             {
@@ -61,6 +63,7 @@ namespace MewPipe.Logic.Contracts
         public string PublicId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Tags { get; set; }
         public long Seconds { get; set; }
         public decimal Views { get; set; }
         public decimal PositiveImpressions { get; set; }

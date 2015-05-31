@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.RabbitMQ;
 using MewPipe.Logic.RabbitMQ.Messages;
@@ -104,6 +106,9 @@ namespace MewPipe.VideoWorker
 			var vidQuality = VideoInfosHelper.GuessVideoQualityType(inputFilePath);
 			var vidQualityResY = int.Parse(vidQuality.Name);
 
+			var timeWatcher = Stopwatch.StartNew();
+
+			var tasks = new List<Task>();
 			foreach (var mimeType in encodingMimeTypes)
 			{
 				foreach (var qualityType in encodingQualityTypes)
@@ -112,7 +117,13 @@ namespace MewPipe.VideoWorker
 					{
 						var qualityResY = int.Parse(qualityType.Name);
 						if (qualityResY > vidQualityResY) continue; // We won't convert the vid to a higher resolution
-						VideoConverterHelper.DoConversion(inputFilePath, mimeType, qualityType, video);
+
+						// Preventing undesired behaviours: (http://stackoverflow.com/a/8127421/2193438)
+						var mType = mimeType;
+						var qType = qualityType;
+						// Creating the task
+						var t = Task.Factory.StartNew(() => VideoConverterHelper.DoConversion(inputFilePath, mType, qType, video));
+						tasks.Add(t);
 					}
 					catch (Exception)
 					{
@@ -121,9 +132,14 @@ namespace MewPipe.VideoWorker
 				}
 			}
 
+			// Wait for the tasks to complete
+			Task.WaitAll(tasks.ToArray());
+
 			VideoWorkerService.RemoveVideoUploadedFile(video);
 
-			Console.WriteLine("All conversions done !");
+			timeWatcher.Stop();
+			var elapsedS = timeWatcher.ElapsedMilliseconds/1000;
+			Console.WriteLine("All conversions done in " + elapsedS + " secs !");
 		}
 	}
 }
