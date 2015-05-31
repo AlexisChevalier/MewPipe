@@ -14,23 +14,56 @@ namespace MewPipe.VideoWorker.Helper
 		/// Get and returns the number of frames a video on the disk contains.
 		/// </summary>
 		/// <param name="videoPath">The path of the video to get the frames count of.</param>
-		/// <returns>The number of frames the video contains.</returns>
+		/// <returns>The number of frames the video contains. -1 if an error occured.</returns>
 		public static int GetFramesCount(string videoPath)
 		{
 			var framesRegex = new Regex(@"frame= ([0-9]*) fps");
 			string framesStr = null;
 
-			var ffMpeg = new FFMpegConverter();
-			ffMpeg.LogReceived += delegate(object sender, FFMpegLogEventArgs args)
+			try
 			{
-				var ffmpegOutput = args.Data;
-				if (!ffmpegOutput.Contains("frame= ")) return;
-				framesStr = framesRegex.Match(ffmpegOutput).Groups[1].Value;
-			};
-			ffMpeg.Invoke("-i " + videoPath + " -vcodec copy -acodec copy -f NULL NULL");
-
+				var ffMpeg = new FFMpegConverter();
+				ffMpeg.LogReceived += delegate(object sender, FFMpegLogEventArgs args)
+				{
+					var ffmpegOutput = args.Data;
+					if (!ffmpegOutput.Contains("frame= ")) return;
+					framesStr = framesRegex.Match(ffmpegOutput).Groups[1].Value;
+				};
+				ffMpeg.Invoke("-i " + videoPath + " -vcodec copy -acodec copy -f NULL NULL");
+			}
+			catch (Exception)
+			{
+			}
 			if (framesStr == null) return -1;
 			return int.Parse(framesStr) + 1;
+		}
+
+		/// <summary>
+		/// Get and returns the duration of a video in milliseconds.
+		/// </summary>
+		/// <param name="videoPath">The path of the video to get its duration.</param>
+		/// <returns>The duration of a video in milliseconds. -1 if an error occured.</returns>
+		public static double GetVideoDuration(string videoPath)
+		{
+			var durationRegex = new Regex(@"time=([0-9]*:[0-9]*:[0-9]*.[0-9]*)");
+			string durationStr = null;
+
+			try
+			{
+				var ffMpeg = new FFMpegConverter();
+				ffMpeg.LogReceived += delegate(object sender, FFMpegLogEventArgs args)
+				{
+					var ffmpegOutput = args.Data;
+					if (!ffmpegOutput.Contains("frame= ")) return;
+					durationStr = durationRegex.Match(ffmpegOutput).Groups[1].Value;
+				};
+				ffMpeg.Invoke("-i " + videoPath + " -vcodec copy -acodec copy -f NULL NULL");
+			}
+			catch (Exception)
+			{
+			}
+			if (durationStr == null) return -1;
+			return TimeSpan.Parse(durationStr).TotalMilliseconds;
 		}
 
 		/// <summary>
