@@ -1,17 +1,37 @@
 ﻿.video .leftContent {
   position: relative;
-  max-height: 80px;
+  width: 142px;
+  height: 83px;
+  background-color: black;
+  border: 1px solid #e7e7e7;
   display: inline-block; }
+  .video .leftContent a {
+    text-align: center;
+    line-height: 80px;
+    width: 140px;
+    height: 80px;
+    display: inline-block; }
+    .video .leftContent a:hover .hover {
+      background-color: rgba(255, 255, 255, 0.55);
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+      top: 0px;
+      left: 0px;
+      z-index: 2; }
   .video .leftContent img {
     max-height: 80px;
-    border: 1px solid #e7e7e7; }
+    max-width: 140px; }
   .video .leftContent .duration {
+    line-height: 20px;
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 0px;
+    right: 0px;
+    height: 20px;
     padding: 1px 3px;
-    background-color: rgba(0, 0, 0, 0.52);
-    color: white; }
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    z-index: 3; }
 .video .rightContent {
   margin-left: 10px;
   display: inline-block;
