@@ -10,6 +10,7 @@ using MewPipe.Logic.RabbitMQ;
 using MewPipe.Logic.RabbitMQ.Messages;
 using MewPipe.Logic.Services;
 using MewPipe.VideoWorker.Helper;
+using MongoDB.Driver.GridFS;
 
 namespace MewPipe.VideoWorker
 {
@@ -19,21 +20,25 @@ namespace MewPipe.VideoWorker
 		private static readonly VideoMimeTypeService VideoMimeTypeService = new VideoMimeTypeService();
 		private static readonly VideoQualityTypeService VideoQualityTypeService = new VideoQualityTypeService();
 
+		private static string _workFolder;
+
+
 		private static void Main(string[] args)
 		{
-            Run();
+			_workFolder = ConfigurationManager.ConnectionStrings["MewPipeVideoWorkerConversionsFolder"].ConnectionString;
+			Run();
 		}
 
 		private static void Run()
 		{
 			using (var workerQueueManager = new WorkerQueueManager())
 			{
-				using (var channelQueueConsumer =
+				using (IChannelQueueConsumer channelQueueConsumer =
 					workerQueueManager.GetChannelQueueConsumer(WorkerQueueManager.QueueChannelIdentifier.NewVideos))
 				{
 					while (true)
 					{
-						var newVideoMessage = channelQueueConsumer.DequeueMessage<NewVideoMessage>();
+						QueueMessage<NewVideoMessage> newVideoMessage = channelQueueConsumer.DequeueMessage<NewVideoMessage>();
 
 						try
 						{
@@ -64,7 +69,7 @@ namespace MewPipe.VideoWorker
 
 		private static void StreamToFile(Stream stream, string filePath)
 		{
-			using (var fileStream = File.OpenWrite(filePath))
+			using (FileStream fileStream = File.OpenWrite(filePath))
 			{
 				stream.Seek(0, SeekOrigin.Begin);
 				stream.CopyTo(fileStream, 255*1024);
@@ -73,7 +78,7 @@ namespace MewPipe.VideoWorker
 
 		private static void HandleMessage(NewVideoMessage message)
 		{
-			var video = VideoWorkerService.GetVideoDetails(message.VideoId);
+			Video video = VideoWorkerService.GetVideoDetails(message.VideoId);
 			DoTotalConversion(video);
 			VideoWorkerService.MarkVideoAsPublished(video, 0);
 
@@ -82,44 +87,61 @@ namespace MewPipe.VideoWorker
 
 		private static void DoTotalConversion(Video video)
 		{
-			var oVideoStream = VideoWorkerService.GetVideoUploadedFile(video);
+			// Create the tmp work folder for that video
+			string tmpWorkFolder = _workFolder + @"\" + video.Id;
+			Directory.CreateDirectory(tmpWorkFolder);
+			Trace.WriteLine(
+				String.Format("[INFO] The temporary work folder \"{0}\" has been created to do conversions in it.",
+					video.Id));
+
+			MongoGridFSStream oVideoStream = VideoWorkerService.GetVideoUploadedFile(video);
 
 			// Get and store the original video on the disk:
-			string workFolder = ConfigurationManager.ConnectionStrings["MewPipeVideoWorkerConversionsFolder"].ConnectionString;
-			string inputFilePath = workFolder + @"\input.tmp";
+			string inputFilePath = tmpWorkFolder + @"\input.tmp";
 			StreamToFile(oVideoStream, inputFilePath);
 
-            string thumbnailPath = workFolder + @"\thumbnail.jpg";
-            VideoThumbnailHelper.GetVideoThumbnail(inputFilePath, thumbnailPath);
+			// Get and store the thumbnail in mongo
+			Trace.WriteLine(
+				String.Format("[INFO] Getting the thumbnail of the video id {0} ...",
+					video.Id));
+			string thumbnailPath = tmpWorkFolder + @"\thumbnail.jpg";
+			VideoThumbnailHelper.GetVideoThumbnail(inputFilePath, thumbnailPath);
 
-            using (var fileStream = File.OpenRead(inputFilePath))
-            {
-                VideoWorkerService.AddThumbnail(video, fileStream); 
-            }
+			using (FileStream fileStream = File.OpenRead(inputFilePath))
+			{
+				VideoWorkerService.AddThumbnail(video, fileStream);
+			}
+			Trace.WriteLine(
+				String.Format("[SUCCESS] Successfully got the thumbnail of the video id {0}.",
+					video.Id));
 
 			// Get the needed datas for the total conversion
-			var encodingMimeTypes = VideoMimeTypeService.GetEncodingMimeTypes();
-			var encodingQualityTypes = VideoQualityTypeService.GetEncodingQualityTypes();
-			var vidQuality = VideoInfosHelper.GuessVideoQualityType(inputFilePath);
-			var vidQualityResY = int.Parse(vidQuality.Name);
+			MimeType[] encodingMimeTypes = VideoMimeTypeService.GetEncodingMimeTypes();
+			QualityType[] encodingQualityTypes = VideoQualityTypeService.GetEncodingQualityTypes();
+			QualityType vidQuality = VideoInfosHelper.GuessVideoQualityType(inputFilePath);
+			int vidQualityResY = int.Parse(vidQuality.Name);
 
-			var timeWatcher = Stopwatch.StartNew();
+			Trace.WriteLine(
+				String.Format("[INFO] Processing video id {0} for total conversion ...",
+					video.Id));
+
+			Stopwatch timeWatcher = Stopwatch.StartNew();
 
 			var tasks = new List<Task>();
-			foreach (var mimeType in encodingMimeTypes)
+			foreach (MimeType mimeType in encodingMimeTypes)
 			{
-				foreach (var qualityType in encodingQualityTypes)
+				foreach (QualityType qualityType in encodingQualityTypes)
 				{
 					try
 					{
-						var qualityResY = int.Parse(qualityType.Name);
+						int qualityResY = int.Parse(qualityType.Name);
 						if (qualityResY > vidQualityResY) continue; // We won't convert the vid to a higher resolution
 
 						// Preventing undesired behaviours: (http://stackoverflow.com/a/8127421/2193438)
-						var mType = mimeType;
-						var qType = qualityType;
+						MimeType mType = mimeType;
+						QualityType qType = qualityType;
 						// Creating the task
-						var t = Task.Factory.StartNew(() => VideoConverterHelper.DoConversion(inputFilePath, mType, qType, video));
+						Task t = Task.Factory.StartNew(() => VideoConverterHelper.DoConversion(inputFilePath, mType, qType, video));
 						tasks.Add(t);
 					}
 					catch (Exception)
@@ -135,8 +157,20 @@ namespace MewPipe.VideoWorker
 			VideoWorkerService.RemoveVideoUploadedFile(video);
 
 			timeWatcher.Stop();
-			var elapsedS = timeWatcher.ElapsedMilliseconds/1000;
-			Console.WriteLine("All conversions done in " + elapsedS + " secs !");
+			long elapsedS = timeWatcher.ElapsedMilliseconds/1000;
+			Trace.WriteLine(
+				String.Format("[SUCCESS] Successfully processed video id {0} for total conversion ({1} secs)",
+					video.Id, elapsedS));
+#if !DEBUG
+			Directory.Delete(tmpWorkFolder, true); // Delete the tmp work folder
+			Trace.WriteLine(
+				String.Format("[INFO] The temporary work folder \"{0}\" has been deleted.",
+					video.Id));
+#else
+			Trace.WriteLine(
+				String.Format("[WARNING] The temporary work folder \"{0}\" is not deleted because we are running in Debug mod.",
+					video.Id));
+#endif
 		}
 	}
 }
