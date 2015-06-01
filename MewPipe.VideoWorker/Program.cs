@@ -92,7 +92,7 @@ namespace MewPipe.VideoWorker
             string thumbnailPath = workFolder + @"\thumbnail.jpg";
             VideoThumbnailHelper.GetVideoThumbnail(inputFilePath, thumbnailPath);
 
-            using (var fileStream = File.OpenRead(inputFilePath))
+            using (var fileStream = File.OpenRead(thumbnailPath))
             {
                 VideoWorkerService.AddThumbnail(video, fileStream); 
             }
