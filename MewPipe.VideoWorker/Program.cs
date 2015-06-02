@@ -80,7 +80,6 @@ namespace MewPipe.VideoWorker
 		{
 			Video video = VideoWorkerService.GetVideoDetails(message.VideoId);
 			DoTotalConversion(video);
-			VideoWorkerService.MarkVideoAsPublished(video, 0);
 
 			Thread.Sleep(1000);
 		}
@@ -155,6 +154,9 @@ namespace MewPipe.VideoWorker
 			Task.WaitAll(tasks.ToArray());
 
 			VideoWorkerService.RemoveVideoUploadedFile(video);
+
+			var duration = VideoInfosHelper.GetVideoDuration(inputFilePath)/1000;
+			VideoWorkerService.MarkVideoAsPublished(video, (long) duration); // Loosing milliseconds precision
 
 			timeWatcher.Stop();
 			long elapsedS = timeWatcher.ElapsedMilliseconds/1000;
