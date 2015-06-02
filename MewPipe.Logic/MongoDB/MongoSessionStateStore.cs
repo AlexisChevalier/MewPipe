@@ -1,4 +1,10 @@
-﻿using System;
+﻿/**
+ * PLEASE NOTICE THAT THE FOLLOWING CODE IS NOT OUR OWN. 
+ * We took it from https://github.com/AdaTheDev/MongoDB-ASP.NET-Session-State-Store/blob/master/MongoSessionStateStore/MongoSessionStateStore.cs.
+ * We think that this code is not 'essential' to MewPipe, so it can be taken as an helper method.
+ */
+
+using System;
 using System.Configuration;
 using System.Configuration.Provider;
 using System.Diagnostics;
