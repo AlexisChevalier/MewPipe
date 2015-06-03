@@ -47,6 +47,7 @@ namespace MewPipe.Logic.Models
         public ICollection<VideoFile> VideoFiles { get; set; }
         public ICollection<Tag> Tags { get; set; }
         public ICollection<Impression> Impressions { get; set; }
+        public ICollection<Recommendation> Recommendations { get; set; }
         public Category Category { get; set; }
 
         public DateTime DateTimeUtc { get; set; }

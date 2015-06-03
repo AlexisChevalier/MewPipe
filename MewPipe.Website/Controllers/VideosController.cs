@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net;
@@ -11,6 +12,7 @@ using MewPipe.ApiClient;
 using MewPipe.Logic;
 using MewPipe.Logic.Contracts;
 using MewPipe.Logic.Helpers;
+using MewPipe.Logic.Migrations;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Repositories;
 using MewPipe.Logic.Services;
@@ -32,6 +34,7 @@ namespace MewPipe.Website.Controllers
 		public async Task<ActionResult> Index(string videoId)
 		{
 		    VideoContract video = null;
+		    Dictionary<double, VideoContract> recommendations = null;
 		    try
 		    {
                 if (HttpContext.GetIdentity().IsAuthenticated())
@@ -39,11 +42,17 @@ namespace MewPipe.Website.Controllers
                     video = await OauthHelper.TryAuthenticatedMethod(_apiClient, 
                         Request.GetIdentity().AccessToken.ToAccessTokenContract(),
                         () => _apiClient.GetVideoDetails(videoId));
+
+
+                    recommendations = await OauthHelper.TryAuthenticatedMethod(_apiClient,
+                        Request.GetIdentity().AccessToken.ToAccessTokenContract(),
+                        () => _apiClient.GetVideoRecommendations(videoId, 0, 20));
 		        }
 		        else
                 {
                     video = await _apiClient.GetVideoDetails(videoId);
-		        }
+                    recommendations = await _apiClient.GetVideoRecommendations(videoId, 0, 20);
+                }
 		    }
 		    catch (HttpException e)
 		    {
@@ -73,7 +82,7 @@ namespace MewPipe.Website.Controllers
 
             var updatedVideo = videoService.AddView(video.PublicId);
             video.Views = updatedVideo.Views;
-
+		    ViewBag.Recommendations = recommendations;
             ViewBag.VideoDetails = video;
             ViewBag.JsonVideoDetails = JsonConvert.SerializeObject(video);
 

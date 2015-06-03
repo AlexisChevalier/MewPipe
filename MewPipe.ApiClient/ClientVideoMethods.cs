@@ -46,10 +46,17 @@ namespace MewPipe.ApiClient
 
         public async Task<SearchContract> SearchVideos(string term, string orderCriteria, bool orderDesc, int page, int limit)
         {
-            var url = String.Format("search/videos?term={0}&orderCriteria={1}&orderDesc={2}&page={3}&limit={4}", term,
+            var url = string.Format("search/videos?term={0}&orderCriteria={1}&orderDesc={2}&page={3}&limit={4}", term,
                 orderCriteria, orderDesc, page, limit);
 
             return await _httpClient.SendGet<SearchContract>(url);
+        }
+
+        public async Task<Dictionary<double, VideoContract>> GetVideoRecommendations(string videoId, int page, int limit)
+        {
+            var url = string.Format("recommendations/{0}?page={1}&limit={2}",videoId, page, limit);
+
+            return await _httpClient.SendGet<Dictionary<double, VideoContract>>(url);
         }
 
         public async Task<UserContract[]> RemoveUserFromWhiteList(string publicVideoId, string userId)

@@ -176,8 +176,13 @@
     <Compile Include="Migrations\201505281005201_RemovedObjectIdFromVideoFile.Designer.cs">
       <DependentUpon>201505281005201_RemovedObjectIdFromVideoFile.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506031516209_addedRecommendations.cs" />
+    <Compile Include="Migrations\201506031516209_addedRecommendations.Designer.cs">
+      <DependentUpon>201506031516209_addedRecommendations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Recommendation.cs" />
     <Compile Include="Models\Impression.cs" />
     <Compile Include="Models\QualityType.cs" />
     <Compile Include="Models\MimeType.cs" />
@@ -262,6 +267,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201505281005201_RemovedObjectIdFromVideoFile.resx">
       <DependentUpon>201505281005201_RemovedObjectIdFromVideoFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506031516209_addedRecommendations.resx">
+      <DependentUpon>201506031516209_addedRecommendations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

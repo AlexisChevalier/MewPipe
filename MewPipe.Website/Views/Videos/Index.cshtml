@@ -5,6 +5,7 @@
     ViewBag.BodyClass = "hasPlayer onTop";
 
     var video = ViewBag.VideoDetails as VideoContract;
+    var recommendations = ViewBag.Recommendations as Dictionary<double, VideoContract>;
     var notFound = ViewBag.NotFound is bool && (bool)ViewBag.NotFound;
     var unauthorized = ViewBag.Unauthorized is bool && (bool)ViewBag.Unauthorized;
 
@@ -147,7 +148,7 @@ else
                                 <p>
                                     @video.Description
                                 </p>
-                                <hr/>
+                                <hr />
                             }
                             <p>
                                 Category : @video.Category.Name
@@ -173,7 +174,18 @@ else
             </div>
             <div class="col-sm-4 suggestions">
                 <div class="boxWrapper">
-                    SUGGESTIONS HERE
+                    @foreach (var recommendation in recommendations)
+                    {
+                        <p>
+                            @recommendation.Key => @recommendation.Value.Name
+                        </p>
+                    }
+                    @if (recommendations.Count == 0)
+                    {
+                        <p>
+                            No recommendations yet
+                        </p>
+                    }
                 </div>
             </div>
         </div>

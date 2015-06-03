@@ -61,7 +61,10 @@ namespace MewPipe.Logic
                 .WithOptional()
                 .WillCascadeOnDelete(true);
 
-
+            modelBuilder.Entity<Video>()
+                .HasMany(v => v.Recommendations)
+                .WithOptional()
+                .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Impressions)
