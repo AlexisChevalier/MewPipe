@@ -52,11 +52,11 @@ namespace MewPipe.ApiClient
             return await _httpClient.SendGet<SearchContract>(url);
         }
 
-        public async Task<Dictionary<double, VideoContract>> GetVideoRecommendations(string videoId, int page, int limit)
+        public async Task<Dictionary<int, RecommendationContract>> GetVideoRecommendations(string videoId, int page, int limit)
         {
             var url = string.Format("recommendations/{0}?page={1}&limit={2}",videoId, page, limit);
 
-            return await _httpClient.SendGet<Dictionary<double, VideoContract>>(url);
+            return await _httpClient.SendGet<Dictionary<int, RecommendationContract>>(url);
         }
 
         public async Task<UserContract[]> RemoveUserFromWhiteList(string publicVideoId, string userId)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using MewPipe.Logic.Models;
@@ -44,11 +45,16 @@ namespace MewPipe.Logic.Contracts
             Views = video.Views;
             Category = new CategoryContract(video.Category);
             VideoFiles = new List<VideoFileContract>();
-            Tags = String.Join(" ", video.Tags.Select(t => t.Name).ToArray());
-
-            foreach (var videoFile in video.VideoFiles)
+            if (video.Tags != null)
             {
-                VideoFiles.Add(new VideoFileContract(videoFile));
+                Tags = string.Join(" ", video.Tags.Select(t => t.Name).ToArray());   
+            }
+            if (video.VideoFiles != null)
+            {
+                foreach (var videoFile in video.VideoFiles)
+                {
+                    VideoFiles.Add(new VideoFileContract(videoFile));
+                }
             }
 
             PositiveImpressions =

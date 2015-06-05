@@ -20,7 +20,7 @@ namespace MewPipe.API.Controllers.API
     {
         [HttpGet]
         [Route("api/recommendations/{videoId}")]
-        public Dictionary<double, VideoContract> GetRecommendations(string videoId, int page = 0, int limit = 20)
+        public Dictionary<int, RecommendationContract> GetRecommendations(string videoId, int page = 0, int limit = 20)
         {
             limit = limit > 40 ? 40 : limit;
 
@@ -29,14 +29,14 @@ namespace MewPipe.API.Controllers.API
             var user = ActionContext.GetUser();
 
             var id = ShortGuid.Decode(videoId);
-
+            var video = uow.VideoRepository.GetOne(
+                v => v.Id == id, "Recommendations, Recommendations.Video, Recommendations.Video.User");
             var results =
-                uow.VideoRepository.GetOne(
-                    v => v.Id == id, "Recommendations").Recommendations
+                video.Recommendations
                         .Skip(page * limit)
                         .Take(limit);
-
-            var recommendations = results.ToDictionary(result => result.Score, result => new VideoContract(result.Video, user == null ? null : user.Id));
+            var count = 0;
+            var recommendations = results.ToDictionary(result => count++, result => new RecommendationContract(new VideoContract(result.Video, user == null ? null : user.Id), result.Score));
 
             return recommendations;
         }

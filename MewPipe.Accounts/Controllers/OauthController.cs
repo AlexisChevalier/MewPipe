@@ -348,7 +348,8 @@ namespace MewPipe.Accounts.Controllers
 
             var newAccessToken = new OauthAccessToken
             {
-                ExpirationTime = DateTime.UtcNow.AddHours(1),
+                //ExpirationTime = DateTime.UtcNow.AddHours(1), //SHOULD BE THE RIGHT VALUE
+                ExpirationTime = DateTime.UtcNow.AddDays(14),
                 Token = TokenGenerator.GenerateRandomString(32),
                 Type = "bearer",
                 OauthClient = oldRefreshToken.OauthClient,
@@ -363,7 +364,8 @@ namespace MewPipe.Accounts.Controllers
                 OauthClient = oldRefreshToken.OauthClient,
                 User = oldRefreshToken.User,
                 Scope = oldRefreshToken.Scope,
-                ExpirationTime = DateTime.UtcNow.AddDays(14),
+                //ExpirationTime = DateTime.UtcNow.AddDays(14), //SHOULD BE THE RIGHT VALUE
+                ExpirationTime = DateTime.UtcNow.AddDays(30),
                 Token = TokenGenerator.GenerateRandomString(64)
             };
 

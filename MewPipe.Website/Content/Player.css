@@ -181,6 +181,79 @@
           color: #e1172c; }
           .hasPlayer .infosWrapper .details .actions .impressions span:hover.bad .number, .hasPlayer .infosWrapper .details .actions .impressions span.selected.bad .number {
             color: #e1172c; }
+  .hasPlayer .infosWrapper .suggestions .nomargin {
+    margin: 0;
+    padding: 0; }
+  .hasPlayer .infosWrapper .suggestions .suggestion-item {
+    display: block;
+    position: relative;
+    height: 86px;
+    border-bottom: 1px solid #cfcfcf;
+    -webkit-box-sizing: border-box;
+    /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;
+    /* Firefox, other Gecko */
+    box-sizing: border-box; }
+    .hasPlayer .infosWrapper .suggestions .suggestion-item:hover {
+      background-color: #eeeeee; }
+      .hasPlayer .infosWrapper .suggestions .suggestion-item:hover .hover {
+        background-color: rgba(255, 255, 255, 0.55);
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        top: 0px;
+        left: 0px;
+        z-index: 2; }
+    .hasPlayer .infosWrapper .suggestions .suggestion-item:last-child {
+      border: none;
+      height: 85px; }
+    .hasPlayer .infosWrapper .suggestions .suggestion-item .leftContent {
+      position: absolute;
+      background-color: black;
+      line-height: 85px;
+      height: 85px;
+      width: 147px;
+      display: inline-block; }
+      .hasPlayer .infosWrapper .suggestions .suggestion-item .leftContent img {
+        line-height: normal;
+        max-width: 147px;
+        max-height: 84px;
+        vertical-align: middle;
+        display: inline; }
+      .hasPlayer .infosWrapper .suggestions .suggestion-item .leftContent .duration {
+        line-height: normal;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        height: 20px;
+        padding: 1px 3px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        z-index: 3; }
+    .hasPlayer .infosWrapper .suggestions .suggestion-item .rightContent {
+      position: absolute;
+      left: 150px;
+      top: 5px;
+      margin-left: 10px;
+      display: inline-block;
+      vertical-align: top; }
+      .hasPlayer .infosWrapper .suggestions .suggestion-item .rightContent .title {
+        display: block;
+        line-height: 18px;
+        max-height: 36px;
+        overflow: hidden;
+        word-wrap: break-word;
+        font-size: 110%;
+        font-weight: bold;
+        color: #e1172c;
+        margin: 0;
+        margin-bottom: 0px; }
+      .hasPlayer .infosWrapper .suggestions .suggestion-item .rightContent .views {
+        font-size: 90%;
+        display: block; }
+      .hasPlayer .infosWrapper .suggestions .suggestion-item .rightContent .author {
+        display: block;
+        font-size: 90%; }
   .hasPlayer .infosWrapper .boxWrapper {
     padding: 15px;
     background-color: white;
@@ -216,5 +289,35 @@
     margin-top: 50px; }
 .hasPlayer textarea {
   width: 100%; }
+
+@media (max-width: 1200px) {
+  .hasPlayer .infosWrapper .suggestions .suggestion-item .leftContent {
+    width: 100px; }
+    .hasPlayer .infosWrapper .suggestions .suggestion-item .leftContent img {
+      max-width: 100px; }
+  .hasPlayer .infosWrapper .suggestions .suggestion-item .rightContent {
+    left: 100px;
+    /*.title {
+                        display: block;
+                        line-height: 13px;
+                        max-height: 36px;
+                        font-size: 80%;
+                    }
+                    .views {
+                        font-size: 80%;
+                        line-height:13px;
+                        display: block;
+                    }
+                    .author {
+                        line-height:13px;
+                        display: block;
+                        font-size: 80%;
+                    }*/ }
+ }
+
+@media (max-width: 767px) {
+  .hasPlayer .infosWrapper .suggestions {
+    margin-top: 15px; }
+ }
 
 /*# sourceMappingURL=Player.css.map */

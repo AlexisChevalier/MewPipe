@@ -111,6 +111,7 @@
     <Compile Include="Contracts\AccessTokenContract.cs" />
     <Compile Include="Contracts\CategoryContract.cs" />
     <Compile Include="Contracts\SearchContract.cs" />
+    <Compile Include="Contracts\RecommendationContract.cs" />
     <Compile Include="Contracts\VideoFileContract.cs" />
     <Compile Include="Contracts\VideoUpdateContract.cs" />
     <Compile Include="Contracts\VideoContract.cs" />

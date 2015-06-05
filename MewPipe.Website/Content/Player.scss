@@ -264,7 +264,91 @@
         }
 
         .suggestions {
+            .nomargin {
+                margin: 0;
+                padding: 0;
+            }
+            .suggestion-item {
+                display: block;
+                position: relative;
+                height: 86px;
+                border-bottom: 1px solid rgb(207, 207, 207);
 
+                &:hover {
+                    background-color: rgb(238, 238, 238);
+                    .hover {
+                        background-color: rgba(255, 255, 255, 0.55);
+                        position: absolute;
+                        bottom: 0px;
+                        right: 0px;
+                        top: 0px;
+                        left: 0px;
+                        z-index: 2;
+                    }
+                }
+
+                &:last-child {
+                    border: none;
+                    height: 85px;
+                }
+                -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+                -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+                box-sizing: border-box;    
+                .leftContent {
+                    position: absolute;
+                    background-color: black;
+                    line-height: 85px;
+                    height: 85px;
+                    width: 147px;
+                    img {
+                        line-height: normal;
+                        max-width: 147px;
+                        max-height: 84px;
+                        vertical-align: middle;
+                        display: inline;
+                    }
+                    .duration {
+                        line-height: normal;
+                        position: absolute;
+                        bottom: 0;
+                        right: 0;
+                        height: 20px;
+                        padding: 1px 3px;
+                        background-color: rgba(0, 0, 0, 0.8);
+                        color: white;
+                        z-index: 3;
+                    }
+                    display: inline-block;
+                }
+                .rightContent {
+                    position: absolute;
+                    left: 150px;
+                    top: 5px;
+                    margin-left: 10px;
+                    display: inline-block;
+                    vertical-align: top;
+                    .title {
+                        display: block;
+                        line-height: 18px;
+                        max-height: 36px;
+                        overflow: hidden;
+                        word-wrap: break-word;
+                        font-size: 110%;
+                        font-weight: bold;
+                        color: #e1172c;
+                        margin: 0;
+                        margin-bottom: 0px;
+                    }
+                    .views {
+                        font-size: 90%;
+                        display: block;
+                    }
+                    .author {
+                        display: block;
+                        font-size: 90%;
+                    }
+                }
+            }
         }
 
         .boxWrapper {
@@ -322,5 +406,47 @@
 
     textarea {
         width: 100%;
+    }
+}
+
+
+@media (max-width:1200px) {
+    .hasPlayer .infosWrapper .suggestions {
+        .suggestion-item {
+            //height: 57px;
+            .leftContent {
+                //line-height: 58px;
+                width: 100px;
+                img {
+                    //max-height: 57px;
+                    max-width: 100px;
+                }
+            }
+            .rightContent {
+                left: 100px;
+                /*.title {
+                        display: block;
+                        line-height: 13px;
+                        max-height: 36px;
+                        font-size: 80%;
+                    }
+                    .views {
+                        font-size: 80%;
+                        line-height:13px;
+                        display: block;
+                    }
+                    .author {
+                        line-height:13px;
+                        display: block;
+                        font-size: 80%;
+                    }*/
+            }
+        }
+    }
+}
+
+@media (max-width:767px) {
+    .hasPlayer .infosWrapper .suggestions {
+        margin-top: 15px;
     }
 }

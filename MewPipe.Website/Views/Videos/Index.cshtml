@@ -5,7 +5,7 @@
     ViewBag.BodyClass = "hasPlayer onTop";
 
     var video = ViewBag.VideoDetails as VideoContract;
-    var recommendations = ViewBag.Recommendations as Dictionary<double, VideoContract>;
+    var recommendations = ViewBag.Recommendations as Dictionary<int, RecommendationContract>;
     var notFound = ViewBag.NotFound is bool && (bool)ViewBag.NotFound;
     var unauthorized = ViewBag.Unauthorized is bool && (bool)ViewBag.Unauthorized;
 
@@ -173,19 +173,50 @@ else
                 </div>
             </div>
             <div class="col-sm-4 suggestions">
-                <div class="boxWrapper">
-                    @foreach (var recommendation in recommendations)
-                    {
-                        <p>
-                            @recommendation.Key => @recommendation.Value.Name
-                        </p>
-                    }
-                    @if (recommendations.Count == 0)
-                    {
-                        <p>
-                            No recommendations yet
-                        </p>
-                    }
+                <div class="boxWrapper nomargin">
+                        @foreach (var recommendation in recommendations)
+                        {
+                            var recommendedVideo = recommendation.Value.Video;
+                            var name = String.IsNullOrWhiteSpace(recommendedVideo.Name) ? "Unnamed video" : recommendedVideo.Name;
+                            var duration = TimeSpan.FromSeconds(recommendedVideo.Seconds);
+
+                            <a class="suggestion-item" href="/v/@recommendedVideo.PublicId">
+                                <span class="leftContent">
+                                    <img src="http://videos-repository.mewpipe.local:44403/api/thumbnailsData/@recommendedVideo.PublicId" />
+                                    <span class="hover"></span>
+                                    <span class="duration">
+                                        @duration.ToString(@"mm\:ss")
+                                    </span>
+                                </span>
+                                <span class="rightContent">
+                                    <span class="title">
+                                        @name
+                                    </span>
+                                    <span class="views">
+                                        @String.Format("{0:n0}", recommendedVideo.Views) 
+                                        @if (recommendedVideo.Views == 1)
+                                        {
+                                            <text>view</text>
+                                        }
+                                        else
+                                        {
+
+                                            <text>views</text>
+                                        }
+                                    </span>
+                                    <span class="author">
+                                    By @recommendedVideo.User.Username
+                                    </span>
+                                </span>
+                                <div class="clearfix"></div>
+                            </a>
+                        }
+                        @if (recommendations.Count == 0)
+                        {
+                            <p>
+                                No recommendations yet
+                            </p>
+                        }
                 </div>
             </div>
         </div>

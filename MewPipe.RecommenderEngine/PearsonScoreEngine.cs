@@ -6,15 +6,10 @@ using System.Threading.Tasks;
 
 namespace MewPipe.RecommenderEngine
 {
-    public interface IRecommenderEngine
-    {
-        IEnumerable<KeyValuePair<string, double>> GetTopMatches(Dictionary<string, VideoUserRatingData[]> videos,
-            string videoId, int count = 5);
-    }
-
     //http://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient
-    public class PearsonScoreEngine : IRecommenderEngine
-    {
+    public class PearsonScoreEngine : IRecommenderEngine<VideoUserRatingData[]>
+
+{
         private static double GetPearsonScore(IReadOnlyDictionary<string, VideoUserRatingData[]> videos, string firstVideoId, string secondVideoId)
         {
             var mutuallyRatedItems = new Dictionary<string, int>();
@@ -22,7 +17,7 @@ namespace MewPipe.RecommenderEngine
             /**
              * Fetching all the users that have a rating for the same video
              */
-            foreach (var userRating in videos[firstVideoId].Where(userRating => videos[secondVideoId].Any(ur => ur.UserId == userRating.UserId)))
+            foreach (var userRating in videos[firstVideoId].Where(userRating => videos[secondVideoId].Any(ur => ur.UserId == userRating.UserId && !ur.NotIndexed)))
             {
                 mutuallyRatedItems[userRating.UserId] = 1;
             }
@@ -50,11 +45,11 @@ namespace MewPipe.RecommenderEngine
                 var rating2 = videos[secondVideoId].SingleOrDefault(ur => ur.UserId == item.Key);
                 if (rating1 != null && rating2 != null)
                 {
-                    sumVideo1 += rating1.Rating;
-                    sumVideo1Squared += Math.Pow(rating1.Rating, 2);
-                    sumVideo2 += rating2.Rating;
-                    sumVideo2Squared += Math.Pow(rating2.Rating, 2);
-                    productsSum += (rating1.Rating*rating2.Rating);
+                    sumVideo1 += rating1.SocialRating;
+                    sumVideo1Squared += Math.Pow(rating1.SocialRating, 2);
+                    sumVideo2 += rating2.SocialRating;
+                    sumVideo2Squared += Math.Pow(rating2.SocialRating, 2);
+                    productsSum += (rating1.SocialRating*rating2.SocialRating);
                 }
             }
 
@@ -74,21 +69,21 @@ namespace MewPipe.RecommenderEngine
             return numerator/denominator;
         }
 
-        public IEnumerable<KeyValuePair<string, double>> GetTopMatches(Dictionary<string, VideoUserRatingData[]> videos, string videoId, int count = 5)
+        public List<KeyValuePair<string, double>> GetTopMatches(Dictionary<string, VideoUserRatingData[]> videos, VideoRatingData currentVideo, int count = 20)
         {
-            var scores = new Dictionary<string, double>();
+            var socialScores = new Dictionary<string, double>();
             foreach (var videoUserRatingData in videos)
             {
-                if (videoUserRatingData.Key != videoId)
+                if (videoUserRatingData.Key != currentVideo.VideoId)
                 {
-                    var score = GetPearsonScore(videos, videoId, videoUserRatingData.Key);
-                    scores.Add(videoUserRatingData.Key, score);
+                    var score = GetPearsonScore(videos, currentVideo.VideoId, videoUserRatingData.Key);
+                    socialScores.Add(videoUserRatingData.Key, score);
                 }
             }
 
-            var scoreList = scores.ToList();
-            scoreList.Sort((v1, v2) => v2.Value.CompareTo(v1.Value));
-            return scoreList.Take(count);
+            var results = socialScores.ToList();
+            results.Sort((v1, v2) => v2.Value.CompareTo(v1.Value));
+            return results.Take(count).ToList();
         }
     }
 }

@@ -34,7 +34,7 @@ namespace MewPipe.Website.Controllers
 		public async Task<ActionResult> Index(string videoId)
 		{
 		    VideoContract video = null;
-		    Dictionary<double, VideoContract> recommendations = null;
+            Dictionary<int, RecommendationContract> recommendations = null;
 		    try
 		    {
                 if (HttpContext.GetIdentity().IsAuthenticated())

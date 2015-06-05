@@ -56,7 +56,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IDataSource.cs" />
+    <Compile Include="IRecommenderEngine.cs" />
     <Compile Include="MewPipeDataSource.cs" />
+    <Compile Include="ContentScoreEngine.cs" />
     <Compile Include="PearsonScoreEngine.cs" />
     <Compile Include="VideoRatingData.cs" />
     <Compile Include="VideoUserRatingData.cs" />
@@ -64,7 +67,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Configuration\connectionstrings.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
