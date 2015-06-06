@@ -58,7 +58,7 @@ namespace MewPipe.RecommenderEngine
                 else if (tagsScore > 0)
                 {
                     score += 0.10;
-                }   
+                }
             }
 
             if (UploaderId == other.UploaderId)

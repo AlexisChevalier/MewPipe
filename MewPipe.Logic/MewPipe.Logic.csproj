@@ -209,6 +209,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RabbitMQ\ChannelQueueConsumer.cs" />
     <Compile Include="RabbitMQ\ChannelQueue.cs" />
+    <Compile Include="RabbitMQ\Messages\RecommendationsUpdateMessage.cs" />
     <Compile Include="RabbitMQ\Messages\NewVideoMessage.cs" />
     <Compile Include="RabbitMQ\QueueMessage.cs" />
     <Compile Include="RabbitMQ\WorkerQueueManager.cs" />

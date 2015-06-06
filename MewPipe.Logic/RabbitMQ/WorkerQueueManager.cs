@@ -16,7 +16,8 @@ namespace MewPipe.Logic.RabbitMQ
     {
         public enum QueueChannelIdentifier
         {
-            NewVideos
+            NewVideos,
+            RecommendationsUpdates
         }
 
         private readonly IConnection _connection;
@@ -65,6 +66,10 @@ namespace MewPipe.Logic.RabbitMQ
                 case QueueChannelIdentifier.NewVideos:
                 {
                     return "NEW_VIDEOS";
+                }
+                case QueueChannelIdentifier.RecommendationsUpdates:
+                {
+                    return "RECOMMENDATIONS_UPDATE";
                 }
                 default:
                 {

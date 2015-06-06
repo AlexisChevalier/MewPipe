@@ -229,6 +229,11 @@ namespace MewPipe.Logic.Services
 				{
 					channelQueue.SendPersistentMessage(new NewVideoMessage(video.PublicId));
 				}
+                using (var channelQueue =
+                    workerQueueManager.GetChannelQueue(WorkerQueueManager.QueueChannelIdentifier.RecommendationsUpdates))
+                {
+                    channelQueue.SendPersistentMessage(new RecommendationsUpdateMessage(video.PublicId));
+                }
 			}
 
 			return video;
@@ -350,6 +355,16 @@ namespace MewPipe.Logic.Services
 	        if (contract.PrivacyStatus != Video.PrivacyStatusTypes.Private)
 	        {
 	            video.AllowedUsers = new List<User>();
+	        }
+	        if (contract.PrivacyStatus == Video.PrivacyStatusTypes.Private ||
+	            contract.PrivacyStatus == Video.PrivacyStatusTypes.LinkOnly)
+	        {
+
+                var recommendations = _unitOfWork.RecommendationRepository.Get(r => r.Video.Id == video.Id);
+                foreach (var recommendation in recommendations)
+                {
+                    _unitOfWork.RecommendationRepository.Delete(recommendation);
+                }
 	        }
 	        video.PrivacyStatus = contract.PrivacyStatus;
 
@@ -484,7 +499,6 @@ namespace MewPipe.Logic.Services
                 });
             }
 
-            //TODO: remove from search engine
             var recommendations = _unitOfWork.RecommendationRepository.Get(r => r.Video.Id == video.Id);
 	        foreach (var recommendation in recommendations) 
 	        {
