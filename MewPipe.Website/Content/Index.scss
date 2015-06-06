@@ -8,17 +8,95 @@ $colHighlight   : rgb(165, 13, 29);
 
 #home {
     h2 {
+        text-align: center;
         &.cursive {
             font-family: 'Noteworthy', cursive;
-            margin: 40px 0;
-            font-size: 35px;
+            margin: 20px 0 40px 0;
+            font-size: 40px;
+            .colored {
+                color: $colDefault;
+            }
         }
     }
 
     .videoThumb {
-        padding: 10px;
-        max-width: 300px;
+        height: 260px;
+        background-color: white;
+        -webkit-box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75);
+        box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75);
+        max-width: 100%;
         margin: auto;
+        margin-bottom: 30px;
+        &:hover {
+            a {
+                text-decoration: none;
+            }
+            background-color: rgb(238, 238, 238);
+            .hover {
+                background-color: rgba(255, 255, 255, 0.55);
+                position: absolute;
+                bottom: 0px;
+                right: 0px;
+                top: 0px;
+                left: 0px;
+                z-index: 2;
+            }
+        }
+        a {
+            height: 100%;
+            display: block;
+            .picture {
+                position:relative;
+                text-align: center;
+                background-color: black;
+                display: block;
+                height: 150px;
+                line-height: 150px;
+                img {
+                    vertical-align: top;
+                    line-height: normal;
+                    max-height: 150px;
+                }
+                .duration {
+                    line-height: 20px;
+                    position: absolute;
+                    bottom: 0px;
+                    right: 0px;
+                    height: 20px;
+                    padding: 1px 3px;
+                    background-color: rgba(0, 0, 0, 0.8);
+                    color: white;
+                    z-index: 3;
+                }
+            }
+            .description {
+                height: 110px;
+                text-decoration: none;
+                color: black;
+                display: block;
+                padding: 10px;
+                position: relative;
+                span {
+                    display: block;
+                    &.title {
+                        font-size: 140%;
+                        color: rgb(225, 23, 44);
+                        line-height: 20px;
+                        max-height: 40px;
+                        overflow: hidden;
+                    }
+                    &.author {
+                        position: absolute;
+                        bottom: 25px;
+                    }
+                    &.views {
+                        position: absolute;
+                        bottom: 5px;
+                    }
+                }
+            }
+        }
         img {
             max-width: 100%;
         }
@@ -26,15 +104,57 @@ $colHighlight   : rgb(165, 13, 29);
             margin-top: 10px;
             margin-bottom: 10px;
             a {
-                font-size: 20px;
-                color: rgb(225, 23, 44);
+                
             }
         }
         p {
             margin: 0;
         }
-        &:hover {
-            background-color: beige;
+    }
+}
+
+@media (max-width:1200px) {
+    #home .videoThumb {
+        .description {
+                text-decoration: none;
+                color: black;
+                display: block;
+                padding: 10px;
+                span {
+                    display: block;
+                    &.title {
+                        font-size: 140%;
+                        color: rgb(225, 23, 44);
+                        line-height: 20px;
+                        max-height: 40px;
+                        overflow: hidden;
+                    }
+                    &.author {
+
+                    }
+                    &.views {
+
+                    }
+                }
+            }
+    }
+    .hasPlayer .infosWrapper .suggestions {
+        .suggestion-item {
+            .leftContent {
+                width: 100px;
+                img {
+                    max-width: 100px;
+                }
+            }
+            .rightContent {
+                left: 100px;
+            }
         }
+    }
+}
+
+@media (max-width:767px) {
+    .hasPlayer .infosWrapper .suggestions {
+        margin-top: 15px;
     }
 }

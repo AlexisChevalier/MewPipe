@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,15 @@ namespace MewPipe.RecommenderEngine
         static void Main(string[] args)
         {
 
+            while (true)
+            {
+                ProcessRecommendations();
+            }
+        }
+
+        private static void ProcessRecommendations()
+        {
+            var watch = Stopwatch.StartNew();
             var pearsonEngine = new PearsonScoreEngine();
             var contentEngine = new ContentScoreEngine();
             var mewPipeDataSource = new MewPipeDataSource();
@@ -21,7 +31,6 @@ namespace MewPipe.RecommenderEngine
             //2 - RESULTS
             foreach (var video in realData.VideoRatingDatas)
             {
-
                 var finalArray = new KeyValuePair<string, double>[0];
 
                 var socialResults = pearsonEngine.GetTopMatches(realData.VideoUserRatingDatas,
@@ -39,6 +48,9 @@ namespace MewPipe.RecommenderEngine
 
                 mewPipeDataSource.SaveData(video.Key, finalArray);
             }
+
+            watch.Stop();
+            Console.Out.WriteLine("[INFO][" + DateTime.Now.ToLongDateString() + "] Recommendations database updated in " + watch.ElapsedMilliseconds + " ms");
         }
 
         private static DataSourceResult GenerateFakeData()

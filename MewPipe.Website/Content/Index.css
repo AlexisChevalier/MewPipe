@@ -1,22 +1,111 @@
-﻿#home h2.cursive {
-  font-family: 'Noteworthy', cursive;
-  margin: 40px 0;
-  font-size: 35px; }
+﻿#home h2 {
+  text-align: center; }
+  #home h2.cursive {
+    font-family: 'Noteworthy', cursive;
+    margin: 20px 0 40px 0;
+    font-size: 40px; }
+    #home h2.cursive .colored {
+      color: #e1172c; }
 #home .videoThumb {
-  padding: 10px;
-  max-width: 300px;
-  margin: auto; }
+  height: 260px;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.75);
+  max-width: 100%;
+  margin: auto;
+  margin-bottom: 30px; }
+  #home .videoThumb:hover {
+    background-color: #eeeeee; }
+    #home .videoThumb:hover a {
+      text-decoration: none; }
+    #home .videoThumb:hover .hover {
+      background-color: rgba(255, 255, 255, 0.55);
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+      top: 0px;
+      left: 0px;
+      z-index: 2; }
+  #home .videoThumb a {
+    height: 100%;
+    display: block; }
+    #home .videoThumb a .picture {
+      position: relative;
+      text-align: center;
+      background-color: black;
+      display: block;
+      height: 150px;
+      line-height: 150px; }
+      #home .videoThumb a .picture img {
+        vertical-align: top;
+        line-height: normal;
+        max-height: 150px; }
+      #home .videoThumb a .picture .duration {
+        line-height: 20px;
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        height: 20px;
+        padding: 1px 3px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        z-index: 3; }
+    #home .videoThumb a .description {
+      height: 110px;
+      text-decoration: none;
+      color: black;
+      display: block;
+      padding: 10px;
+      position: relative; }
+      #home .videoThumb a .description span {
+        display: block; }
+        #home .videoThumb a .description span.title {
+          font-size: 140%;
+          color: #e1172c;
+          line-height: 20px;
+          max-height: 40px;
+          overflow: hidden; }
+        #home .videoThumb a .description span.author {
+          position: absolute;
+          bottom: 25px; }
+        #home .videoThumb a .description span.views {
+          position: absolute;
+          bottom: 5px; }
   #home .videoThumb img {
     max-width: 100%; }
   #home .videoThumb h3 {
     margin-top: 10px;
     margin-bottom: 10px; }
-    #home .videoThumb h3 a {
-      font-size: 20px;
-      color: #e1172c; }
   #home .videoThumb p {
     margin: 0; }
-  #home .videoThumb:hover {
-    background-color: beige; }
+
+@media (max-width: 1200px) {
+  #home .videoThumb .description {
+    text-decoration: none;
+    color: black;
+    display: block;
+    padding: 10px; }
+    #home .videoThumb .description span {
+      display: block; }
+      #home .videoThumb .description span.title {
+        font-size: 140%;
+        color: #e1172c;
+        line-height: 20px;
+        max-height: 40px;
+        overflow: hidden; }
+
+  .hasPlayer .infosWrapper .suggestions .suggestion-item .leftContent {
+    width: 100px; }
+    .hasPlayer .infosWrapper .suggestions .suggestion-item .leftContent img {
+      max-width: 100px; }
+  .hasPlayer .infosWrapper .suggestions .suggestion-item .rightContent {
+    left: 100px; }
+ }
+
+@media (max-width: 767px) {
+  .hasPlayer .infosWrapper .suggestions {
+    margin-top: 15px; }
+ }
 
 /*# sourceMappingURL=Index.css.map */

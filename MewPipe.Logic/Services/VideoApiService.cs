@@ -485,6 +485,11 @@ namespace MewPipe.Logic.Services
             }
 
             //TODO: remove from search engine
+            var recommendations = _unitOfWork.RecommendationRepository.Get(r => r.Video.Id == video.Id);
+	        foreach (var recommendation in recommendations) 
+	        {
+	            _unitOfWork.RecommendationRepository.Delete(recommendation);
+	        }
 
             video.Status = Video.StatusTypes.Processing;
 

@@ -16,7 +16,7 @@ namespace MewPipe.VideoWorker
 {
 	internal class Program
 	{
-		private static readonly VideoWorkerService VideoWorkerService = new VideoWorkerService();
+		private static VideoWorkerService VideoWorkerService = new VideoWorkerService();
 		private static readonly VideoMimeTypeService VideoMimeTypeService = new VideoMimeTypeService();
 		private static readonly VideoQualityTypeService VideoQualityTypeService = new VideoQualityTypeService();
 
@@ -153,6 +153,7 @@ namespace MewPipe.VideoWorker
 			// Wait for the tasks to complete
 			Task.WaitAll(tasks.ToArray());
 
+            VideoWorkerService = new VideoWorkerService();
 			VideoWorkerService.RemoveVideoUploadedFile(video);
 
 			var duration = VideoInfosHelper.GetVideoDuration(inputFilePath)/1000;

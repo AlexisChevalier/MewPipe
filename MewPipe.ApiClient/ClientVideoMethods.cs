@@ -58,6 +58,12 @@ namespace MewPipe.ApiClient
 
             return await _httpClient.SendGet<Dictionary<int, RecommendationContract>>(url);
         }
+        public async Task<VideoContract[]> GetTrends()
+        {
+            const string url = "videos/trends";
+
+            return await _httpClient.SendGet<VideoContract[]>(url);
+        }
 
         public async Task<UserContract[]> RemoveUserFromWhiteList(string publicVideoId, string userId)
         {

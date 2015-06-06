@@ -296,23 +296,7 @@
     .hasPlayer .infosWrapper .suggestions .suggestion-item .leftContent img {
       max-width: 100px; }
   .hasPlayer .infosWrapper .suggestions .suggestion-item .rightContent {
-    left: 100px;
-    /*.title {
-                        display: block;
-                        line-height: 13px;
-                        max-height: 36px;
-                        font-size: 80%;
-                    }
-                    .views {
-                        font-size: 80%;
-                        line-height:13px;
-                        display: block;
-                    }
-                    .author {
-                        line-height:13px;
-                        display: block;
-                        font-size: 80%;
-                    }*/ }
+    left: 100px; }
  }
 
 @media (max-width: 767px) {

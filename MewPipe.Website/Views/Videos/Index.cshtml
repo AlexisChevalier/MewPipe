@@ -174,7 +174,7 @@ else
             </div>
             <div class="col-sm-4 suggestions">
                 <div class="boxWrapper nomargin">
-                        @foreach (var recommendation in recommendations)
+                        @foreach (var recommendation in recommendations.OrderByDescending(r => r.Value.Score).Take(10))
                         {
                             var recommendedVideo = recommendation.Value.Video;
                             var name = String.IsNullOrWhiteSpace(recommendedVideo.Name) ? "Unnamed video" : recommendedVideo.Name;

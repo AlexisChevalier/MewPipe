@@ -17,6 +17,12 @@ namespace MewPipe.RecommenderEngine
             /**
              * Fetching all the users that have a rating for the same video
              */
+
+            if (!videos.ContainsKey(firstVideoId) || !videos.ContainsKey(secondVideoId))
+            {
+                return 0;
+            }
+
             foreach (var userRating in videos[firstVideoId].Where(userRating => videos[secondVideoId].Any(ur => ur.UserId == userRating.UserId && !ur.NotIndexed)))
             {
                 mutuallyRatedItems[userRating.UserId] = 1;

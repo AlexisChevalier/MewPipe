@@ -20,7 +20,7 @@ namespace MewPipe.RecommenderEngine
 
             var uow = new UnitOfWork();
 
-            var videoDetails = uow.VideoRepository.Get(null, null, "Impressions, Category, Tags, User");
+            var videoDetails = uow.VideoRepository.Get(null, null, "Impressions, Impressions.User, Category, Tags, User");
 
             foreach (var videoDetail in videoDetails)
             {
@@ -55,7 +55,7 @@ namespace MewPipe.RecommenderEngine
                 {
                     
                     Category = videoDetail.Category.Name.ToLower(),
-                    Description = videoDetail.Description.ToLower(),
+                    Description = videoDetail.Description == null ? "" : videoDetail.Description.ToLower(),
                     Title = videoDetail.Name.ToLower(),
                     Tags = videoDetail.Tags.Select(t => t.Name.ToLower()).ToArray(),
                     VideoId = videoId,

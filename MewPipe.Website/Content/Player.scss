@@ -413,33 +413,14 @@
 @media (max-width:1200px) {
     .hasPlayer .infosWrapper .suggestions {
         .suggestion-item {
-            //height: 57px;
             .leftContent {
-                //line-height: 58px;
                 width: 100px;
                 img {
-                    //max-height: 57px;
                     max-width: 100px;
                 }
             }
             .rightContent {
                 left: 100px;
-                /*.title {
-                        display: block;
-                        line-height: 13px;
-                        max-height: 36px;
-                        font-size: 80%;
-                    }
-                    .views {
-                        font-size: 80%;
-                        line-height:13px;
-                        display: block;
-                    }
-                    .author {
-                        line-height:13px;
-                        display: block;
-                        font-size: 80%;
-                    }*/
             }
         }
     }

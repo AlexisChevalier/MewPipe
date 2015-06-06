@@ -407,15 +407,15 @@ namespace MewPipe.Accounts.Controllers
         {
             //Cleanup Authorization codes
 
-            _unitOfWork.OauthAuthorizationCodeRepository.DeleteMany(ac => ac.ExpirationTime < DateTime.UtcNow);
+            //_unitOfWork.OauthAuthorizationCodeRepository.DeleteMany(ac => ac.ExpirationTime < DateTime.UtcNow);
 
             //Cleanup Access tokens
 
-            _unitOfWork.OauthAccessTokenRepository.DeleteMany(ac => ac.ExpirationTime < DateTime.UtcNow);
+            //_unitOfWork.OauthAccessTokenRepository.DeleteMany(ac => ac.ExpirationTime < DateTime.UtcNow);
 
             //Cleanup Refresh tokens
 
-            _unitOfWork.OauthRefreshTokenRepository.DeleteMany(ac => ac.ExpirationTime < DateTime.UtcNow);
+            //_unitOfWork.OauthRefreshTokenRepository.DeleteMany(ac => ac.ExpirationTime < DateTime.UtcNow);
 
         }
         #endregion

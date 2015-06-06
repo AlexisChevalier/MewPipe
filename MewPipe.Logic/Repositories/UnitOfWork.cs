@@ -16,6 +16,7 @@ namespace MewPipe.Logic.Repositories
         private GenericRepository<Impression> _impressionRepository;
         private GenericRepository<Tag> _tagRepository;
         private GenericRepository<Category> _categoryRepository;
+        private GenericRepository<Recommendation> _recommendationRepository;
 
         private GenericRepository<VideoUploadToken> _videoUploadTokenRepository;
         private GenericRepository<OauthAccessToken> _oauthAccessTokenRepository;
@@ -23,6 +24,24 @@ namespace MewPipe.Logic.Repositories
         private GenericRepository<OauthAuthorizationCode> _oauthAuthorizationCodeRepository;
         private GenericRepository<OauthUserTrust> _oauthUserTrustRepository;
         private GenericRepository<OauthClient> _oauthClientRepository;
+
+        public MewPipeDbContext GetContext()
+        {
+            return _context;
+        }
+
+        public GenericRepository<Recommendation> RecommendationRepository
+        {
+            get
+            {
+
+                if (_recommendationRepository == null)
+                {
+                    _recommendationRepository = new GenericRepository<Recommendation>(_context);
+                }
+                return _recommendationRepository;
+            }
+        }
 
         public GenericRepository<Impression> ImpressionRepository
         {

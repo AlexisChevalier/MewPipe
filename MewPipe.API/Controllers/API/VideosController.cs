@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web;
@@ -116,6 +118,57 @@ namespace MewPipe.API.Controllers.API
             var whiteList = videoApiService.RemoveUserFromWhiteList(publicVideoId, userId, ActionContext.GetUser());
 
             return whiteList;
+        }
+
+        [HttpGet]
+        [Route("api/videos/trends")]
+        [Oauth2AuthorizeFilter(AllowAnonymousUsers = true)]
+        public VideoContract[] GetWorldTrends()
+        {
+            var unitOfWork = new UnitOfWork();
+            var today = DateTime.UtcNow;
+
+            var trends = unitOfWork.GetContext()
+                .Impressions
+                .Include("Video")
+                .Include("Video.User")
+                .Where(i => i.Type == Impression.ImpressionType.Good && i.Video.PrivacyStatus == Video.PrivacyStatusTypes.Public && i.Video
+                .Status == Video.StatusTypes.Published)
+                .AsEnumerable()
+                .GroupBy(i => new
+                {
+                    video = i.Video,
+                    //date = i.DateTimeUtc.ToString("yyyy-M-d")
+                    date = (today - i.DateTimeUtc).Seconds % 86400
+                })
+                .AsEnumerable()
+                .Select(g => new
+                {
+                    video = g.Key.video,
+                    count = g.Count(),
+                    date = g.Key.date
+                })
+                .OrderByDescending(g => g.date)
+                .ThenByDescending(g => g.count)
+                .GroupBy(g => g.video.Id, (key, c) => c.FirstOrDefault())
+                .Take(40)
+                .Select(i => i.video).ToList();
+
+            var trendsContract = trends.Select(trend => new VideoContract(trend)).ToList();
+
+            //TODO: THIS BUGS.
+            if (trends.Count < 40)
+            {
+                var bannedIds = trends.Select(t => t.Id).ToArray();
+
+                var added = unitOfWork
+                    .VideoRepository
+                    .Get(v => !bannedIds.Contains(v.Id) && v.PrivacyStatus == Video.PrivacyStatusTypes.Public && v.Status == Video.StatusTypes.Published, q => q.OrderByDescending(v => v.DateTimeUtc), "User").Take(40 - trends.Count);
+
+                trendsContract.AddRange(added.Select(addedVideo => new VideoContract(addedVideo)));
+            }
+
+            return trendsContract.ToArray();
         }
     }
 }

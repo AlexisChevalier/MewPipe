@@ -18,11 +18,17 @@ namespace MewPipe.Logic.Models
             Bad
         }
 
+        public Impression()
+        {
+            DateTimeUtc = DateTime.UtcNow;
+        }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public Guid Id { get; set; }
         public ImpressionType Type { get; set; }
         public User User { get; set; }
         public Video Video { get; set; }
+        public DateTime DateTimeUtc { get; set; }
     }
 }

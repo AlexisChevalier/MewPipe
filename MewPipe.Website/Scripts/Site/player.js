@@ -101,7 +101,8 @@ window.playerModule = window.playerModule || {};
         })
         .done(function (data) {
 
-            if (data.UserImpression !== null) {
+            if (data.UserImpression !== null && typeof data.UserImpression !== "undefined") {
+                console.log("Hey");
                 if (data.UserImpression.Type === 0) {
                     $elements.badImpressionsElement.removeClass("selected");
                     $elements.goodImpressionsElement.addClass("selected");

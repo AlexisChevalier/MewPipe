@@ -27,7 +27,7 @@ namespace MewPipe.RecommenderEngine
                 titleScore = titleScore / (other.Title.Length > Title.Length ? other.Title.Length : Title.Length);
             }
             titleScore = 1 - titleScore;
-            score += titleScore;
+            score += (titleScore * 2);
 
             double descriptionScore = LevenshteinDistance(other.Description, Description);
             if (descriptionScore > 0)
@@ -39,7 +39,7 @@ namespace MewPipe.RecommenderEngine
 
             if (Category.Equals(other.Category))
             {
-                score += 1;
+                score += 0.5;
             }
 
             var commonTags = Tags.Count(tag => other.Tags.Contains(tag));
@@ -49,15 +49,15 @@ namespace MewPipe.RecommenderEngine
                 var tagsScore = commonTags / maxTags;
                 if (tagsScore == 1)
                 {
-                    score += 1;
+                    score += 0.5;
                 }
                 else if (tagsScore > 0.5)
                 {
-                    score += 0.5;
+                    score += 0.25;
                 }
                 else if (tagsScore > 0)
                 {
-                    score += 0.25;
+                    score += 0.10;
                 }   
             }
 

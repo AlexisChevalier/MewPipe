@@ -181,6 +181,10 @@
     <Compile Include="Migrations\201506031516209_addedRecommendations.Designer.cs">
       <DependentUpon>201506031516209_addedRecommendations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506052146409_UpdatedRecommendations.cs" />
+    <Compile Include="Migrations\201506052146409_UpdatedRecommendations.Designer.cs">
+      <DependentUpon>201506052146409_UpdatedRecommendations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Recommendation.cs" />
@@ -271,6 +275,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506031516209_addedRecommendations.resx">
       <DependentUpon>201506031516209_addedRecommendations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506052146409_UpdatedRecommendations.resx">
+      <DependentUpon>201506052146409_UpdatedRecommendations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
