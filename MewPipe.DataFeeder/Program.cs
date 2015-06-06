@@ -21,7 +21,8 @@ namespace MewPipe.DataFeeder
 				Console.WriteLine("Starting the downloads (The first initialisation may take few minutes) ...");
 				foreach (var excelVideo in excelVideos)
 				{
-					VideoManager.Download(excelVideo.Url);
+					var mewpipeVideo = VideoManager.Download(excelVideo.Url);
+					mewpipeVideo.Category = excelVideo.Category;
 				}
 			}
 
