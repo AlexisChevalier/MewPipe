@@ -53,6 +53,10 @@ namespace MewPipe.DataFeeder.Utils
 			return mewPipeVideo;
 		}
 
+		public static void FeedMewPipe(MewPipeVideo video)
+		{
+		}
+
 		#region Private Helpers
 
 		private static int GetLowestResolution(IEnumerable<VideoInfo> vInfos)
