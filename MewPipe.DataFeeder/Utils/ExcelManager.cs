@@ -30,6 +30,7 @@ namespace MewPipe.DataFeeder.Utils
 				row++;
 				var url = sheet.Cells[row, 1].Text;
 				var category = sheet.Cells[row, 2].Text;
+				var author = sheet.Cells[row, 3].Text;
 
 				if (string.IsNullOrEmpty(url) && string.IsNullOrEmpty(category)) break; // End of the videos
 				if (!IsUrlValid(url)) continue; // This will skip any extra rows like the header
@@ -38,7 +39,8 @@ namespace MewPipe.DataFeeder.Utils
 				{
 					Index = row,
 					Url = url,
-					Category = category
+					Category = category,
+					Author = author
 				});
 			}
 
