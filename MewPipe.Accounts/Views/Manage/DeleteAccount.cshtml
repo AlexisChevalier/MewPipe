@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Delete Account";
+    ViewBag.BodyClass = "accounting";
+}
+
+<div class="row">
+    <div class="centerForm singleCol col-md-6 col-md-offset-3">
+        <div class="formHeader">
+            <h3 class="text-center">Delete your account</h3>
+            <p>
+                Your account and all its associated data will be removed from MewPipe <strong>Definitively</strong>.
+            </p>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col account">
+                    @using (Html.BeginForm("ProcessDeleteAccount", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button class="btn btn-danger raised btn-block" type="submit">Delete my account and all my videos</button>
+
+                        <p class="text-center">
+                            @Html.ActionLink("Go back to the account settings", "Index")
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
