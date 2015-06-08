@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MewPipe.DataFeeder.Entities;
 using MewPipe.DataFeeder.Utils;
 using MewPipe.Logic.Models;
 
@@ -48,18 +49,25 @@ namespace MewPipe.DataFeeder
 				Console.WriteLine("Found {0} videos in the excel file.", excelVideos.Count);
 
 				Console.WriteLine("Starting the downloads (The first initialisation may take few minutes) ...");
+				var videos = new List<MewPipeVideo>();
 				foreach (var excelVideo in excelVideos)
 				{
 					// Downloading videos or getting em from the cache folder
 					var mewpipeVideo = VideoManager.Download(excelVideo.Url);
 					mewpipeVideo.Category = excelVideo.Category;
+					videos.Add(mewpipeVideo);
+				}
 
+				// Likes and dislikes
+				Console.WriteLine("Faking like and dislikes ...");
+				videos.Shuffle(); // Shuffling videos
+				foreach (var mewpipeVideo in videos)
+				{
 					// Faking likes and likes
-					Console.Write("Faking like and dislikes ...");
 					VideoManager.FakeImpressions(mewpipeVideo, excelUsers, users);
 					var likes = mewpipeVideo.Impressions.Count(impression => impression.Type == Impression.ImpressionType.Good);
 					var dislikes = mewpipeVideo.Impressions.Count(impression => impression.Type == Impression.ImpressionType.Bad);
-					Console.WriteLine(" {0} likes - {1} dislikes.", likes, dislikes);
+					Console.WriteLine("{0}  {1} likes - {2} dislikes.", mewpipeVideo.Title, likes, dislikes);
 				}
 			}
 
@@ -69,7 +77,7 @@ namespace MewPipe.DataFeeder
 
 		private static void ShowUsage()
 		{
-			Console.WriteLine("USAGE: DataFeeder.exe <pathToXlsxFile>");
+			Console.WriteLine("USAGE: DataFeeder.exe <pathToUsersXlsxFile> <pathToVideosXlsxFile>");
 		}
 	}
 }
