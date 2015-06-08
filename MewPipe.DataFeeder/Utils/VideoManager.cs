@@ -1,19 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using HtmlAgilityPack;
 using MewPipe.DataFeeder.Entities;
+using MewPipe.Logic.Helpers;
 using MewPipe.Logic.Models;
+using MewPipe.Logic.MongoDB;
+using MewPipe.Logic.RabbitMQ;
+using MewPipe.Logic.RabbitMQ.Messages;
+using MewPipe.Logic.Repositories;
+using MewPipe.Logic.Services;
+using MongoDB.Bson;
+using MongoDB.Driver.GridFS;
 using YoutubeExtractor;
 
 namespace MewPipe.DataFeeder.Utils
 {
 	public static class VideoManager
 	{
+		private static UnitOfWork _unitOfWork = UnitOfWorkSingleton.GetInstance();
+		private static IVideoGridFsClient _videoGridFsClient = new VideoGridFsClient();
+		private static IVideoMimeTypeService _videoMimeTypeService = new VideoMimeTypeService();
+		private static IVideoQualityTypeService _videoQualityTypeService = new VideoQualityTypeService();
+
 		private static readonly string _cacheFolder = @"_cache";
 
 		public static MewPipeVideo Download(string url)
@@ -85,6 +100,96 @@ namespace MewPipe.DataFeeder.Utils
 			}
 
 			video.Impressions = impressions;
+		}
+
+		public static bool IsVideoUploaded(string videoTitle)
+		{
+			return _unitOfWork.VideoRepository.GetOne(video => video.Name.Equals(videoTitle)) != null;
+		}
+
+		public static void UploadToMewPipe(MewPipeVideo mewpipeVideo)
+		{
+			var user = _unitOfWork.UserRepository.GetOne(u => u.UserName.Equals(mewpipeVideo.Author));
+			var category = _unitOfWork.CategoryRepository.GetOne(c => c.Name.Equals(mewpipeVideo.Category));
+
+			var video = new Video
+			{
+				User = user,
+				Name = mewpipeVideo.Title,
+				Description = mewpipeVideo.Description,
+				Category = category,
+				Views = mewpipeVideo.Views,
+				Impressions = new Collection<Impression>(),
+				//
+				DateTimeUtc = DateTime.UtcNow,
+				PrivacyStatus = Video.PrivacyStatusTypes.Public,
+				Status = Video.StatusTypes.Processing,
+				AllowedUsers = new List<User>(),
+				VideoFiles = new List<VideoFile>(),
+				NotificationHookUri = "",
+				UploadRedirectUri = "",
+				Tags = new List<Tag>()
+			};
+			_unitOfWork.VideoRepository.Insert(video);
+			_unitOfWork.Save();
+
+			// Need to save the impressions first
+			foreach (var impression in mewpipeVideo.Impressions)
+			{
+				impression.Video = video;
+				_unitOfWork.ImpressionRepository.Insert(impression);
+			}
+			_unitOfWork.Save();
+
+			// Upload
+
+			var name = String.Format("{0}-VideoFile-{1}-{2}", new ShortGuid(video.Id), "video/mp4", "Uploaded");
+
+			name = name.Replace("/", "_");
+
+			var gridFsOptions = new MongoGridFSCreateOptions
+			{
+				Id = ObjectId.GenerateNewId(),
+				UploadDate = DateTime.UtcNow,
+				ContentType = "video/mp4"
+			};
+
+
+			var mongoStream = TryGetStream(name, gridFsOptions);
+			using (FileStream fileStream = File.OpenRead(mewpipeVideo.FilePath))
+			{
+				fileStream.CopyTo(mongoStream, 255*1024); // 255 Ko buffer size
+			}
+			mongoStream.Close();
+			mongoStream.Dispose();
+
+			var mimeTypeService = new VideoMimeTypeService(_unitOfWork);
+			var qualityTypeService = new VideoQualityTypeService(_unitOfWork);
+
+			video.VideoFiles.Add(new VideoFile
+			{
+				Video = video,
+				IsOriginalFile = true,
+				MimeType = mimeTypeService.GetAllowedMimeTypeForDecoding("video/mp4"),
+				QualityType = qualityTypeService.GetUploadingQualityType()
+			});
+
+			_unitOfWork.VideoRepository.Update(video);
+			_unitOfWork.Save();
+
+			using (var workerQueueManager = new WorkerQueueManager())
+			{
+				using (var channelQueue =
+					workerQueueManager.GetChannelQueue(WorkerQueueManager.QueueChannelIdentifier.NewVideos))
+				{
+					channelQueue.SendPersistentMessage(new NewVideoMessage(video.PublicId));
+				}
+				using (var channelQueue =
+					workerQueueManager.GetChannelQueue(WorkerQueueManager.QueueChannelIdentifier.RecommendationsUpdates))
+				{
+					channelQueue.SendPersistentMessage(new RecommendationsUpdateMessage(video.PublicId));
+				}
+			}
 		}
 
 		#region Private Helpers
@@ -170,6 +275,28 @@ namespace MewPipe.DataFeeder.Utils
 					response.Close();
 			}
 			return result;
+		}
+
+		private static MongoGridFSStream TryGetStream(string filename, MongoGridFSCreateOptions options)
+		{
+			var tentative = 0;
+
+			while (true)
+			{
+				tentative++;
+				try
+				{
+					return _videoGridFsClient.GetDatabase().GridFS.Create(filename, options);
+				}
+				catch (Exception)
+				{
+					if (tentative >= 5)
+					{
+						throw;
+					}
+					Thread.Sleep(300);
+				}
+			}
 		}
 
 		#endregion

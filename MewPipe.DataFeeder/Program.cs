@@ -27,6 +27,7 @@ namespace MewPipe.DataFeeder
 				var users = new Dictionary<string, User>();
 				foreach (var excelUser in excelUsers)
 				{
+					//TODO: Refactor this
 					User user;
 					if (UserManager.IsUserRegistered(excelUser.UserName))
 					{
@@ -35,7 +36,7 @@ namespace MewPipe.DataFeeder
 					}
 					else
 					{
-						user = UserManager.RegisterUser(excelUser);
+						user = UserManager.RegisterUser(excelUser.UserName);
 						Console.WriteLine("User {0} successfully added into the database !", excelUser.FullName);
 					}
 
@@ -55,6 +56,22 @@ namespace MewPipe.DataFeeder
 					// Downloading videos or getting em from the cache folder
 					var mewpipeVideo = VideoManager.Download(excelVideo.Url);
 					mewpipeVideo.Category = excelVideo.Category;
+					mewpipeVideo.Author = excelVideo.Author;
+
+					//TODO: Refactor this
+					User user;
+					if (UserManager.IsUserRegistered(mewpipeVideo.Author))
+					{
+						user = UserManager.GetUserByUserName(mewpipeVideo.Author);
+					}
+					else
+					{
+						user = UserManager.RegisterUser(mewpipeVideo.Author);
+						Console.WriteLine("User {0} successfully added into the database !", mewpipeVideo.Author);
+					}
+
+					//users.Add(mewpipeVideo.Author, user);
+
 					videos.Add(mewpipeVideo);
 				}
 
@@ -68,6 +85,23 @@ namespace MewPipe.DataFeeder
 					var likes = mewpipeVideo.Impressions.Count(impression => impression.Type == Impression.ImpressionType.Good);
 					var dislikes = mewpipeVideo.Impressions.Count(impression => impression.Type == Impression.ImpressionType.Bad);
 					Console.WriteLine("{0}  {1} likes - {2} dislikes.", mewpipeVideo.Title, likes, dislikes);
+				}
+
+				// Uploading videos into MewPipe
+				Console.WriteLine("Uploading videos into MewPipe ...");
+				foreach (var mewpipeVideo in videos)
+				{
+					if (!VideoManager.IsVideoUploaded(mewpipeVideo.Title))
+					{
+						Console.Write("Uploading {0} ...", mewpipeVideo.Title);
+						VideoManager.UploadToMewPipe(mewpipeVideo);
+						Console.WriteLine(" Uploaded !");
+					}
+					else
+					{
+						//TODO: Update impressions instead
+						Console.Write("Updating {0} impressions ...", mewpipeVideo.Title);
+					}
 				}
 			}
 

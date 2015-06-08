@@ -11,6 +11,6 @@ namespace MewPipe.DataFeeder.Entities
 		public long Views { get; set; }
 		public string Category { get; set; }
 		public string Author { get; set; }
-		public IEnumerable<Impression> Impressions { get; set; }
+		public ICollection<Impression> Impressions { get; set; }
 	}
 }

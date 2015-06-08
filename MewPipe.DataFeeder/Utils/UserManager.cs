@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Security.Cryptography;
-using MewPipe.DataFeeder.Entities;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Repositories;
 
@@ -8,7 +7,7 @@ namespace MewPipe.DataFeeder.Utils
 {
 	public static class UserManager
 	{
-		private static UnitOfWork _unitOfWork = new UnitOfWork();
+		private static UnitOfWork _unitOfWork = UnitOfWorkSingleton.GetInstance();
 
 		public static User GetUserByUserName(string username)
 		{
@@ -20,12 +19,11 @@ namespace MewPipe.DataFeeder.Utils
 			return GetUserByUserName(username) != null;
 		}
 
-		public static User RegisterUser(ExcelUser excelUser)
+		public static User RegisterUser(string username)
 		{
 			var user = new User
 			{
-				UserName = excelUser.UserName,
-				Email = excelUser.Email,
+				UserName = username,
 				EmailConfirmed = true,
 				PasswordHash = HashPassword("bypass")
 			};
