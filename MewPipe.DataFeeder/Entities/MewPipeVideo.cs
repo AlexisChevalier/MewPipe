@@ -1,4 +1,7 @@
-﻿namespace MewPipe.DataFeeder.Entities
+﻿using System.Collections.Generic;
+using MewPipe.Logic.Models;
+
+namespace MewPipe.DataFeeder.Entities
 {
 	public class MewPipeVideo
 	{
@@ -8,5 +11,6 @@
 		public long Views { get; set; }
 		public string Category { get; set; }
 		public string Author { get; set; }
+		public IEnumerable<Impression> Impressions { get; set; }
 	}
 }

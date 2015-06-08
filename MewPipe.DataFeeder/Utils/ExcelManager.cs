@@ -46,5 +46,47 @@ namespace MewPipe.DataFeeder.Utils
 
 			return videos;
 		}
+
+		public static List<ExcelUser> GetUsers(string xlsxPath)
+		{
+			var users = new List<ExcelUser>();
+
+			FileInfo fInfo = new FileInfo(xlsxPath);
+			ExcelPackage package = new ExcelPackage(fInfo);
+			ExcelWorksheet sheet = package.Workbook.Worksheets[1];
+
+			var row = 0;
+			while (true)
+			{
+				row++;
+				if (row == 1) continue; // This will skip the header row
+
+				var fullname = sheet.Cells[row, 1].Text;
+				var videoGameInterestStr = sheet.Cells[row, 2].Text;
+				var sportInterestStr = sheet.Cells[row, 3].Text;
+				var musicInterestStr = sheet.Cells[row, 4].Text;
+
+				if (string.IsNullOrEmpty(fullname)
+					&& string.IsNullOrEmpty(videoGameInterestStr)
+					&& string.IsNullOrEmpty(sportInterestStr)
+					&& string.IsNullOrEmpty(musicInterestStr))
+					break; // End of the videos
+
+				var videoGameInterest = int.Parse(videoGameInterestStr);
+				var sportInterest = int.Parse(sportInterestStr);
+				var musicInterest = int.Parse(musicInterestStr);
+
+				users.Add(new ExcelUser
+				{
+					Index = row,
+					FullName = fullname,
+					VideoGameInterest = videoGameInterest,
+					SportInterest = sportInterest,
+					MusicInterest = musicInterest
+				});
+			}
+
+			return users;
+		}
 	}
 }

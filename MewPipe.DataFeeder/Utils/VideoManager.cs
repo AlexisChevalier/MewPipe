@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using MewPipe.DataFeeder.Entities;
+using MewPipe.Logic.Models;
 using YoutubeExtractor;
 
 namespace MewPipe.DataFeeder.Utils
@@ -53,8 +54,37 @@ namespace MewPipe.DataFeeder.Utils
 			return mewPipeVideo;
 		}
 
-		public static void FeedMewPipe(MewPipeVideo video)
+		public static void FakeImpressions(MewPipeVideo video, List<ExcelUser> excelUsers, Dictionary<string, User> users)
 		{
+			var random = new Random();
+			var impressions = new List<Impression>();
+			var videoCategory = video.Category;
+			foreach (var excelUser in excelUsers)
+			{
+				var likePercent = excelUser.VideoGameInterest;
+				if (videoCategory == "Sport") likePercent = excelUser.SportInterest;
+				if (videoCategory == "Music") likePercent = excelUser.MusicInterest;
+
+				var impressionType = (random.Next(100) < likePercent)
+					? Impression.ImpressionType.Good
+					: Impression.ImpressionType.Bad;
+
+				// Dislike rape prevention :D
+				if (impressionType == Impression.ImpressionType.Bad)
+				{
+					if (excelUser.DislikeCount >= 5) continue; // He can't dislike anymore, he won't rate.
+					excelUser.DislikeCount++;
+				}
+
+				impressions.Add(new Impression
+				{
+					User = users[excelUser.FullName],
+					Type = impressionType,
+					DateTimeUtc = DateTime.UtcNow
+				});
+			}
+
+			video.Impressions = impressions;
 		}
 
 		#region Private Helpers
