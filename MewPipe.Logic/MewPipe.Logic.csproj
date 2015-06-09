@@ -119,6 +119,7 @@
     <Compile Include="Contracts\UserContract.cs" />
     <Compile Include="CustomHttpClient.cs" />
     <Compile Include="Extensions\NameValueCollectionExtensions.cs" />
+    <Compile Include="Factories\VideoServiceFactory.cs" />
     <Compile Include="Helpers\ShortGuid.cs" />
     <Compile Include="MewPipeDbContext.cs" />
     <Compile Include="Migrations\201504260915390_init.cs" />

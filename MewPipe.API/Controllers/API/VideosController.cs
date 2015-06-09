@@ -10,6 +10,7 @@ using AttributeRouting.Web.Http;
 using MewPipe.API.Extensions;
 using MewPipe.API.Filters;
 using MewPipe.Logic.Contracts;
+using MewPipe.Logic.Factories;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Repositories;
 using MewPipe.Logic.Services;
@@ -25,7 +26,7 @@ namespace MewPipe.API.Controllers.API
         {
             Debug.Assert(publicVideoId != null);
 
-            var videoApiService = new VideoApiService();
+            var videoApiService = new VideoServiceFactory().GetVideoApiService();
 
             var user = ActionContext.GetUser();
 
@@ -40,7 +41,7 @@ namespace MewPipe.API.Controllers.API
         {
             Debug.Assert(contract != null);
 
-            var service = new VideoApiService();
+            var service = new VideoServiceFactory().GetVideoApiService();
 
             var token = service.GenerateVideoUploadToken(contract, ActionContext.GetUser());
 
@@ -55,7 +56,7 @@ namespace MewPipe.API.Controllers.API
             Debug.Assert(publicVideoId != null);
             Debug.Assert(contract != null);
 
-            var videoApiService = new VideoApiService();
+            var videoApiService = new VideoServiceFactory().GetVideoApiService();
 
             var updatedVideo = videoApiService.UpdateVideo(publicVideoId, ActionContext.GetUser(), contract);
 
@@ -69,7 +70,7 @@ namespace MewPipe.API.Controllers.API
         {
             Debug.Assert(publicVideoId != null);
 
-            var videoApiService = new VideoApiService();
+            var videoApiService = new VideoServiceFactory().GetVideoApiService();
 
             var deletedVideo = videoApiService.DeleteVideo(publicVideoId, ActionContext.GetUser());
 
@@ -83,7 +84,7 @@ namespace MewPipe.API.Controllers.API
         {
             Debug.Assert(publicVideoId != null);
 
-            var videoApiService = new VideoApiService();
+            var videoApiService = new VideoServiceFactory().GetVideoApiService();
 
             var whiteList = videoApiService.GetVideoWhiteList(publicVideoId, ActionContext.GetUser());
 
@@ -98,7 +99,7 @@ namespace MewPipe.API.Controllers.API
             Debug.Assert(userEmail != null);
             Debug.Assert(publicVideoId != null);
 
-            var videoApiService = new VideoApiService();
+            var videoApiService = new VideoServiceFactory().GetVideoApiService();
 
             var whiteList = videoApiService.AddUserToWhiteList(publicVideoId, userEmail, ActionContext.GetUser());
 
@@ -113,7 +114,7 @@ namespace MewPipe.API.Controllers.API
             Debug.Assert(userId != null);
             Debug.Assert(publicVideoId != null);
 
-            var videoApiService = new VideoApiService();
+            var videoApiService = new VideoServiceFactory().GetVideoApiService();
 
             var whiteList = videoApiService.RemoveUserFromWhiteList(publicVideoId, userId, ActionContext.GetUser());
 

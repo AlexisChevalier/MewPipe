@@ -7,6 +7,7 @@ using System.Web.Http;
 using MewPipe.API.Extensions;
 using MewPipe.API.Filters;
 using MewPipe.Logic.Contracts;
+using MewPipe.Logic.Factories;
 using MewPipe.Logic.Helpers;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Repositories;
@@ -22,7 +23,7 @@ namespace MewPipe.API.Controllers.API
         [Oauth2AuthorizeFilter]
         public ImpressionContract GetVideoImpression(string publicVideoId)
         {
-            var service = new VideoApiService();
+            var service = new VideoServiceFactory().GetVideoApiService();
 
             if (!service.IsUserAllowedToSeeVideo(publicVideoId, ActionContext.GetUser()))
             {
@@ -51,14 +52,14 @@ namespace MewPipe.API.Controllers.API
         [Oauth2AuthorizeFilter]
         public VideoContract SetVideoImpression(ImpressionContract impression)
         {
-            var service = new VideoApiService();
+            var service = new VideoServiceFactory().GetVideoApiService();
 
             if (!service.IsUserAllowedToSeeVideo(impression.PublicVideoId, ActionContext.GetUser()))
             {
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
 
-            var videoApiService = new VideoApiService();
+            var videoApiService = new VideoServiceFactory().GetVideoApiService();
 
             var video = videoApiService.SetImpression(impression);
             var user = ActionContext.GetUser();

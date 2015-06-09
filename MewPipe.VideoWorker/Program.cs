@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using MewPipe.Logic.Factories;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.RabbitMQ;
 using MewPipe.Logic.RabbitMQ.Messages;
@@ -16,7 +17,7 @@ namespace MewPipe.VideoWorker
 {
 	internal class Program
 	{
-		private static VideoWorkerService VideoWorkerService = new VideoWorkerService();
+        private static IVideoWorkerService _videoWorkerService = new VideoServiceFactory().GetVideoWorkerService();
 		private static readonly VideoMimeTypeService VideoMimeTypeService = new VideoMimeTypeService();
 		private static readonly VideoQualityTypeService VideoQualityTypeService = new VideoQualityTypeService();
 
@@ -78,7 +79,7 @@ namespace MewPipe.VideoWorker
 
 		private static void HandleMessage(NewVideoMessage message)
 		{
-			Video video = VideoWorkerService.GetVideoDetails(message.VideoId);
+			Video video = _videoWorkerService.GetVideoDetails(message.VideoId);
 			DoTotalConversion(video);
 
 			Thread.Sleep(1000);
@@ -93,7 +94,7 @@ namespace MewPipe.VideoWorker
 				String.Format("[INFO] The temporary work folder \"{0}\" has been created to do conversions in it.",
 					video.Id));
 
-			MongoGridFSStream oVideoStream = VideoWorkerService.GetVideoUploadedFile(video);
+			MongoGridFSStream oVideoStream = _videoWorkerService.GetVideoUploadedFile(video);
 
 			// Get and store the original video on the disk:
 			string inputFilePath = tmpWorkFolder + @"\input.tmp";
@@ -108,7 +109,7 @@ namespace MewPipe.VideoWorker
 
 			using (FileStream fileStream = File.OpenRead(thumbnailPath))
 			{
-				VideoWorkerService.AddThumbnail(video, fileStream);
+				_videoWorkerService.AddThumbnail(video, fileStream);
 			}
 			Trace.WriteLine(
 				String.Format("[SUCCESS] Successfully got the thumbnail of the video id {0}.",
@@ -153,11 +154,11 @@ namespace MewPipe.VideoWorker
 			// Wait for the tasks to complete
 			Task.WaitAll(tasks.ToArray());
 
-            VideoWorkerService = new VideoWorkerService();
-			VideoWorkerService.RemoveVideoUploadedFile(video);
+            _videoWorkerService = new VideoServiceFactory().GetVideoWorkerService();
+			_videoWorkerService.RemoveVideoUploadedFile(video);
 
 			var duration = VideoInfosHelper.GetVideoDuration(inputFilePath)/1000;
-			VideoWorkerService.MarkVideoAsPublished(video, (long) duration); // Loosing milliseconds precision
+			_videoWorkerService.MarkVideoAsPublished(video, (long) duration); // Loosing milliseconds precision
 
 			timeWatcher.Stop();
 			long elapsedS = timeWatcher.ElapsedMilliseconds/1000;

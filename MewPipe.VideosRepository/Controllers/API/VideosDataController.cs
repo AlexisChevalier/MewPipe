@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using MewPipe.Logic.Factories;
 using MewPipe.Logic.Helpers;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Repositories;
@@ -35,7 +36,7 @@ namespace MewPipe.VideosRepository.Controllers.API
                 user = _unitOfWork.UserRepository.GetById(identity.User.Id);
             }
 
-            var videoApiService = new VideoApiService();
+            var videoApiService = new VideoServiceFactory().GetVideoApiService();
             var videoQualityService = new VideoQualityTypeService();
             var videoMimeTypeService = new VideoMimeTypeService();
 
@@ -65,7 +66,7 @@ namespace MewPipe.VideosRepository.Controllers.API
         {
             Debug.Assert(uploadRequestId != null);
 
-            var videoApiService = new VideoApiService();
+            var videoApiService = new VideoServiceFactory().GetVideoApiService();
 
             var video = await videoApiService.UploadVideoFromMultipartRequest(Request, uploadRequestId);
 

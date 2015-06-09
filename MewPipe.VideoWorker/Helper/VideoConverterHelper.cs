@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MewPipe.Logic.Factories;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.Services;
 using NReco.VideoConverter;
@@ -46,7 +47,7 @@ namespace MewPipe.VideoWorker.Helper
 
 			using (var fileStream = File.OpenRead(filePath))
 			{
-				var service = new VideoWorkerService();
+                var service = new VideoServiceFactory().GetVideoWorkerService();
 
 				service.AddConvertedVideo(video, mimeType, qualityType, fileStream);
 			}

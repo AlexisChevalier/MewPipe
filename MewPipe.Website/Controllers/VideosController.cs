@@ -11,6 +11,7 @@ using System.Web.Routing;
 using MewPipe.ApiClient;
 using MewPipe.Logic;
 using MewPipe.Logic.Contracts;
+using MewPipe.Logic.Factories;
 using MewPipe.Logic.Helpers;
 using MewPipe.Logic.Migrations;
 using MewPipe.Logic.Models;
@@ -78,7 +79,7 @@ namespace MewPipe.Website.Controllers
                 return View();
 		    }
 
-            var videoService = new VideoApiService();
+            var videoService = new VideoServiceFactory().GetVideoApiService();
 
             var updatedVideo = videoService.AddView(video.PublicId);
             video.Views = updatedVideo.Views;
@@ -120,7 +121,7 @@ namespace MewPipe.Website.Controllers
                 return View();
             }
 
-            var videoService = new VideoApiService();
+            var videoService = new VideoServiceFactory().GetVideoApiService();
 
             var updatedVideo = videoService.AddView(video.PublicId);
             video.Views = updatedVideo.Views;

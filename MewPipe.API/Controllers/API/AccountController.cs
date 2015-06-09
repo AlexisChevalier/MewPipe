@@ -4,6 +4,7 @@ using System.Web.Http;
 using MewPipe.API.Extensions;
 using MewPipe.API.Filters;
 using MewPipe.Logic.Contracts;
+using MewPipe.Logic.Factories;
 using MewPipe.Logic.Services;
 
 namespace MewPipe.API.Controllers.API
@@ -25,7 +26,7 @@ namespace MewPipe.API.Controllers.API
         {
             var user = ActionContext.GetUser();
 
-            var videoApiService = new VideoApiService();
+            var videoApiService = new VideoServiceFactory().GetVideoApiService();
 
             var videos = videoApiService.GetUserVideos(user);
 
