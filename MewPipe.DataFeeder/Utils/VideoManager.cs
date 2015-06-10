@@ -69,37 +69,101 @@ namespace MewPipe.DataFeeder.Utils
 			return mewPipeVideo;
 		}
 
-		public static void FakeImpressions(MewPipeVideo video, List<ExcelUser> excelUsers, Dictionary<string, User> users)
+		public static void FakeImpressions(List<MewPipeVideo> mewPipeVideos, List<ExcelUser> excelUsers,
+			Dictionary<string, User> users)
 		{
 			var random = new Random();
-			var impressions = new List<Impression>();
-			var videoCategory = video.Category;
-			foreach (var excelUser in excelUsers)
+
+			// Split video list by category
+			var categories = SplitVideosByCategory(mewPipeVideos);
+			foreach (var category in categories)
 			{
-				var likePercent = excelUser.VideoGameInterest;
-				if (videoCategory == "Sport") likePercent = excelUser.SportInterest;
-				if (videoCategory == "Music") likePercent = excelUser.MusicInterest;
-
-				var impressionType = (random.Next(100) < likePercent)
-					? Impression.ImpressionType.Good
-					: Impression.ImpressionType.Bad;
-
-				// Dislike rape prevention :D
-				if (impressionType == Impression.ImpressionType.Bad)
+				var videos = category.Value;
+				var videosCount = videos.Count;
+				var userLikes = new Dictionary<ExcelUser, int>();
+				var userDislikes = new Dictionary<ExcelUser, int>();
+				foreach (var video in videos)
 				{
-					if (excelUser.DislikeCount >= 5) continue; // He can't dislike anymore, he won't rate.
-					excelUser.DislikeCount++;
+					var impressions = new List<Impression>();
+					var videoCategory = video.Category;
+
+					//DEBUG
+					Console.WriteLine("\n===================================================");
+					Console.WriteLine("Faking impressions for {0} ({1})...", video.Title, videoCategory);
+
+					foreach (var excelUser in excelUsers)
+					{
+						var likePercent = excelUser.VideoGameInterest;
+						if (videoCategory == "Sport") likePercent = excelUser.SportInterest;
+						if (videoCategory == "Music") likePercent = excelUser.MusicInterest;
+
+						var userCategoryLikes = userLikes.ContainsKey(excelUser) ? userLikes[excelUser] : 0;
+
+						Impression impression = null;
+						float userCategoryLikesPercent = userCategoryLikes/(float) videosCount*100;
+						if (userCategoryLikesPercent <= likePercent) // If the user didn't like enough in that category
+						{
+							impression = new Impression
+							{
+								User = users[excelUser.FullName],
+								Type = Impression.ImpressionType.Good,
+								DateTimeUtc = DateTime.UtcNow
+							};
+
+							// Updating like counts in that category for the user
+							if (!userLikes.ContainsKey(excelUser))
+								userLikes.Add(excelUser, ++userCategoryLikes);
+							else
+								userLikes[excelUser] = ++userCategoryLikes;
+
+							//DEBUG
+							Console.WriteLine("User {0} liked because {1}% is <= to {2}%", excelUser.UserName,
+								userCategoryLikesPercent, likePercent);
+						}
+						else // Otherwise ...
+						{
+							// 50% chance to dislike (but with dislike rape prevention :D)
+							var userCategoryDislikes = userDislikes.ContainsKey(excelUser) ? userDislikes[excelUser] : 0;
+							if (random.Next(1) == 0 && userCategoryDislikes < 5)
+							{
+								impression = new Impression
+								{
+									User = users[excelUser.FullName],
+									Type = Impression.ImpressionType.Bad,
+									DateTimeUtc = DateTime.UtcNow
+								};
+
+								// Updating dislike counts in that category for the user
+								if (!userDislikes.ContainsKey(excelUser))
+									userDislikes.Add(excelUser, ++userCategoryDislikes);
+								else
+									userDislikes[excelUser] = ++userCategoryDislikes;
+
+								//DEBUG
+								Console.WriteLine("User {0} disliked because {1}% is > to {2}%.", excelUser.UserName,
+									userCategoryLikesPercent, likePercent);
+							}
+						}
+
+						if (impression != null)
+						{
+							impressions.Add(impression);
+							continue;
+						}
+
+						//DEBUG
+						Console.WriteLine("User {0} didn't rate because {1}% is > to {2}%", excelUser.UserName,
+							userCategoryLikesPercent, likePercent);
+					}
+
+					video.Impressions = impressions;
+
+					////////// DEBUG OUTPUT //////////
+					var likes = video.Impressions.Count(impression => impression.Type == Impression.ImpressionType.Good);
+					var dislikes = video.Impressions.Count(impression => impression.Type == Impression.ImpressionType.Bad);
+					Console.WriteLine("{0}  {1} likes - {2} dislikes.", video.Title, likes, dislikes);
 				}
-
-				impressions.Add(new Impression
-				{
-					User = users[excelUser.FullName],
-					Type = impressionType,
-					DateTimeUtc = DateTime.UtcNow
-				});
 			}
-
-			video.Impressions = impressions;
 		}
 
 		public static bool IsVideoUploaded(string videoTitle)
@@ -142,9 +206,7 @@ namespace MewPipe.DataFeeder.Utils
 			_unitOfWork.Save();
 
 			// Upload
-
 			var name = String.Format("{0}-VideoFile-{1}-{2}", new ShortGuid(video.Id), "video/mp4", "Uploaded");
-
 			name = name.Replace("/", "_");
 
 			var gridFsOptions = new MongoGridFSCreateOptions
@@ -153,7 +215,6 @@ namespace MewPipe.DataFeeder.Utils
 				UploadDate = DateTime.UtcNow,
 				ContentType = "video/mp4"
 			};
-
 
 			var mongoStream = TryGetStream(name, gridFsOptions);
 			using (FileStream fileStream = File.OpenRead(mewpipeVideo.FilePath))
@@ -177,6 +238,7 @@ namespace MewPipe.DataFeeder.Utils
 			_unitOfWork.VideoRepository.Update(video);
 			_unitOfWork.Save();
 
+			// RabbitMQ
 			using (var workerQueueManager = new WorkerQueueManager())
 			{
 				using (var channelQueue =
@@ -190,6 +252,37 @@ namespace MewPipe.DataFeeder.Utils
 					channelQueue.SendPersistentMessage(new RecommendationsUpdateMessage(video.PublicId));
 				}
 			}
+		}
+
+		public static void UpdateImpressions(MewPipeVideo mewpipeVideo)
+		{
+			var video = _unitOfWork.VideoRepository.GetOne(v => v.Name.Equals(mewpipeVideo.Title));
+
+			if (video.Impressions == null) // Like seriously ? How ?!
+			{
+				video.Impressions = new List<Impression>();
+			}
+
+			// Remove impressions for the video
+			//_unitOfWork.ImpressionRepository.DeleteMany(i => i.Video.Id == video.Id);
+
+
+			while (video.Impressions.Count > 0)
+			{
+				var impression = video.Impressions.First();
+				_unitOfWork.ImpressionRepository.Delete(impression);
+			}
+			video.Impressions.Clear();
+
+			// Adding the new ones
+			foreach (var impression in mewpipeVideo.Impressions)
+			{
+				_unitOfWork.ImpressionRepository.Insert(impression);
+				video.Impressions.Add(impression);
+			}
+			_unitOfWork.VideoRepository.Update(video);
+
+			_unitOfWork.Save();
 		}
 
 		#region Private Helpers
@@ -297,6 +390,12 @@ namespace MewPipe.DataFeeder.Utils
 					Thread.Sleep(300);
 				}
 			}
+		}
+
+		private static Dictionary<string, List<MewPipeVideo>> SplitVideosByCategory(IEnumerable<MewPipeVideo> mewPipeVideos)
+		{
+			var groupedVideos = mewPipeVideos.GroupBy(v => v.Category);
+			return groupedVideos.ToDictionary(groupedVideo => groupedVideo.Key, groupedVideo => groupedVideo.ToList());
 		}
 
 		#endregion

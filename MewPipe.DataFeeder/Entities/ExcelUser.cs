@@ -8,12 +8,6 @@
 		public int SportInterest { get; set; }
 		public int MusicInterest { get; set; }
 
-		#region Extra properties
-
-		public int DislikeCount { get; set; }
-
-		#endregion
-
 		#region Extra getters
 
 		public string FirstName
