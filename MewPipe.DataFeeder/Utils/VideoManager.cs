@@ -122,9 +122,9 @@ namespace MewPipe.DataFeeder.Utils
 						}
 						else // Otherwise ...
 						{
-							// 50% chance to dislike (but with dislike rape prevention :D)
+							// 15% chance to dislike (but with dislike rape prevention :D)
 							var userCategoryDislikes = userDislikes.ContainsKey(excelUser) ? userDislikes[excelUser] : 0;
-							if (random.Next(1) == 0 && userCategoryDislikes < 5)
+							if (random.Next(1, 100) <= 15 && userCategoryDislikes < 5)
 							{
 								impression = new Impression
 								{
