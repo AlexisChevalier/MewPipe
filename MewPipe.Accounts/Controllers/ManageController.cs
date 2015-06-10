@@ -7,6 +7,9 @@ using MewPipe.Accounts.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using MewPipe.Logic.Repositories;
+using MewPipe.Logic.Models;
+using MewPipe.Logic.MongoDB;
 
 namespace MewPipe.Accounts.Controllers
 {
@@ -208,6 +211,109 @@ namespace MewPipe.Accounts.Controllers
                 return RedirectToAction("ManageLogins").Success("External login successfully added");
             }
             return RedirectToAction("ManageLogins").Error("Can't add this external login, please allow MewPipe to interract with your account");
+        }
+
+        #endregion
+
+        #region Delete Account
+
+        //
+        // GET: /Manage/DeleteAccount
+        public ActionResult DeleteAccount()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Manage/DeleteAccount
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ProcessDeleteAccount()
+        {
+            //Récuperer l'utilisateur
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            var uow = new UnitOfWork();
+            var videoGridFsClient = new VideoGridFsClient();
+            var thumbnailGridFsClient = new ThumbnailGridFsClient();
+
+            var extendedUser = uow.UserRepository.GetOne(u => u.Id == user.Id, "Videos, Impressions, Videos.VideoFiles, Videos.VideoFiles.MimeType, Videos.VideoFiles.QualityType");
+
+            //Supprimer les vidéos
+            foreach (var video in extendedUser.Videos.ToList())
+            {
+                //Supprimer les recommendations
+                var recommendations = uow.RecommendationRepository.Get(r => r.Video.Id == video.Id);
+                foreach (var recommendation in recommendations)
+                {
+                    uow.RecommendationRepository.Delete(recommendation);
+                }
+
+                video.Status = Video.StatusTypes.Processing;
+
+                uow.VideoRepository.Update(video);
+                uow.Save();
+
+
+                //Supprimer les fichiers (Mongo + SQL Server)
+                foreach (var videoFile in video.VideoFiles)
+                {
+                    videoGridFsClient.RemoveFile(video, videoFile.MimeType, videoFile.QualityType);
+                }
+
+                
+                //Suppression de la miniature
+                thumbnailGridFsClient.RemoveFile(video);
+
+
+                //Supprimer l'entité vidéo
+                uow.VideoRepository.Delete(video);
+                uow.Save();
+            }
+
+            //Supprimer les données utilisateur
+                //Supprimer les likes ?
+            var likes = uow.ImpressionRepository.Get(i => i.User.Id == extendedUser.Id);
+
+            foreach (var like in likes)
+            {
+                uow.ImpressionRepository.Delete(like);
+            }
+
+            var accessTokens = uow.OauthAccessTokenRepository.Get(ac => ac.User.Id == user.Id);
+            var authCodes = uow.OauthAuthorizationCodeRepository.Get(ac => ac.User.Id == user.Id);
+            var refreshTokens = uow.OauthRefreshTokenRepository.Get(ac => ac.User.Id == user.Id);
+            var trusts = uow.OauthUserTrustRepository.Get(ac => ac.User.Id == user.Id);
+
+            foreach (var accessToken in accessTokens)
+            {
+                uow.OauthAccessTokenRepository.Delete(accessToken);
+            }
+
+            foreach (var authCode in authCodes)
+            {
+                uow.OauthAuthorizationCodeRepository.Delete(authCode);
+            }
+
+            foreach (var refreshToken in refreshTokens)
+            {
+                uow.OauthRefreshTokenRepository.Delete(refreshToken);
+            }
+
+            foreach (var trust in trusts)
+            {
+                uow.OauthUserTrustRepository.Delete(trust);
+            }
+
+            uow.Save();
+
+            await UserManager.DeleteAsync(user);
+
+            //Déconnecter l'utilisateur
+            AuthenticationManager.SignOut();
+
+            //Rediriger utilisateur vers 
+            return RedirectToAction("Register", "Account").Success("Your account has been successfully deleted !");
         }
 
         #endregion
