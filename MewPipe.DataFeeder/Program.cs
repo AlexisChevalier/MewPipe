@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using MewPipe.DataFeeder.Entities;
 using MewPipe.DataFeeder.Utils;
 using MewPipe.Logic.Models;
@@ -78,14 +77,8 @@ namespace MewPipe.DataFeeder
 				// Likes and dislikes
 				Console.WriteLine("Faking like and dislikes ...");
 				videos.Shuffle(); // Shuffling videos
-				foreach (var mewpipeVideo in videos)
-				{
-					// Faking likes and likes
-					VideoManager.FakeImpressions(mewpipeVideo, excelUsers, users);
-					var likes = mewpipeVideo.Impressions.Count(impression => impression.Type == Impression.ImpressionType.Good);
-					var dislikes = mewpipeVideo.Impressions.Count(impression => impression.Type == Impression.ImpressionType.Bad);
-					Console.WriteLine("{0}  {1} likes - {2} dislikes.", mewpipeVideo.Title, likes, dislikes);
-				}
+				// Faking likes and likes
+				VideoManager.FakeImpressions(videos, excelUsers, users);
 
 				// Uploading videos into MewPipe
 				Console.WriteLine("Uploading videos into MewPipe ...");
@@ -99,8 +92,9 @@ namespace MewPipe.DataFeeder
 					}
 					else
 					{
-						//TODO: Update impressions instead
 						Console.Write("Updating {0} impressions ...", mewpipeVideo.Title);
+						VideoManager.UpdateImpressions(mewpipeVideo);
+						Console.WriteLine(" Updated !");
 					}
 				}
 			}
