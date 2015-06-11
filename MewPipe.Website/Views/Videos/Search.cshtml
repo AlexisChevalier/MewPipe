@@ -11,7 +11,7 @@
     var noSearch = ViewBag.NoSearch is bool && (bool) ViewBag.NoSearch;
 
     var currentLowerResult = Model.Page * 20 + 1;
-    var currentHigherResult = Model.Page + 1 * 20;
+    var currentHigherResult = (Model.Page + 1) * 20;
     var totalResults = (int) results.ResultsCount;
     if (currentHigherResult > totalResults)
     {
@@ -36,7 +36,7 @@
         <div class="options">
             <div class="row">
                 <div class="col-xs-6 text-center">
-                    <span class="title">SEARCH CRITERIA</span>
+                    <span class="title">SEARCH ORDER CRITERIA</span>
                     <label class="criteriaLabel">
                         @Html.RadioButtonFor(m => m.OrderCriteria, "date") Date
                     </label>
@@ -53,13 +53,14 @@
                     {
                         new SelectListItem
                         {
-                            Text = "Ascendant",
-                            Value = "False"
+                            Text = "Descendant",
+                            Value = "True",
+                            Selected = true
                         },
                         new SelectListItem
                         {
-                            Text = "Descendant",
-                            Value = "True"
+                            Text = "Ascendant",
+                            Value = "False"
                         }
                     })
                 </div>
@@ -75,13 +76,32 @@
     <ul class="list-group results">
         @foreach (var video in results.Results)
         {
-            var name = String.IsNullOrWhiteSpace(video.Name) ? "Unnamed video" : video.Name;
-            var description = String.IsNullOrWhiteSpace(video.Description) ? "No description" : video.Description;
+            var name = string.IsNullOrWhiteSpace(video.Name) ? "Unnamed video" : video.Name;
+            var description = string.IsNullOrWhiteSpace(video.Description) ? "No description" : video.Description;
+            var duration = TimeSpan.FromSeconds(video.Seconds);
 
             <li class="list-group-item">
-                <a href="/v/@video.PublicId">@name</a>
-                <br/>
-                @description
+                <div class="leftContent">
+                    <a href="/v/@video.PublicId">
+                        <img src="http://videos-repository.mewpipe.local:44403/api/thumbnailsData/@video.PublicId" />
+                        <div class="hover"></div>
+                        <div class="duration">
+                            @duration.ToString(@"mm\:ss")
+                        </div>
+                    </a>
+                </div>
+                <div class="rightContent">
+                    <h3>
+                        <a href="/v/@video.PublicId">@name</a>
+                    </h3>
+                    <p>
+                        @string.Format("{0:n0}", video.Views) views
+                    </p>
+                    <p class="description">
+                        @description
+                    </p>
+                </div>
+                <div class="clearfix"></div>
             </li>
         }
     </ul>

@@ -242,12 +242,7 @@ namespace MewPipe.Accounts.Controllers
             //Supprimer les vidéos
             foreach (var video in extendedUser.Videos.ToList())
             {
-                //Supprimer les recommendations
-                var recommendations = uow.RecommendationRepository.Get(r => r.Video.Id == video.Id);
-                foreach (var recommendation in recommendations)
-                {
-                    uow.RecommendationRepository.Delete(recommendation);
-                }
+                uow.GetContext().Database.ExecuteSqlCommand(string.Format("DELETE FROM Recommendations WHERE Video_Id ='{0}'", video.Id));
 
                 video.Status = Video.StatusTypes.Processing;
 
@@ -273,37 +268,13 @@ namespace MewPipe.Accounts.Controllers
 
             //Supprimer les données utilisateur
                 //Supprimer les likes ?
-            var likes = uow.ImpressionRepository.Get(i => i.User.Id == extendedUser.Id);
 
-            foreach (var like in likes)
-            {
-                uow.ImpressionRepository.Delete(like);
-            }
 
-            var accessTokens = uow.OauthAccessTokenRepository.Get(ac => ac.User.Id == user.Id);
-            var authCodes = uow.OauthAuthorizationCodeRepository.Get(ac => ac.User.Id == user.Id);
-            var refreshTokens = uow.OauthRefreshTokenRepository.Get(ac => ac.User.Id == user.Id);
-            var trusts = uow.OauthUserTrustRepository.Get(ac => ac.User.Id == user.Id);
-
-            foreach (var accessToken in accessTokens)
-            {
-                uow.OauthAccessTokenRepository.Delete(accessToken);
-            }
-
-            foreach (var authCode in authCodes)
-            {
-                uow.OauthAuthorizationCodeRepository.Delete(authCode);
-            }
-
-            foreach (var refreshToken in refreshTokens)
-            {
-                uow.OauthRefreshTokenRepository.Delete(refreshToken);
-            }
-
-            foreach (var trust in trusts)
-            {
-                uow.OauthUserTrustRepository.Delete(trust);
-            }
+            uow.GetContext().Database.ExecuteSqlCommand(string.Format("DELETE FROM Impressions WHERE User_Id ='{0}'", extendedUser.Id));
+            uow.GetContext().Database.ExecuteSqlCommand(string.Format("DELETE FROM OauthAccessTokens WHERE User_Id ='{0}'", extendedUser.Id));
+            uow.GetContext().Database.ExecuteSqlCommand(string.Format("DELETE FROM OauthAuthorizationCodes WHERE User_Id ='{0}'", extendedUser.Id));
+            uow.GetContext().Database.ExecuteSqlCommand(string.Format("DELETE FROM OauthRefreshTokens WHERE User_Id ='{0}'", extendedUser.Id));
+            uow.GetContext().Database.ExecuteSqlCommand(string.Format("DELETE FROM OauthUserTrusts WHERE User_Id ='{0}'", extendedUser.Id));
 
             uow.Save();
 

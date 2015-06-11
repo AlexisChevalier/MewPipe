@@ -64,28 +64,38 @@ namespace MewPipe.RecommenderEngine
 
 		public void SaveData(string videoId, KeyValuePair<string, double>[] results)
 		{
-			var uow = new UnitOfWork();
+		    try
+		    {
+                var uow = new UnitOfWork();
 
-			var videoGuid = Guid.Parse(videoId);
+                uow.GetContext().Database.ExecuteSqlCommand(string.Format("DELETE FROM Recommendations WHERE Video_Id1 ='{0}'", videoId));
+                uow.Save();
 
-			var video = uow.VideoRepository.GetOne(v => v.Id == videoGuid, "Recommendations");
+                var videoGuid = Guid.Parse(videoId);
 
-			var temporaryData = results.ToDictionary(result => Guid.Parse(result.Key), result => result.Value);
+                var video = uow.VideoRepository.GetOne(v => v.Id == videoGuid, "Recommendations");
 
-			var recommendedVideos = uow.VideoRepository.Get(v => temporaryData.Keys.Contains(v.Id))
-				.ToDictionary(v => v, v => temporaryData[v.Id]);
+                var temporaryData = results.ToDictionary(result => Guid.Parse(result.Key), result => result.Value);
 
-			video.Recommendations = new List<Recommendation>();
-			foreach (var recommendedVideo in recommendedVideos)
-			{
-				video.Recommendations.Add(new Recommendation
-				{
-					Score = recommendedVideo.Value,
-					Video = recommendedVideo.Key
-				});
-			}
-			uow.VideoRepository.Update(video);
-			uow.Save();
+                var recommendedVideos = uow.VideoRepository.Get(v => temporaryData.Keys.Contains(v.Id))
+                    .ToDictionary(v => v, v => temporaryData[v.Id]);
+
+                video.Recommendations = new List<Recommendation>();
+                foreach (var recommendedVideo in recommendedVideos)
+                {
+                    video.Recommendations.Add(new Recommendation
+                    {
+                        Score = recommendedVideo.Value,
+                        Video = recommendedVideo.Key
+                    });
+                }
+                uow.VideoRepository.Update(video);
+                uow.Save();
+            }
+		    catch (Exception)
+		    {
+		        // ignored
+		    }
 		}
 	}
 

@@ -27,7 +27,7 @@ namespace MewPipe.VideoWorker
 		private static void Main(string[] args)
 		{
 			_workFolder = ConfigurationManager.ConnectionStrings["MewPipeVideoWorkerConversionsFolder"].ConnectionString;
-			Run();
+		    Run();
 		}
 
 		private static void Run()
@@ -175,6 +175,22 @@ namespace MewPipe.VideoWorker
 				String.Format("[WARNING] The temporary work folder \"{0}\" is not deleted because we are running in Debug mod.",
 					video.Id));
 #endif
+
+            var mailService = new SendGridMailerService(ConfigurationManager.AppSettings["MailerUsername"], ConfigurationManager.AppSettings["MailerPassword"]);
+		    Task.WaitAll(mailService.SendMail(video.User.Email, "MewPipe - Your video is available", "Views/Mails/VideoOk",
+		        new VideoAvailableMailParametersViewModel
+		        {
+		            Title = "Your video is available !",
+		            VideoName = video.Name,
+		            VideoUri = "http://mewpipe.local:44402/v/" + video.PublicId
+		        }));
+
 		}
 	}
+    public class VideoAvailableMailParametersViewModel
+    {
+        public string VideoName { get; set; }
+        public string Title { get; set; }
+        public string VideoUri { get; set; }
+    }
 }

@@ -100,9 +100,11 @@ window.playerModule = window.playerModule || {};
             url: url
         })
         .done(function (data) {
-
+            if (data.Error === "NOT_LOGGED_IN") {
+                FlashMessages.setMessage("danger", "You must be logged in to like or dislike a video !");
+                return;
+            }
             if (data.UserImpression !== null && typeof data.UserImpression !== "undefined") {
-                console.log("Hey");
                 if (data.UserImpression.Type === 0) {
                     $elements.badImpressionsElement.removeClass("selected");
                     $elements.goodImpressionsElement.addClass("selected");

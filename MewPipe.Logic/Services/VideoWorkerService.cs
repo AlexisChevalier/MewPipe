@@ -70,7 +70,7 @@ namespace MewPipe.Logic.Services
 
 			var id = ShortGuid.Decode(publicVideoId);
 
-			return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
+			return _unitOfWork.VideoRepository.GetOne(v => v.Id == id, "User, VideoFiles, VideoFiles.MimeType, VideoFiles.QualityType");
 		}
 
 	    public void AddThumbnail(Video video, FileStream fileStream)

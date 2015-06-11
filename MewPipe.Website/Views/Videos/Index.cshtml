@@ -174,21 +174,24 @@ else
             </div>
             <div class="col-sm-4 suggestions">
                 <div class="boxWrapper nomargin">
-                        @foreach (var recommendation in recommendations.OrderByDescending(r => r.Value.Score).Take(10))
-                        {
-                            var recommendedVideo = recommendation.Value.Video;
-                            var name = String.IsNullOrWhiteSpace(recommendedVideo.Name) ? "Unnamed video" : recommendedVideo.Name;
-                            var duration = TimeSpan.FromSeconds(recommendedVideo.Seconds);
+                    <p style="padding: 10px;text-align: center;font-weight: bold; border-bottom: 1px solid rgb(187, 187, 187); background-color: rgb(239, 239, 239);margin-bottom: 0;">
+                        Recommended videos
+                    </p>
+                    @foreach (var recommendation in recommendations.OrderByDescending(r => r.Value.Score).Take(10))
+                    {
+                        var recommendedVideo = recommendation.Value.Video;
+                        var name = String.IsNullOrWhiteSpace(recommendedVideo.Name) ? "Unnamed video" : recommendedVideo.Name;
+                        var duration = TimeSpan.FromSeconds(recommendedVideo.Seconds);
 
-                            <a class="suggestion-item" href="/v/@recommendedVideo.PublicId">
-                                <span class="leftContent">
+                        <a class="suggestion-item" href="/v/@recommendedVideo.PublicId">
+                            <span class="leftContent">
                                     <img src="http://videos-repository.mewpipe.local:44403/api/thumbnailsData/@recommendedVideo.PublicId" />
                                     <span class="hover"></span>
                                     <span class="duration">
                                         @duration.ToString(@"mm\:ss")
                                     </span>
                                 </span>
-                                <span class="rightContent">
+                            <span class="rightContent">
                                     <span class="title">
                                         @name
                                     </span>
@@ -208,21 +211,18 @@ else
                                     By @recommendedVideo.User.Username
                                     </span>
                                 </span>
-                                <div class="clearfix"></div>
-                            </a>
-                        }
-                        @if (recommendations.Count == 0)
-                        {
-                            <p>
-                                No recommendations yet
-                            </p>
-                        }
+                            <div class="clearfix"></div>
+                        </a>
+                    }
+                    @if (recommendations.Count == 0)
+                    {
+                        <p style="padding: 10px;">
+                            No recommendations yet
+                        </p>
+                    }
                 </div>
             </div>
         </div>
     </div>
-
-    <!---->
-    <!--<video id="mewPipePlayerElement" controls="controls" poster="http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/11/1397210130748/Spring-Lamb.-Image-shot-2-011.jpg"></video>-->
 
 }

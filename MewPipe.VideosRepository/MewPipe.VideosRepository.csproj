@@ -164,6 +164,7 @@
     <Compile Include="Security\SiteAuthorizeAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Images\videoPlaceholder.jpg" />
     <Content Include="Web.config" />

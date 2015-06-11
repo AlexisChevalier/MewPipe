@@ -359,16 +359,9 @@ namespace MewPipe.Logic.Services
 	        if (contract.PrivacyStatus == Video.PrivacyStatusTypes.Private ||
 	            contract.PrivacyStatus == Video.PrivacyStatusTypes.LinkOnly)
 	        {
-
-                var recommendations = _unitOfWork.RecommendationRepository.Get(r => r.Video.Id == video.Id);
-                foreach (var recommendation in recommendations)
-                {
-                    _unitOfWork.RecommendationRepository.Delete(recommendation);
-                }
+                _unitOfWork.GetContext().Database.ExecuteSqlCommand(string.Format("DELETE FROM Recommendations WHERE Video_Id ='{0}'", video.Id));
 	        }
 	        video.PrivacyStatus = contract.PrivacyStatus;
-
-            //TODO: Remove from search engine
 
             _unitOfWork.VideoRepository.Update(video);
             _unitOfWork.Save();
@@ -499,12 +492,7 @@ namespace MewPipe.Logic.Services
                 });
             }
 
-            var recommendations = _unitOfWork.RecommendationRepository.Get(r => r.Video.Id == video.Id);
-	        foreach (var recommendation in recommendations) 
-	        {
-	            _unitOfWork.RecommendationRepository.Delete(recommendation);
-	        }
-
+            _unitOfWork.GetContext().Database.ExecuteSqlCommand(string.Format("DELETE FROM Recommendations WHERE Video_Id ='{0}'", video.Id));
             video.Status = Video.StatusTypes.Processing;
 
             _unitOfWork.VideoRepository.Update(video);

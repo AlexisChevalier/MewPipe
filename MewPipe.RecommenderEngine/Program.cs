@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -56,6 +57,7 @@ namespace MewPipe.RecommenderEngine
 
 		private static void ProcessOneVideoRecommendations(Guid id)
 		{
+            Console.Out.WriteLine("[INFO][" + DateTime.Now.ToLongTimeString() + "] Processing recommendations for video " + id + "...");
 			var watch = Stopwatch.StartNew();
 			var pearsonEngine = new PearsonScoreEngine();
 			var contentEngine = new ContentScoreEngine();
@@ -85,14 +87,15 @@ namespace MewPipe.RecommenderEngine
 
 			watch.Stop();
 
-			Console.Out.WriteLine("[INFO][" + DateTime.Now.ToLongDateString() + "] Recommendations for video " + id +
+            Console.Out.WriteLine("[INFO][" + DateTime.Now.ToLongTimeString() + "] Recommendations for video " + id +
 								" in database updated in " + watch.ElapsedMilliseconds + " ms");
 		}
 
 		private static void ProcessAllRecommendations()
-		{
+        {
 			while (!_closing)
-			{
+            {
+                Console.Out.WriteLine("[INFO][" + DateTime.Now.ToLongTimeString() + "] Processing all the recommendations...");
 				var watch = Stopwatch.StartNew();
 				var pearsonEngine = new PearsonScoreEngine();
 				var contentEngine = new ContentScoreEngine();
@@ -104,37 +107,77 @@ namespace MewPipe.RecommenderEngine
 				//2 - RESULTS
 				foreach (var video in realData.VideoRatingDatas)
 				{
-					var finalArray = new KeyValuePair<string, double>[0];
+					var finalList = new List<KeyValuePair<string, double>>();
 
-					var smallWatch = Stopwatch.StartNew();
 					var socialResults = pearsonEngine.GetTopMatches(realData.VideoUserRatingDatas,
 						realData.VideoRatingDatas.First(r => r.Value.VideoId == video.Key).Value);
-					Console.Out.WriteLine(smallWatch.ElapsedMilliseconds + " ms elapsed for social results");
-					smallWatch.Restart();
 					var contentResults = contentEngine.GetTopMatches(realData.VideoRatingDatas,
 						realData.VideoRatingDatas.First(r => r.Value.VideoId == video.Key).Value);
-					Console.Out.WriteLine(smallWatch.ElapsedMilliseconds + " ms elapsed for content results");
-					smallWatch.Restart();
 
+				    var empty = false;
+				    var counter = 20;
 
-					if (socialResults.Count > 0)
-					{
-						//finalArray = contentResults.ToArray();
-						finalArray = socialResults.ToArray();
-					}
+                    //3 - COMBINATION
+				    do
+				    {
+				        var nextSocial = socialResults.OrderByDescending(s => s.Value).FirstOrDefault();
+				        var nextContent = contentResults.OrderByDescending(s => s.Value).FirstOrDefault();
 
-					//3 - COMBINATION
-					//TODO
+				        if (string.IsNullOrWhiteSpace(nextSocial.Key))
+				        {
+                            if (finalList.All(fe => fe.Key != nextContent.Key))
+                            {
+                                finalList.Add(nextContent);
+                                counter--;
+                            }
+                            contentResults.Remove(nextContent);
+                            counter--;
+                        }
+                        else if (string.IsNullOrWhiteSpace(nextContent.Key))
+                        {
+                            if (finalList.All(fe => fe.Key != nextSocial.Key))
+                            {
+                                finalList.Add(nextSocial);
+                                counter--;
+                            }
 
-					Console.Out.WriteLine(smallWatch.ElapsedMilliseconds + " ms elapsed for array building");
-					smallWatch.Restart();
-					mewPipeDataSource.SaveData(video.Key, finalArray);
-					Console.Out.WriteLine(smallWatch.ElapsedMilliseconds + " ms elapsed for saving data");
-					smallWatch.Restart();
+                            socialResults.Remove(nextSocial);
+                        }
+                        else
+                        {
+                            if (nextSocial.Value >= nextContent.Value)
+                            {
+                                if (finalList.All(fe => fe.Key != nextSocial.Key))
+                                {
+                                    finalList.Add(nextSocial);
+                                    counter--;
+                                }
+
+                                socialResults.Remove(nextSocial);
+                            }
+                            else
+                            {
+                                if (finalList.All(fe => fe.Key != nextContent.Key))
+                                {
+                                    finalList.Add(nextContent);
+                                    counter--;
+                                }
+                                contentResults.Remove(nextContent);
+                            }   
+                        }
+
+                        if (socialResults.Count == 0 && contentResults.Count == 0)
+                        {
+                            empty = true;
+                        }
+
+				    } while (counter > 0 || empty);
+
+					mewPipeDataSource.SaveData(video.Key, finalList.OrderByDescending(v => v.Value).ToArray());
 				}
 
 				watch.Stop();
-				Console.Out.WriteLine("[INFO][" + DateTime.Now.ToLongDateString() + "] All Recommendations in database updated in " +
+                Console.Out.WriteLine("[INFO][" + DateTime.Now.ToLongTimeString() + "] All Recommendations in database updated in " +
 									watch.ElapsedMilliseconds + " ms");
 			}
 		}

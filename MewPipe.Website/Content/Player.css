@@ -1,4 +1,11 @@
-﻿.hasPlayer.onTop .body-content {
+﻿.hasPlayer #flash-messages {
+  display: block;
+  position: fixed;
+  bottom: 0;
+  margin-bottom: 0;
+  z-index: 10;
+  width: 100%; }
+.hasPlayer.onTop .body-content {
   margin-top: 0; }
 .hasPlayer .body-content {
   max-width: none;
@@ -181,14 +188,17 @@
           color: #e1172c; }
           .hasPlayer .infosWrapper .details .actions .impressions span:hover.bad .number, .hasPlayer .infosWrapper .details .actions .impressions span.selected.bad .number {
             color: #e1172c; }
+  .hasPlayer .infosWrapper .suggestions .boxWrapper {
+    overflow: hidden; }
   .hasPlayer .infosWrapper .suggestions .nomargin {
     margin: 0;
     padding: 0; }
   .hasPlayer .infosWrapper .suggestions .suggestion-item {
+    margin: 5px;
+    overflow: hidden;
     display: block;
     position: relative;
     height: 86px;
-    border-bottom: 1px solid #cfcfcf;
     -webkit-box-sizing: border-box;
     /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box;
@@ -236,7 +246,8 @@
       top: 5px;
       margin-left: 10px;
       display: inline-block;
-      vertical-align: top; }
+      vertical-align: top;
+      overflow: hidden; }
       .hasPlayer .infosWrapper .suggestions .suggestion-item .rightContent .title {
         display: block;
         line-height: 18px;
@@ -253,7 +264,11 @@
         display: block; }
       .hasPlayer .infosWrapper .suggestions .suggestion-item .rightContent .author {
         display: block;
-        font-size: 90%; }
+        font-size: 90%;
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: clip ellipsis; }
   .hasPlayer .infosWrapper .boxWrapper {
     padding: 15px;
     background-color: white;
@@ -267,13 +282,15 @@
   padding: 0; }
 .hasPlayer ul.share-buttons li {
   display: inline; }
-.hasPlayer .embed .playerWrapper {
+.hasPlayer.embed .playerWrapper {
   height: 100%;
   width: 100%; }
-  .hasPlayer .embed .playerWrapper .videoContainer {
-    height: 100%; }
-    .hasPlayer .embed .playerWrapper .videoContainer .video-js {
-      height: 100%; }
+  .hasPlayer.embed .playerWrapper .videoContainer {
+    height: 100%;
+    width: 100%; }
+    .hasPlayer.embed .playerWrapper .videoContainer .video-js {
+      height: 100%;
+      width: 100%; }
 .hasPlayer .errorWrapper {
   position: relative;
   text-align: center;

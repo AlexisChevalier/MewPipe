@@ -1,4 +1,14 @@
 ﻿.hasPlayer {
+
+    #flash-messages {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        margin-bottom: 0;
+        z-index: 10;
+        width: 100%;
+    }
+
     &.onTop {
         .body-content {
             margin-top: 0;
@@ -264,15 +274,20 @@
         }
 
         .suggestions {
+            .boxWrapper {
+                overflow: hidden;
+            }
             .nomargin {
                 margin: 0;
                 padding: 0;
             }
             .suggestion-item {
+                margin: 5px;
+                overflow: hidden;
                 display: block;
                 position: relative;
                 height: 86px;
-                border-bottom: 1px solid rgb(207, 207, 207);
+                
 
                 &:hover {
                     background-color: rgb(238, 238, 238);
@@ -327,6 +342,7 @@
                     margin-left: 10px;
                     display: inline-block;
                     vertical-align: top;
+                    overflow: hidden;
                     .title {
                         display: block;
                         line-height: 18px;
@@ -346,6 +362,10 @@
                     .author {
                         display: block;
                         font-size: 90%;
+                        white-space: nowrap;
+                        width: 100%;
+                        overflow: hidden;
+                        text-overflow: clip ellipsis;
                     }
                 }
             }
@@ -372,14 +392,16 @@
       display: inline;
     }
 
-    .embed {
+    &.embed {
         .playerWrapper {
-            height: 100%;
-            width: 100%;
+                height: 100%;
+                width: 100%;
             .videoContainer {
                 height: 100%;
+                width: 100%;
                 .video-js {
                     height: 100%;
+                    width: 100%;
                 }
             }
         }
