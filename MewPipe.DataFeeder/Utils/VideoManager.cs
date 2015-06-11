@@ -61,7 +61,7 @@ namespace MewPipe.DataFeeder.Utils
 			VideoInfo video = videoInfos.First(v => v.Resolution == lowestResolution);
 
 			// Making sure the cache folder does exist
-			CreateCacheFolder();
+			IOHelper.CreateFolder(_cacheFolder);
 
 			var videoTitle = GetSafeVideoTitle(video.Title);
 			var filePath = Path.Combine(_cacheFolder, videoTitle + ".mp4");
@@ -219,14 +219,6 @@ namespace MewPipe.DataFeeder.Utils
 			_unitOfWork.VideoRepository.Insert(video);
 			_unitOfWork.Save();
 
-			// Need to save the impressions first
-			foreach (var impression in mewpipeVideo.Impressions)
-			{
-				impression.Video = video;
-				_unitOfWork.ImpressionRepository.Insert(impression);
-			}
-			_unitOfWork.Save();
-
 			// Upload
 			var name = String.Format("{0}-VideoFile-{1}-{2}", new ShortGuid(video.Id), "video/mp4", "Uploaded");
 			name = name.Replace("/", "_");
@@ -303,7 +295,6 @@ namespace MewPipe.DataFeeder.Utils
 				video.Impressions.Add(impression);
 			}
 			_unitOfWork.VideoRepository.Update(video);
-
 			_unitOfWork.Save();
 		}
 
@@ -318,12 +309,6 @@ namespace MewPipe.DataFeeder.Utils
 					lowest = videoInfo.Resolution;
 			}
 			return lowest;
-		}
-
-		private static void CreateCacheFolder()
-		{
-			if (!Directory.Exists(_cacheFolder))
-				Directory.CreateDirectory(_cacheFolder);
 		}
 
 		private static bool IsVideoAlreadyCached(string videoTitle)

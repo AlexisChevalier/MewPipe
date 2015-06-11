@@ -90,12 +90,10 @@ namespace MewPipe.DataFeeder
 						VideoManager.UploadToMewPipe(mewpipeVideo);
 						Console.WriteLine(" Uploaded !");
 					}
-					else
-					{
-						Console.Write("Updating {0} impressions ...", mewpipeVideo.Title);
-						VideoManager.UpdateImpressions(mewpipeVideo);
-						Console.WriteLine(" Updated !");
-					}
+
+					Console.Write("Updating {0} impressions ...", mewpipeVideo.Title);
+					VideoManager.UpdateImpressions(mewpipeVideo);
+					Console.WriteLine(" Updated !");
 				}
 			}
 
