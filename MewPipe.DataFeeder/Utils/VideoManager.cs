@@ -101,7 +101,7 @@ namespace MewPipe.DataFeeder.Utils
 
 						Impression impression = null;
 						float userCategoryLikesPercent = userCategoryLikes/(float) videosCount*100;
-						if (userCategoryLikesPercent <= likePercent) // If the user didn't like enough in that category
+						if (userCategoryLikesPercent < likePercent) // If the user didn't like enough in that category
 						{
 							impression = new Impression
 							{
@@ -117,14 +117,14 @@ namespace MewPipe.DataFeeder.Utils
 								userLikes[excelUser] = ++userCategoryLikes;
 
 							//DEBUG
-							Console.WriteLine("User {0} liked because {1}% is <= to {2}%", excelUser.UserName,
+							Console.WriteLine("User {0} liked because {1}% is < to {2}%", excelUser.UserName,
 								userCategoryLikesPercent, likePercent);
 						}
 						else // Otherwise ...
 						{
-							// 50% chance to dislike (but with dislike rape prevention :D)
+							// 15% chance to dislike (but with dislike rape prevention :D)
 							var userCategoryDislikes = userDislikes.ContainsKey(excelUser) ? userDislikes[excelUser] : 0;
-							if (random.Next(1) == 0 && userCategoryDislikes < 5)
+							if (random.Next(1, 100) <= 15 && userCategoryDislikes < 5)
 							{
 								impression = new Impression
 								{
@@ -140,7 +140,7 @@ namespace MewPipe.DataFeeder.Utils
 									userDislikes[excelUser] = ++userCategoryDislikes;
 
 								//DEBUG
-								Console.WriteLine("User {0} disliked because {1}% is > to {2}%.", excelUser.UserName,
+								Console.WriteLine("User {0} disliked because {1}% is >= to {2}%.", excelUser.UserName,
 									userCategoryLikesPercent, likePercent);
 							}
 						}
@@ -256,7 +256,7 @@ namespace MewPipe.DataFeeder.Utils
 
 		public static void UpdateImpressions(MewPipeVideo mewpipeVideo)
 		{
-			var video = _unitOfWork.VideoRepository.GetOne(v => v.Name.Equals(mewpipeVideo.Title));
+			var video = _unitOfWork.VideoRepository.GetOne(v => v.Name.Equals(mewpipeVideo.Title), "Impressions");
 
 			if (video.Impressions == null) // Like seriously ? How ?!
 			{
@@ -265,14 +265,25 @@ namespace MewPipe.DataFeeder.Utils
 
 			// Remove impressions for the video
 			//_unitOfWork.ImpressionRepository.DeleteMany(i => i.Video.Id == video.Id);
-
-
-			while (video.Impressions.Count > 0)
+			try
+			{
+				foreach (var impression in video.Impressions.ToArray())
+				{
+					_unitOfWork.ImpressionRepository.Delete(impression);
+				}
+			}
+			catch (Exception e)
+			{
+				Console.Out.WriteLine(e);
+			}
+			/*while (video.Impressions.Count > 0)
 			{
 				var impression = video.Impressions.First();
 				_unitOfWork.ImpressionRepository.Delete(impression);
-			}
-			video.Impressions.Clear();
+				video.Impressions.Remove(impression);
+			}*/
+			//video.Impressions.Clear();
+			_unitOfWork.Save();
 
 			// Adding the new ones
 			foreach (var impression in mewpipeVideo.Impressions)
