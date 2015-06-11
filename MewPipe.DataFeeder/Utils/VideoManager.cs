@@ -34,7 +34,28 @@ namespace MewPipe.DataFeeder.Utils
 
 		public static MewPipeVideo Download(string url)
 		{
-			IEnumerable<VideoInfo> vInfos = DownloadUrlResolver.GetDownloadUrls(url);
+			var tries = 0;
+			IEnumerable<VideoInfo> vInfos;
+			while (true)
+			{
+				tries++;
+				try
+				{
+					vInfos = DownloadUrlResolver.GetDownloadUrls(url);
+					break;
+				}
+				catch (Exception)
+				{
+					Console.Write("Failed to get download URLs ! ");
+					if (tries >= 5)
+					{
+						Console.WriteLine(" Was the 5th attempt, throwing ...");
+						throw;
+					}
+					Console.WriteLine(" Retrying ...");
+					Thread.Sleep(300);
+				}
+			}
 			var videoInfos = vInfos.Where(v => v.VideoType == VideoType.Mp4).ToList();
 			var lowestResolution = GetLowestResolution(videoInfos);
 			VideoInfo video = videoInfos.First(v => v.Resolution == lowestResolution);
