@@ -265,37 +265,61 @@ namespace MewPipe.DataFeeder.Utils
 			}
 		}
 
-		public static void UpdateImpressions(MewPipeVideo mewpipeVideo)
+		public static void UpdateImpressions(List<MewPipeVideo> mewpipeVideos, List<ExcelUser> excelUsers, bool createReport)
 		{
-			var video = _unitOfWork.VideoRepository.GetOne(v => v.Name.Equals(mewpipeVideo.Title), "Impressions");
+			ExcelImpressionsReport report = createReport ? new ExcelImpressionsReport(excelUsers) : null;
 
-			if (video.Impressions == null)
+			foreach (var mewpipeVideo in mewpipeVideos)
 			{
-				video.Impressions = new List<Impression>();
-			}
+				Console.Write("Updating {0} impressions ...", mewpipeVideo.Title);
 
-			// Remove impressions for the video
-			try
-			{
-				foreach (var impression in video.Impressions.ToArray())
+				MewPipeVideo video1 = mewpipeVideo;
+				var video = _unitOfWork.VideoRepository.GetOne(v => v.Name.Equals(video1.Title), "Impressions");
+
+				if (video.Impressions == null)
 				{
-					_unitOfWork.ImpressionRepository.Delete(impression);
+					video.Impressions = new List<Impression>();
 				}
-			}
-			catch (Exception e)
-			{
-				Console.Out.WriteLine(e);
-			}
-			_unitOfWork.Save();
 
-			// Adding the new ones
-			foreach (var impression in mewpipeVideo.Impressions)
-			{
-				_unitOfWork.ImpressionRepository.Insert(impression);
-				video.Impressions.Add(impression);
+				// Remove impressions for the video
+				try
+				{
+					foreach (var impression in video.Impressions.ToArray())
+					{
+						_unitOfWork.ImpressionRepository.Delete(impression);
+					}
+				}
+				catch (Exception e)
+				{
+					Console.Out.WriteLine(e);
+				}
+				_unitOfWork.Save();
+
+				// Adding the new ones
+				foreach (var impression in mewpipeVideo.Impressions)
+				{
+					_unitOfWork.ImpressionRepository.Insert(impression);
+					video.Impressions.Add(impression);
+				}
+				_unitOfWork.VideoRepository.Update(video);
+				_unitOfWork.Save();
+				Console.WriteLine(" Updated !");
+
+				if (!createReport) continue;
+				// Filling the report
+				var ratesByUsers = new Dictionary<string, int>();
+				foreach (var excelUser in excelUsers)
+				{
+					var userRate = mewpipeVideo.Impressions.FirstOrDefault(i => i.User.UserName == excelUser.UserName);
+					var excelRate = 0;
+					if (userRate != null) excelRate = userRate.Type == Impression.ImpressionType.Good ? 1 : -1;
+					ratesByUsers.Add(excelUser.UserName, excelRate);
+				}
+				report.AddRow(video.Id.ToString(), video1.Category, ratesByUsers);
 			}
-			_unitOfWork.VideoRepository.Update(video);
-			_unitOfWork.Save();
+
+			// Save the report to disk
+			if (report != null) ExcelManager.SaveExcelImpressionsReport(report);
 		}
 
 		#region Private Helpers

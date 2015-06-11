@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using MewPipe.DataFeeder.Entities;
 using OfficeOpenXml;
@@ -87,6 +88,41 @@ namespace MewPipe.DataFeeder.Utils
 			}
 
 			return users;
+		}
+
+		public static void SaveExcelImpressionsReport(ExcelImpressionsReport report)
+		{
+			var folder = ConfigurationManager.ConnectionStrings["DataFeederCacheFolder"].ConnectionString;
+
+			var newFile = new FileInfo(string.Format(@"{0}\{1}.xlsx", folder, report.Name));
+			using (var pack = new ExcelPackage(newFile))
+			{
+				var workSheet = pack.Workbook.Worksheets.Add("Impressions");
+
+				// Headers:
+				int column = 1;
+				foreach (var header in report.Headers)
+					workSheet.Cells[1, column++].Value = header;
+
+				// Rows:
+				int row = 2; // 1 = headers
+				foreach (var excelRow in report.Rows)
+				{
+					column = 1;
+					workSheet.Cells[row, column++].Value = excelRow.VideoId;
+					workSheet.Cells[row, column++].Value = excelRow.VideoCategory;
+
+					foreach (var header in report.Headers)
+					{
+						if (!excelRow.RateByUsers.ContainsKey(header)) continue;
+
+						var excelRate = excelRow.RateByUsers[header];
+						workSheet.Cells[row, column++].Value = excelRate;
+					}
+					row++;
+				}
+				pack.Save();
+			}
 		}
 	}
 }
