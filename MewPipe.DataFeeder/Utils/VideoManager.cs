@@ -27,11 +27,10 @@ namespace MewPipe.DataFeeder.Utils
 	{
 		private static UnitOfWork _unitOfWork = UnitOfWorkSingleton.GetInstance();
 		private static IVideoGridFsClient _videoGridFsClient = new VideoGridFsClient();
-		private static IVideoMimeTypeService _videoMimeTypeService = new VideoMimeTypeService();
-		private static IVideoQualityTypeService _videoQualityTypeService = new VideoQualityTypeService();
+		private static IVideoMimeTypeService _videoMimeTypeService = new VideoMimeTypeService(_unitOfWork);
+		private static IVideoQualityTypeService _videoQualityTypeService = new VideoQualityTypeService(_unitOfWork);
 
-		private static readonly string _cacheFolder =
-			ConfigurationManager.ConnectionStrings["DataFeederCacheFolder"].ConnectionString;
+		private static string _cacheFolder = ConfigurationManager.ConnectionStrings["DataFeederCacheFolder"].ConnectionString;
 
 		public static MewPipeVideo Download(string url)
 		{
@@ -226,15 +225,12 @@ namespace MewPipe.DataFeeder.Utils
 			mongoStream.Close();
 			mongoStream.Dispose();
 
-			var mimeTypeService = new VideoMimeTypeService(_unitOfWork);
-			var qualityTypeService = new VideoQualityTypeService(_unitOfWork);
-
 			video.VideoFiles.Add(new VideoFile
 			{
 				Video = video,
 				IsOriginalFile = true,
-				MimeType = mimeTypeService.GetAllowedMimeTypeForDecoding("video/mp4"),
-				QualityType = qualityTypeService.GetUploadingQualityType()
+				MimeType = _videoMimeTypeService.GetAllowedMimeTypeForDecoding("video/mp4"),
+				QualityType = _videoQualityTypeService.GetUploadingQualityType()
 			});
 
 			_unitOfWork.VideoRepository.Update(video);
@@ -260,13 +256,12 @@ namespace MewPipe.DataFeeder.Utils
 		{
 			var video = _unitOfWork.VideoRepository.GetOne(v => v.Name.Equals(mewpipeVideo.Title), "Impressions");
 
-			if (video.Impressions == null) // Like seriously ? How ?!
+			if (video.Impressions == null)
 			{
 				video.Impressions = new List<Impression>();
 			}
 
 			// Remove impressions for the video
-			//_unitOfWork.ImpressionRepository.DeleteMany(i => i.Video.Id == video.Id);
 			try
 			{
 				foreach (var impression in video.Impressions.ToArray())
@@ -278,13 +273,6 @@ namespace MewPipe.DataFeeder.Utils
 			{
 				Console.Out.WriteLine(e);
 			}
-			/*while (video.Impressions.Count > 0)
-			{
-				var impression = video.Impressions.First();
-				_unitOfWork.ImpressionRepository.Delete(impression);
-				video.Impressions.Remove(impression);
-			}*/
-			//video.Impressions.Clear();
 			_unitOfWork.Save();
 
 			// Adding the new ones
