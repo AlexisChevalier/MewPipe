@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -29,7 +30,8 @@ namespace MewPipe.DataFeeder.Utils
 		private static IVideoMimeTypeService _videoMimeTypeService = new VideoMimeTypeService();
 		private static IVideoQualityTypeService _videoQualityTypeService = new VideoQualityTypeService();
 
-		private static readonly string _cacheFolder = @"_cache";
+		private static readonly string _cacheFolder =
+			ConfigurationManager.ConnectionStrings["DataFeederCacheFolder"].ConnectionString;
 
 		public static MewPipeVideo Download(string url)
 		{
