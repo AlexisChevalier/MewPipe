@@ -61,7 +61,7 @@ namespace MewPipe.DataFeeder.Utils
 			VideoInfo video = videoInfos.First(v => v.Resolution == lowestResolution);
 
 			// Making sure the cache folder does exist
-			CreateCacheFolder();
+			IOHelper.CreateFolder(_cacheFolder);
 
 			var videoTitle = GetSafeVideoTitle(video.Title);
 			var filePath = Path.Combine(_cacheFolder, videoTitle + ".mp4");
@@ -219,14 +219,6 @@ namespace MewPipe.DataFeeder.Utils
 			_unitOfWork.VideoRepository.Insert(video);
 			_unitOfWork.Save();
 
-			// Need to save the impressions first
-			foreach (var impression in mewpipeVideo.Impressions)
-			{
-				impression.Video = video;
-				_unitOfWork.ImpressionRepository.Insert(impression);
-			}
-			_unitOfWork.Save();
-
 			// Upload
 			var name = String.Format("{0}-VideoFile-{1}-{2}", new ShortGuid(video.Id), "video/mp4", "Uploaded");
 			name = name.Replace("/", "_");
@@ -273,38 +265,61 @@ namespace MewPipe.DataFeeder.Utils
 			}
 		}
 
-		public static void UpdateImpressions(MewPipeVideo mewpipeVideo)
+		public static void UpdateImpressions(List<MewPipeVideo> mewpipeVideos, List<ExcelUser> excelUsers, bool createReport)
 		{
-			var video = _unitOfWork.VideoRepository.GetOne(v => v.Name.Equals(mewpipeVideo.Title), "Impressions");
+			ExcelImpressionsReport report = createReport ? new ExcelImpressionsReport(excelUsers) : null;
 
-			if (video.Impressions == null)
+			foreach (var mewpipeVideo in mewpipeVideos)
 			{
-				video.Impressions = new List<Impression>();
-			}
+				Console.Write("Updating {0} impressions ...", mewpipeVideo.Title);
 
-			// Remove impressions for the video
-			try
-			{
-				foreach (var impression in video.Impressions.ToArray())
+				MewPipeVideo video1 = mewpipeVideo;
+				var video = _unitOfWork.VideoRepository.GetOne(v => v.Name.Equals(video1.Title), "Impressions");
+
+				if (video.Impressions == null)
 				{
-					_unitOfWork.ImpressionRepository.Delete(impression);
+					video.Impressions = new List<Impression>();
 				}
-			}
-			catch (Exception e)
-			{
-				Console.Out.WriteLine(e);
-			}
-			_unitOfWork.Save();
 
-			// Adding the new ones
-			foreach (var impression in mewpipeVideo.Impressions)
-			{
-				_unitOfWork.ImpressionRepository.Insert(impression);
-				video.Impressions.Add(impression);
-			}
-			_unitOfWork.VideoRepository.Update(video);
+				// Remove impressions for the video
+				try
+				{
+					foreach (var impression in video.Impressions.ToArray())
+					{
+						_unitOfWork.ImpressionRepository.Delete(impression);
+					}
+				}
+				catch (Exception e)
+				{
+					Console.Out.WriteLine(e);
+				}
+				_unitOfWork.Save();
 
-			_unitOfWork.Save();
+				// Adding the new ones
+				foreach (var impression in mewpipeVideo.Impressions)
+				{
+					_unitOfWork.ImpressionRepository.Insert(impression);
+					video.Impressions.Add(impression);
+				}
+				_unitOfWork.VideoRepository.Update(video);
+				_unitOfWork.Save();
+				Console.WriteLine(" Updated !");
+
+				if (!createReport) continue;
+				// Filling the report
+				var ratesByUsers = new Dictionary<string, int>();
+				foreach (var excelUser in excelUsers)
+				{
+					var userRate = mewpipeVideo.Impressions.FirstOrDefault(i => i.User.UserName == excelUser.UserName);
+					var excelRate = 0;
+					if (userRate != null) excelRate = userRate.Type == Impression.ImpressionType.Good ? 1 : -1;
+					ratesByUsers.Add(excelUser.UserName, excelRate);
+				}
+				report.AddRow(video.Id.ToString(), video1.Category, ratesByUsers);
+			}
+
+			// Save the report to disk
+			if (report != null) ExcelManager.SaveExcelImpressionsReport(report);
 		}
 
 		#region Private Helpers
@@ -318,12 +333,6 @@ namespace MewPipe.DataFeeder.Utils
 					lowest = videoInfo.Resolution;
 			}
 			return lowest;
-		}
-
-		private static void CreateCacheFolder()
-		{
-			if (!Directory.Exists(_cacheFolder))
-				Directory.CreateDirectory(_cacheFolder);
 		}
 
 		private static bool IsVideoAlreadyCached(string videoTitle)
