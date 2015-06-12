@@ -406,7 +406,7 @@ namespace MewPipe.Logic.Services
                 });
             }
 
-	        var userToAdd = _unitOfWork.UserRepository.GetOne(u => u.Email == usertoAddEmail);
+	        var userToAdd = _unitOfWork.UserRepository.GetOne(u => u.Email.Equals(usertoAddEmail, StringComparison.CurrentCultureIgnoreCase));
 
 	        if (userToAdd == null)
 	        {
