@@ -59,7 +59,6 @@ namespace MewPipe.RecommenderEngine
 		{
             Console.Out.WriteLine("[INFO][" + DateTime.Now.ToLongTimeString() + "] Processing recommendations for video " + id + "...");
 			var watch = Stopwatch.StartNew();
-			var pearsonEngine = new PearsonScoreEngine();
 			var contentEngine = new ContentScoreEngine();
 			var mewPipeDataSource = new MewPipeDataSource();
 
@@ -69,19 +68,13 @@ namespace MewPipe.RecommenderEngine
 			//2 - RESULTS
 			var finalArray = new KeyValuePair<string, double>[0];
 
-			var socialResults = pearsonEngine.GetTopMatches(realData.VideoUserRatingDatas,
-				realData.VideoRatingDatas.First(r => r.Value.VideoId == id.ToString()).Value);
 			var contentResults = contentEngine.GetTopMatches(realData.VideoRatingDatas,
 				realData.VideoRatingDatas.First(r => r.Value.VideoId == id.ToString()).Value);
 
-			if (socialResults.Count > 0)
+            if (contentResults.Count > 0)
 			{
-				//finalArray = contentResults.ToArray();
-				finalArray = socialResults.ToArray();
+                finalArray = contentResults.ToArray();
 			}
-
-			//3 - COMBINATION
-			//TODO
 
 			mewPipeDataSource.SaveData(id.ToString(), finalArray);
 

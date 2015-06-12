@@ -29,12 +29,14 @@ namespace MewPipe.RecommenderEngine
 					var count = 0;
 					foreach (var impression in videoDetail.Impressions)
 					{
-						var ratingData = new VideoUserRatingData
-						{
-							UserId = impression.User.Id.ToLower()
-						};
+					    var ratingData = new VideoUserRatingData
+					    {
+					        UserId = impression.User.Id.ToLower(),
+					        NotIndexed = videoDetail.Status != Video.StatusTypes.Published ||
+					                     videoDetail.PrivacyStatus != Video.PrivacyStatusTypes.Public
+					    };
 
-						if (impression.Type == Impression.ImpressionType.Bad)
+					    if (impression.Type == Impression.ImpressionType.Bad)
 						{
 							ratingData.SocialRating = -1;
 						}
