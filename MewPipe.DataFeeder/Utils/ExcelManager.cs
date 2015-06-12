@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
 using System.IO;
 using MewPipe.DataFeeder.Entities;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace MewPipe.DataFeeder.Utils
 {
@@ -109,15 +111,25 @@ namespace MewPipe.DataFeeder.Utils
 				foreach (var excelRow in report.Rows)
 				{
 					column = 1;
-					workSheet.Cells[row, column++].Value = excelRow.VideoId;
-					workSheet.Cells[row, column++].Value = excelRow.VideoCategory;
+					var cell = workSheet.Cells[row, column++];
+					cell.Value = excelRow.VideoId;
+					cell.AutoFitColumns();
+
+					cell = workSheet.Cells[row, column++];
+					cell.Value = excelRow.VideoCategory;
+					cell.AutoFitColumns();
 
 					foreach (var header in report.Headers)
 					{
 						if (!excelRow.RateByUsers.ContainsKey(header)) continue;
 
 						var excelRate = excelRow.RateByUsers[header];
-						workSheet.Cells[row, column++].Value = excelRate;
+						cell = workSheet.Cells[row, column++];
+						cell.Value = excelRate;
+
+						cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+						var color = excelRate > 0 ? Color.ForestGreen : excelRate < 0 ? Color.Red : Color.DarkGray;
+						cell.Style.Fill.BackgroundColor.SetColor(color);
 					}
 					row++;
 				}
