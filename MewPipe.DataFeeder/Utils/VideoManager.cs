@@ -230,24 +230,32 @@ namespace MewPipe.DataFeeder.Utils
 				ContentType = "video/mp4"
 			};
 
-			var mongoStream = TryGetStream(name, gridFsOptions);
-			using (FileStream fileStream = File.OpenRead(mewpipeVideo.FilePath))
+			try
 			{
-				fileStream.CopyTo(mongoStream, 255*1024); // 255 Ko buffer size
+				var mongoStream = TryGetStream(name, gridFsOptions);
+				using (FileStream fileStream = File.OpenRead(mewpipeVideo.FilePath))
+				{
+					fileStream.CopyTo(mongoStream, 255*1024); // 255 Ko buffer size
+				}
+				mongoStream.Close();
+				mongoStream.Dispose();
+
+				video.VideoFiles.Add(new VideoFile
+				{
+					Video = video,
+					IsOriginalFile = true,
+					MimeType = _videoMimeTypeService.GetAllowedMimeTypeForDecoding("video/mp4"),
+					QualityType = _videoQualityTypeService.GetUploadingQualityType()
+				});
+
+				_unitOfWork.VideoRepository.Update(video);
+				_unitOfWork.Save();
 			}
-			mongoStream.Close();
-			mongoStream.Dispose();
-
-			video.VideoFiles.Add(new VideoFile
+			catch (Exception)
 			{
-				Video = video,
-				IsOriginalFile = true,
-				MimeType = _videoMimeTypeService.GetAllowedMimeTypeForDecoding("video/mp4"),
-				QualityType = _videoQualityTypeService.GetUploadingQualityType()
-			});
-
-			_unitOfWork.VideoRepository.Update(video);
-			_unitOfWork.Save();
+				_unitOfWork.VideoRepository.Delete(video);
+				_unitOfWork.Save();
+			}
 
 			// RabbitMQ
 			using (var workerQueueManager = new WorkerQueueManager())
