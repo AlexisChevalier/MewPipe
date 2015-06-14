@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Configuration
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -18,7 +19,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a href="@Url.Action("Index", "Manage")" class="navbar-brand">
+                    <a href="@ConfigurationManager.AppSettings["MewPipeEndpoint"]" class="navbar-brand">
                         <span class="black">Mew</span><span class="red">Pipe</span>
                     </a>
                 </div>
