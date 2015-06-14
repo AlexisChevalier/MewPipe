@@ -10,7 +10,7 @@
         <ul class="nav navbar-nav navbar-right">
             <li>@Html.ActionLink("My Videos", "UserVideos", "Videos")</li>
             <li>@Html.ActionLink("Upload Video", "UploadVideo", "Videos")</li>
-            <li><a target="_blank" href="@ConfigurationManager.AppSettings["AccountEndpoint"]">My Account</a></li>
+            <li><a href="@ConfigurationManager.AppSettings["AccountEndpoint"]">My Account</a></li>
             <li><a href="javascript:document.getElementById('logoutForm').submit()">Logout</a></li>
         </ul>
     }
