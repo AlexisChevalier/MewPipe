@@ -17,7 +17,7 @@ namespace MewPipe.VideoWorker
 {
 	internal class Program
 	{
-        private static IVideoWorkerService _videoWorkerService = new VideoServiceFactory().GetVideoWorkerService();
+		private static IVideoWorkerService _videoWorkerService = new VideoServiceFactory().GetVideoWorkerService();
 		private static readonly VideoMimeTypeService VideoMimeTypeService = new VideoMimeTypeService();
 		private static readonly VideoQualityTypeService VideoQualityTypeService = new VideoQualityTypeService();
 
@@ -27,7 +27,7 @@ namespace MewPipe.VideoWorker
 		private static void Main(string[] args)
 		{
 			_workFolder = ConfigurationManager.ConnectionStrings["MewPipeVideoWorkerConversionsFolder"].ConnectionString;
-		    Run();
+			Run();
 		}
 
 		private static void Run()
@@ -154,7 +154,7 @@ namespace MewPipe.VideoWorker
 			// Wait for the tasks to complete
 			Task.WaitAll(tasks.ToArray());
 
-            _videoWorkerService = new VideoServiceFactory().GetVideoWorkerService();
+			_videoWorkerService = new VideoServiceFactory().GetVideoWorkerService();
 			_videoWorkerService.RemoveVideoUploadedFile(video);
 
 			var duration = VideoInfosHelper.GetVideoDuration(inputFilePath)/1000;
@@ -176,21 +176,25 @@ namespace MewPipe.VideoWorker
 					video.Id));
 #endif
 
-            var mailService = new SendGridMailerService(ConfigurationManager.AppSettings["MailerUsername"], ConfigurationManager.AppSettings["MailerPassword"]);
-		    Task.WaitAll(mailService.SendMail(video.User.Email, "MewPipe - Your video is available", "Views/Mails/VideoOk",
-		        new VideoAvailableMailParametersViewModel
-		        {
-		            Title = "Your video is available !",
-		            VideoName = video.Name,
-		            VideoUri = "http://mewpipe.local:44402/v/" + video.PublicId
-		        }));
+			var userEmail = video.User.Email;
+			if (userEmail == null) return; // Most likely a user from the DataFeeder, so we won't send email
 
+			var mailService = new SendGridMailerService(ConfigurationManager.AppSettings["MailerUsername"],
+				ConfigurationManager.AppSettings["MailerPassword"]);
+			Task.WaitAll(mailService.SendMail(userEmail, "MewPipe - Your video is available", "Views/Mails/VideoOk",
+				new VideoAvailableMailParametersViewModel
+				{
+					Title = "Your video is available !",
+					VideoName = video.Name,
+					VideoUri = "http://mewpipe.local:44402/v/" + video.PublicId
+				}));
 		}
 	}
-    public class VideoAvailableMailParametersViewModel
-    {
-        public string VideoName { get; set; }
-        public string Title { get; set; }
-        public string VideoUri { get; set; }
-    }
+
+	public class VideoAvailableMailParametersViewModel
+	{
+		public string VideoName { get; set; }
+		public string Title { get; set; }
+		public string VideoUri { get; set; }
+	}
 }
