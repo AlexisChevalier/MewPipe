@@ -62,10 +62,10 @@
       #home .videoThumb a .description span {
         display: block; }
         #home .videoThumb a .description span.title {
-          font-size: 140%;
+          font-size: 1.2em;
           color: #e1172c;
-          line-height: 20px;
-          max-height: 42px;
+          line-height: 1.2em;
+          max-height: 2.4em;
           overflow: hidden; }
         #home .videoThumb a .description span.author {
           position: absolute;

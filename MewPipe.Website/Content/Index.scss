@@ -81,10 +81,10 @@ $colHighlight   : rgb(165, 13, 29);
                 span {
                     display: block;
                     &.title {
-                        font-size: 140%;
-                        color: rgb(225, 23, 44);
-                        line-height: 20px;
-                        max-height: 42px;
+                        font-size: 1.2em;
+                        color: #e1172c;
+                        line-height: 1.2em;
+                        max-height: 2.4em;
                         overflow: hidden;
                     }
                     &.author {
