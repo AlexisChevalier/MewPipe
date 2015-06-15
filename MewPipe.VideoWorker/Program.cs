@@ -9,6 +9,7 @@ using MewPipe.Logic.Factories;
 using MewPipe.Logic.Models;
 using MewPipe.Logic.RabbitMQ;
 using MewPipe.Logic.RabbitMQ.Messages;
+using MewPipe.Logic.Repositories;
 using MewPipe.Logic.Services;
 using MewPipe.VideoWorker.Helper;
 using MongoDB.Driver.GridFS;
@@ -17,16 +18,25 @@ namespace MewPipe.VideoWorker
 {
 	internal class Program
 	{
-		private static IVideoWorkerService _videoWorkerService = new VideoServiceFactory().GetVideoWorkerService();
-		private static readonly VideoMimeTypeService VideoMimeTypeService = new VideoMimeTypeService();
-		private static readonly VideoQualityTypeService VideoQualityTypeService = new VideoQualityTypeService();
+		private static IVideoWorkerService _videoWorkerService;
+		private static UnitOfWork _unitOfWork;
+		private static VideoMimeTypeService _videoMimeTypeService;
+		private static VideoQualityTypeService _videoQualityTypeService;
 
 		private static string _workFolder;
 
 
 		private static void Main(string[] args)
 		{
+			//Init
 			_workFolder = ConfigurationManager.ConnectionStrings["MewPipeVideoWorkerConversionsFolder"].ConnectionString;
+			_videoWorkerService = new VideoServiceFactory().GetVideoWorkerService();
+
+			_unitOfWork = new UnitOfWork();
+			_videoMimeTypeService = new VideoMimeTypeService(_unitOfWork);
+			_videoQualityTypeService = new VideoQualityTypeService(_unitOfWork);
+
+			// Run
 			Run();
 		}
 
@@ -116,8 +126,8 @@ namespace MewPipe.VideoWorker
 					video.Id));
 
 			// Get the needed datas for the total conversion
-			MimeType[] encodingMimeTypes = VideoMimeTypeService.GetEncodingMimeTypes();
-			QualityType[] encodingQualityTypes = VideoQualityTypeService.GetEncodingQualityTypes();
+			MimeType[] encodingMimeTypes = _videoMimeTypeService.GetEncodingMimeTypes();
+			QualityType[] encodingQualityTypes = _videoQualityTypeService.GetEncodingQualityTypes();
 			QualityType vidQuality = VideoInfosHelper.GuessVideoQualityType(inputFilePath);
 			int vidQualityResY = int.Parse(vidQuality.Name);
 
@@ -178,6 +188,9 @@ namespace MewPipe.VideoWorker
 
 			var userEmail = video.User.Email;
 			if (userEmail == null) return; // Most likely a user from the DataFeeder, so we won't send email
+
+			// Refresh video entity to be sure we have the latest infos before sending the mail.
+			video = _videoWorkerService.GetVideoDetails(video.PublicId);
 
 			var mailService = new SendGridMailerService(ConfigurationManager.AppSettings["MailerUsername"],
 				ConfigurationManager.AppSettings["MailerPassword"]);
