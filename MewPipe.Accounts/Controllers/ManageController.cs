@@ -148,11 +148,12 @@ namespace MewPipe.Accounts.Controllers
 
 		#endregion
 
+        //THIS FEATURE HAS BEEN DISABLED FOR RELEASE - WE ENCOUNTERED AN UNEXPECTED PROBLEM WITH A VERSION OF ASP.NET OWIN IDENTITY
 		#region External Logins
 
 		//
 		// POST: /Manage/RemoveLogin
-		[HttpPost]
+		/*[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> RemoveLogin(string loginProvider, string providerKey)
 		{
@@ -221,7 +222,7 @@ namespace MewPipe.Accounts.Controllers
 			return
 				RedirectToAction("ManageLogins")
 					.Error("Can't add this external login, please allow MewPipe to interract with your account");
-		}
+		}*/
 
 		#endregion
 

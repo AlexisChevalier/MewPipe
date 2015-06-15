@@ -24,22 +24,23 @@
                                 </strong>
                                 -
                                 <span class="hightlighted">Change</span>
-                                    @if (Model.HasPassword)
-                                    {
-                                        <span class="float-right">Defined</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="float-right">Not defined</span>
-                                    }
+                                @if (Model.HasPassword)
+                                {
+                                    <span class="float-right">Defined</span>
+                                }
+                                else
+                                {
+                                    <span class="float-right">Not defined</span>
+                                }
                             </a>
-                            <a href="@Url.Action("ManageLogins", "Manage")" class="list-group-item">
+                            <!-- THIS FEATURE HAS BEEN DISABLED - WE ENCOUNTERED AN UNEXPECTED PROBLEM WITH A VERSION OF ASP.NET OWIN IDENTITY-->
+                            <!--<a href="@Url.Action("ManageLogins", "Manage")" class="list-group-item">
                                 <strong class="text-left">
                                     External logins
                                 </strong>                                -
                                 <span class="hightlighted">Change</span>
                                 <span class="float-right">@Model.Logins.Count activated</span>
-                            </a>
+                            </a>-->
                         </div>
                         <h4>Account Suppression</h4>
                         <div class="list-group">
