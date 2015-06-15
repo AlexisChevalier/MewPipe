@@ -119,6 +119,8 @@
           box-shadow: none; }
       .hasPlayer .vjs-default-skin .vjs-control-bar .vjs-menu .vjs-menu-content .vjs-menu-title:hover {
         color: white; }
+.hasPlayer .vjs-default-skin .vjs-res-button .vjs-control-text {
+  position: relative; }
 .hasPlayer .vjs-default-skin .vjs-big-play-button {
   border: 3px solid white;
   border: none;

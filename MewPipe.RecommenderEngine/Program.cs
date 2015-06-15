@@ -17,7 +17,7 @@ namespace MewPipe.RecommenderEngine
 
 		private static void Main(string[] args)
 		{
-			if (args[0] == "master")
+			if (args.Any() && args[0] == "master")
 			{
 				_allVideosProcessThread = new Thread(ProcessAllRecommendations);
 				_allVideosProcessThread.Start();
