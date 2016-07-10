@@ -10,7 +10,7 @@ Here is the list of the group members:
 - Cholin Théodore
 - Chevalier Alexis
 
-**All the project's documentations, schemas and textual deliverables are available in the folder Documentations/, unfortunately, most of them is written in French**
+**All the project's documentations, schemas and textual deliverables are available in the folder [Documentations](https://github.com/AlexisChevalier/MewPipe/tree/master/Documentations), unfortunately, most of them are written in French**
 
 The architecture requires a windows platform, Sql Server Express (Metadata, OAuth2.0 and account management, IIS Express, MongoDB (Communication inside the distributed system) and RabbitMQ (File storage using GridFS).
 
