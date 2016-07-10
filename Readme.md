@@ -45,7 +45,7 @@ Here is a brief description of the different parts of the system:
 
 ### 2 - MewPipe.Accounts set up
 - Copy MewPipe.Accounts\Configuration\connectionstrings.default.config to MewPipe.Accounts\Configuration\connectionstrings.config and update the values to match your computer configuration
-- Right Click on MewPipe.Accounts, go to the Web menu and set the following values :
+- Right Click on MewPipe.Accounts, click on properties and go to the Web menu and set the following values :
 	- Start Action : Don't open a page. Wait for a request from an external application.
 	- Servers : 
 		- Choose IIS Express 
@@ -54,32 +54,48 @@ Here is a brief description of the different parts of the system:
 
 ### 3 - MewPipe.API set up
 - Copy MewPipe.API\Configuration\connectionstrings.default.config to MewPipe.API\Configuration\connectionstrings.config and update the values to match your computer configuration
-- Right Click on MewPipe.API, go to the Web menu and set the following values :
+- Right Click on MewPipe.API, click on properties and go to the Web menu and set the following values :
 	- Start Action : Don't open a page. Wait for a request from an external application.
 	- Servers :  
 		- Choose IIS Express 
 		- Project Url : http://localhost:44400/ then click on Create Virtual Directory
 		- Override application root URL (must be checked) : http://api.mewpipe.local:44400/
 
-### 4 - MewPipe.VideosRepository set up
+### 4 - MewPipe.DataFeeder set up
+- Copy MewPipe.DataFeeder\Configuration\connectionstrings.default.config to MewPipe.DataFeeder\Configuration\connectionstrings.config and update the values to match your computer configuration
+- Right Click on MewPipe.DataFeeder, click on properties and go to the Debug menu and set the following values :
+	- Command line arguments: Set the following value: <pathToUsersXlsxFile pathToVideosXlsxFile> (The two path must be replaced with the path to the user list and video list excel files, you'll find default versions in MewPipe.DataFeeder\datas)
+
+### 5 - MewPipe.VideoWorker set up
+- Copy MewPipe.VideoWorker\Configuration\connectionstrings.default.config to MewPipe.VideoWorker\Configuration\connectionstrings.config and update the values to match your computer configuration
+
+### 6 - MewPipe.Logic set up
+- Copy MewPipe.Logic\Configuration\connectionstrings.default.config to MewPipe.Logic\Configuration\connectionstrings.config and update the values to match your computer configuration
+
+### 7 - MewPipe.RecommenderEngine set up
+- Copy MewPipe.RecommenderEngine\Configuration\connectionstrings.default.config to MewPipe.RecommenderEngine\Configuration\connectionstrings.config and update the values to match your computer configuration
+- Right Click on MewPipe.RecommenderEngine, click on properties and go to the Debug menu and set the following values :
+	- Command line arguments: Set the following value: <master> (Multiple engines can run at the same time to slightly increase performance in some cases, but only a single one can be the master)
+
+### 8 - MewPipe.VideosRepository set up
 - Copy MewPipe.VideosRepository\Configuration\connectionstrings.default.config to MewPipe.VideosRepository\Configuration\connectionstrings.config and update the values to match your computer configuration
-- Right Click on MewPipe.VideosRepository, go to the Web menu and set the following values :
+- Right Click on MewPipe.VideosRepository, click on properties and go to the Web menu and set the following values :
 	- Start Action : Don't open a page. Wait for a request from an external application.
 	- Servers :  
 		- Choose IIS Express 
 		- Project Url : http://localhost:44403/ then click on Create Virtual Directory
 		- Override application root URL (must be checked) : http://videos-repository.mewpipe.local:44403/
 
-### 5 - MewPipe.Website set up
+### 9 - MewPipe.Website set up
 - Copy MewPipe.Website\Configuration\connectionstrings.default.config to MewPipe.Website\Configuration\connectionstrings.config and update the values to match your computer configuration
-- Right Click on MewPipe.Website, go to the Web menu and set the following values :
+- Right Click on MewPipe.Website, click on properties and go to the Web menu and set the following values :
 	- Start Action : Start URL (http://mewpipe.local:44402/)
 	- Servers :  
 		- Choose IIS Express 
 		- Project Url : http://localhost:44402/ then click on Create Virtual Directory
 		- Override application root URL (must be checked) : http://mewpipe.local:44402/
 
-### 6 - Solution set up
+### 10 - Solution set up
 - Right click on Solution 'MewPipe' and select Properties
 - In 'Common Properties' -> 'Startup Project', choose 'Multiple startup projects' and set the following actions :
 	- MewPipe.Accounts -> Start
@@ -90,12 +106,12 @@ Here is a brief description of the different parts of the system:
 	- MewPipe.Website -> Start
 	- MewPipe.API -> Start
 
-### 7 - Database set up
+### 11 - Database set up
 - In Visual Studio, click on Tools -> NuGet Package Manager -> Package Manager Console
 	- Once you are in the console, set MewPipe.Logic as Default Project (the second dropdown input)
 	- Then type Update-Database in the console
 
-### 8 - IIS Configuration
+### 12 - IIS Configuration
 - Start the project, it should fail with an IIS Express error
 - Go to <MY DOCUMENTS FOLDER>/IISExpress/config and open the file applicationhost.config in your favorite text editor
 	- Locate the section "configuration -> system.applicationHost -> sites" in the file
@@ -107,7 +123,7 @@ Here is a brief description of the different parts of the system:
 		- <site name="MewPipe.VideosRepository"... -> You have to replace the binding element and change the bindingInformation to "*:44403:videos-repository.mewpipe.local"
 		- <site name="MewPipe.Website"... -> You have to replace the binding element and change the bindingInformation to "*:44402:mewpipe.local"
 
-### 9 - Project launch
+### 13 - Project launch
 
 - Start the project again, it should start a console application and open a tab in your browser at http://mewpipe.local:44402/. 
 - Don't kill the console application, just leave it in background.
