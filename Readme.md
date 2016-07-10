@@ -2,6 +2,14 @@
 
 MewPipe was built as a final year student project at Supinfo Lyon, France. The subject was to design and build a video sharing system (Software and Architecture). Our solution proposes a distributed application including multiple subsystems, the installation guide below will detail how to install them.
 
+Here is the list of the group members:
+- Yilmaz Fatma
+- Quinquis Simon
+- Huynh Eddy
+- Evieux Jean-Baptiste
+- Cholin Théodore
+- Chevalier Alexis
+
 The architecture requires a windows platform, Sql Server Express (Metadata, OAuth2.0 and account management, IIS Express, MongoDB (Communication inside the distributed system) and RabbitMQ (File storage using GridFS).
 
 Here is a brief description of the different parts of the system:
