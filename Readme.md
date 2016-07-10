@@ -64,7 +64,7 @@ Here is a brief description of the different parts of the system:
 ### 4 - MewPipe.DataFeeder set up
 - Copy MewPipe.DataFeeder\Configuration\connectionstrings.default.config to MewPipe.DataFeeder\Configuration\connectionstrings.config and update the values to match your computer configuration
 - Right Click on MewPipe.DataFeeder, click on properties and go to the Debug menu and set the following values :
-	- Command line arguments: Set the following value: <pathToUsersXlsxFile pathToVideosXlsxFile> (The two path must be replaced with the path to the user list and video list excel files, you'll find default versions in MewPipe.DataFeeder\datas)
+	- Command line arguments: Set the following value: "pathToUsersXlsxFile pathToVideosXlsxFile" without the quotes (The two path must be replaced with the path to the user list and video list excel files, you'll find default versions in MewPipe.DataFeeder\datas)
 
 ### 5 - MewPipe.VideoWorker set up
 - Copy MewPipe.VideoWorker\Configuration\connectionstrings.default.config to MewPipe.VideoWorker\Configuration\connectionstrings.config and update the values to match your computer configuration
@@ -75,7 +75,7 @@ Here is a brief description of the different parts of the system:
 ### 7 - MewPipe.RecommenderEngine set up
 - Copy MewPipe.RecommenderEngine\Configuration\connectionstrings.default.config to MewPipe.RecommenderEngine\Configuration\connectionstrings.config and update the values to match your computer configuration
 - Right Click on MewPipe.RecommenderEngine, click on properties and go to the Debug menu and set the following values :
-	- Command line arguments: Set the following value: <master> (Multiple engines can run at the same time to slightly increase performance in some cases, but only a single one can be the master)
+	- Command line arguments: Set the following value: "master" without the quotes (Multiple engines can run at the same time to slightly increase performance in some cases, but only a single one can be the master)
 
 ### 8 - MewPipe.VideosRepository set up
 - Copy MewPipe.VideosRepository\Configuration\connectionstrings.default.config to MewPipe.VideosRepository\Configuration\connectionstrings.config and update the values to match your computer configuration
