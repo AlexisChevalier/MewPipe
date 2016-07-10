@@ -134,3 +134,5 @@ Here is a brief description of the different parts of the system:
 	- Website: http://mewpipe.local:44402/
 	- API: http://api.mewpipe.local:44400/
 	- Video files API: http://videos-repository.mewpipe.local:44403/
+
+**This project is not maintained anymore by our team, but you can open issues, if we have the time we will reply !**
