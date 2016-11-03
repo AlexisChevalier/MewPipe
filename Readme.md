@@ -12,7 +12,7 @@ Here is the list of the group members:
 
 **All of the project's documentations, subject, schemas and textual deliverables are available in the folder [Documentations](https://github.com/AlexisChevalier/MewPipe/tree/master/Documentations), unfortunately, most of them are written in French**
 
-The architecture requires a windows platform, Sql Server Express (Metadata, OAuth2.0 and account management, IIS Express, MongoDB (Communication inside the distributed system) and RabbitMQ (File storage using GridFS).
+The architecture requires a windows platform, Sql Server Express (Metadata, OAuth2.0 and account management, IIS Express, MongoDB (File storage using GridFS) and RabbitMQ (Communication inside the distributed system).
 
 Here is a brief description of the different parts of the system:
 
