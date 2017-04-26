@@ -1,4 +1,5 @@
-#MewPipe - A video sharing platform
+MewPipe - A video sharing platform
+==================================
 
 MewPipe was built as a final year student project at Supinfo Lyon, France. The subject was to design and build a video sharing system (Software and Architecture). Our solution proposes a distributed application including multiple subsystems, the installation guide below will detail how to install them.
 
